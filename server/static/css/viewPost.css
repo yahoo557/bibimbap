@@ -1,0 +1,11 @@
+#container {
+    margin: 3%;
+}
+
+#title {
+    font-size: 30px;
+}
+
+#createdTime {
+    text-align: right;
+}

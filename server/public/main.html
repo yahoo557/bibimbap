@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>놀다가 - 놀러오세요 다이어리 가상공간에</title>
+
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/noldaga.css">
+</head>
+<body>
+    <div id="container">
+        <div id="sidebar">
+            <div id="sidebarInner">
+                <div id="sidebarHeader" class="sidebarContainer">
+                    <img class="btns" onclick="window.location.href='/'" width="180" src="/static/img/noldaga_logo.png">
+                    <div id="accMenu"><a href="/login">로그인</a> <span class="whiteText">|</span> <a href="/register">회원가입</a></div>
+                </div>
+                <button id="myBlogBtn">내 방으로</button>
+                <div id="sidebarMain" class="sidebarContainer">
+                    <div id="searchButton" class="btns">
+                        <img width="90" src="/static/img/search_button.png">
+                        <div class="whiteText"><span>검색</span><span class="smallText">Search</span></div>
+                    </div>
+                    <div id="randomButton" class="btns">
+                        <img width="90" src="/static/img/random_button.png">
+                        <div class="whiteText"><span>랜덤방문</span><span class="smallText">Random</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="article">
+            <div id="blogList">
+
+            </div>
+            <div id="footer">
+
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
