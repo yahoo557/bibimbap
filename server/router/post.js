@@ -2,8 +2,10 @@ const express = require("express");
 const router = express.Router();
 // const Quill = require("quill");
 
+const path = require('path');
+
 router.get("/", (req, res) => {
-    res.sendFile('/Users/seungbaek/Desktop/Graduation_work/server/public/post.html');
+    res.sendFile(path.join(__dirname, '../public', 'post.html'));
 });
 
 module.exports = router;

@@ -2,12 +2,16 @@
 const express = require("express");
 const app = express();
 
+const path = require('path');
+const post = require("./router/post.js");
+const viewPost = require("./router/viewPost")
 
-const post = require("./Router/post.js");
-
+app.use("/static", express.static("static"));
+app.use("/post", post);
+app.use("/viewPost", viewPost);
 
 app.get("/", (req, res) => {
-    return res.status(200).send("home")
+    res.sendFile(path.join(__dirname, '/public', 'main.html'));
 });
 
 
