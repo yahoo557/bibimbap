@@ -1,0 +1,8 @@
+@font-face {
+    font-family: 'Cafe24SsurroundAir';
+    src: url('/static/fonts/Cafe24SsurroundAir.ttf') format('truetype');
+}
+
+* {
+    font-family: Cafe24SsurroundAir;
+}

@@ -4,11 +4,16 @@ const router = express.Router();
 const { Pool, Client } = require('pg')
 const Query = require('pg').Query
 
+
 const bodyparser = require("body-parser");
 
 router.use(bodyparser.urlencoded({ extended: false }));
+
+const path = require('path');
+
+
 router.get("/", (req, res) => {
-    res.sendFile('/Users/seungbaek/Desktop/Graduation_work/server/public/post.html');
+    res.sendFile(path.join(__dirname, '../public', 'post.html'));
 });
 const client = new Client({
     user: 'seungbaek',
