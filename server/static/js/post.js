@@ -17,6 +17,18 @@ function applyPost() {
         contentsArray.createdTime = currentDate.toLocaleString('ja-JP');
         contentsArray.contents = qEditor.getContents();
         console.log(JSON.stringify(contentsArray));
+        
+
+        //quill에서 받아온 데이터를 HTTP POST로 서버에 넘기는 코드
+        const xhr = new XMLHttpRequest();
+        const method = "post";
+        const url = "/post";
+        xhr.open(method, url);
+        xhr.setRequestHeader("Accept", "application/json");
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        const body = JSON.stringify(contentsArray)
+        xhr.send(body);
+
     } else {
         console.log('canceled');
     }
