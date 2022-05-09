@@ -106,16 +106,35 @@ class App {
         // group.add(line);
         
         const gltfloader = new GLTFLoader();
-        const url = '../../object_files/Old_Bicycle.glb';
+        const url1 = '../../object_files/Single_Bed.gltf';
+        const url2 = '../../object_files/Single_Pouf.glb';
+        const url3 = '../../object_files/Wooden_table.gltf';
 
         gltfloader.load(
-            url,
+            url1,
             ( gltf ) => {
                 const root = gltf.scene;
+                gltf.scene.position.set(0, -2, 0); // 오브젝트 위치
+                //gltf.scene.scale.set(0.8, 0.8, 0.8); //오브젝트 사이즈
                 group.add( root );
-
             }
-
+        );
+        gltfloader.load(
+            url2,
+            ( gltf ) => {
+                const root = gltf.scene;
+                gltf.scene.position.set(-2, -2, 0); // 오브젝트 위치
+                group.add( root );
+            }
+        );
+        gltfloader.load(
+            url3,
+            ( gltf ) => {
+                const root = gltf.scene;
+                gltf.scene.position.set(2, -2, 0); // 오브젝트 위치
+                //gltf.scene.scale.set(0.2, 0.2, 0.2); //오브젝트 사이즈
+                group.add( root );
+            }
         );
 
         this._scene.add(group);
