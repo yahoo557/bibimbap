@@ -108,7 +108,7 @@ class App {
         const gltfloader = new GLTFLoader();
         const url1 = '../../object_files/Single_Bed.gltf';
         const url2 = '../../object_files/Single_Pouf.glb';
-        const url3 = '../../object_files/Wooden_table.gltf';
+        const url3 = '../../object_files/retro_television.glb';
 
         gltfloader.load(
             url1,
@@ -132,7 +132,6 @@ class App {
             ( gltf ) => {
                 const root = gltf.scene;
                 gltf.scene.position.set(2, -2, 0); // 오브젝트 위치
-                //gltf.scene.scale.set(0.2, 0.2, 0.2); //오브젝트 사이즈
                 group.add( root );
             }
         );
