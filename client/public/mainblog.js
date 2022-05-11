@@ -107,14 +107,14 @@ class App {
         
         const gltfloader = new GLTFLoader();
         const url1 = '../../object_files/Single_Bed.gltf';
-        const url2 = '../../object_files/Single_Pouf.glb';
-        const url3 = '../../object_files/retro_television.glb';
+        const url2 = '../../object_files/bookcases_from_secrets_neighbor.glb';
+        const url3 = '../../object_files/air_jordan_1.glb';
 
         gltfloader.load(
             url1,
             ( gltf ) => {
                 const root = gltf.scene;
-                gltf.scene.position.set(0, -2, 0); // 오브젝트 위치
+                gltf.scene.position.set(0, -2, -3); // 오브젝트 위치
                 //gltf.scene.scale.set(0.8, 0.8, 0.8); //오브젝트 사이즈
                 group.add( root );
             }
@@ -123,7 +123,7 @@ class App {
             url2,
             ( gltf ) => {
                 const root = gltf.scene;
-                gltf.scene.position.set(-2, -2, 0); // 오브젝트 위치
+                gltf.scene.position.set(2, -2, -4); // 오브젝트 위치
                 group.add( root );
             }
         );
@@ -131,7 +131,7 @@ class App {
             url3,
             ( gltf ) => {
                 const root = gltf.scene;
-                gltf.scene.position.set(2, -2, 0); // 오브젝트 위치
+                gltf.scene.position.set(2, -1.5, -2.8); // 오브젝트 위치
                 group.add( root );
             }
         );
