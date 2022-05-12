@@ -175,11 +175,6 @@ class App {
         if(this._keyControls[68]){ // d
             this._camera.position.x += 0.5 * this._player.speed;
         }
-        if(this._keyControls[32]) { // space
-          if(this._player.jumps) return false;
-          this._player.jumps = true;
-          this._player.velocity = -this._player.jumpHeight;
-        }
     }
 
     //창크기가 변경될 때 호출되는 메소드
