@@ -1,7 +1,7 @@
 import * as THREE from './three.js-master/build/three.module.js';
 import { OrbitControls } from "./three.js-master/examples/jsm/controls/OrbitControls.js"
 import { GLTFLoader } from './three.js-master/examples/jsm/loaders/GLTFLoader.js';
-import {PointerLockControls} from "./three.js-master/examples/jsm/controls/PointerLockControls.js";
+import { PointerLockControls } from "./three.js-master/examples/jsm/controls/PointerLockControls.js";
 
 // const objects = [];
 
@@ -84,6 +84,7 @@ class App {
             ( gltf ) => {
                 const root = gltf.scene;
                 group.add( root ); //group 없으면 _scene.add( root );
+                gltf.scene.position.set(2, -2, -4); //모델 위치
             }
         );
 
@@ -92,11 +93,6 @@ class App {
 
     _setupCamera() {
         // let raycaster;
-
-        // let moveForward = false;
-        // let moveBackward = false;
-        // let moveLeft = false;
-        // let moveRight = false;
         
         //three.js가 3차원 영역을 출력할 부분의 가로, 세로
         const width = this._divContainer.clientWidth;
@@ -107,12 +103,33 @@ class App {
             0.1,
             100
         );
-        camera.position.x = 1;
-        camera.position.y = 1;
-        camera.position.z = 6;
+
+        let keyControls = {};
+        this._keyControls = keyControls;
+        let player = {
+            height: 0,
+            turnSpeed: .1,
+            speed: .1,
+            jumpHeight: .2,
+            gravity: .01,
+            velocity: 0,
+            
+            playerJumps: false
+        };
+        this._player = player;
+
+        // Camera:Setup
+        camera.position.set(0, player.height, 0);
+        camera.lookAt(new THREE.Vector3(0, player.height, 0));
+
+        // Controls:Listeners - 키보드 이벤트
+        document.addEventListener('keydown', ({ keyCode }) => { keyControls[keyCode] = true });
+        document.addEventListener('keyup', ({ keyCode }) => { keyControls[keyCode] = false });
+
         //생성된 camera 객체를 다른 메소드에서 사용할 수 있도록
         this._camera = camera;
         const controls = new PointerLockControls(this._camera, this._divContainer);
+        
 
         document.body.addEventListener( 'click', function() {
             controls.lock();
@@ -144,6 +161,35 @@ class App {
         this._scene.add(leftlight);
     }
     
+    keyControl() { // wasd 키로 사용자 이동 컨트롤
+        // Controls:Engine 
+        if(this._keyControls[87]){ // w
+            this._camera.position.z -= 0.5 * this._player.speed;
+        }
+        if(this._keyControls[83]){ // s
+            this._camera.position.z += 0.5 * this._player.speed;
+        }
+        if(this._keyControls[65]){ // a
+            this._camera.position.x -= 0.5 * this._player.speed;
+        }
+        if(this._keyControls[68]){ // d
+            this._camera.position.x += 0.5 * this._player.speed;
+        }
+        if(this._keyControls[32]) { // space
+          if(this._player.jumps) return false;
+          this._player.jumps = true;
+          this._player.velocity = -this._player.jumpHeight;
+        }
+    }
+    ixMovementUpdate() {
+        this._player.velocity += this._player.gravity;
+        this._camera.position.y -= this._player.velocity;
+        
+        if(this._camera.position.y < this._player.height) {
+            this._camera.position.y = this._player.height;
+            this._player.jumps = false;
+        }
+      }
 
     //창크기가 변경될 때 호출되는 메소드
     resize() {
@@ -173,6 +219,7 @@ class App {
     update(time) {
         //밀리세컨단위를 세컨단위로 바꿈
         time *= 0.001;
+        this.keyControl();
         //x, y축의 회전값을 time값으로 준다.
         // this._cube.rotation.x = time;
         // this._cube.rotation.y = time;
