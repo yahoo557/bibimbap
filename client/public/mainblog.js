@@ -1,16 +1,28 @@
 import * as THREE from './three.js-master/build/three.module.js';
 import { OrbitControls } from "./three.js-master/examples/jsm/controls/OrbitControls.js"
+import { GLTFLoader } from './three.js-master/examples/jsm/loaders/GLTFLoader.js';
+import {PointerLockControls} from "./three.js-master/examples/jsm/controls/PointerLockControls.js";
+
+// const objects = [];
+
+// let prevTime = performance.now();
+// const velocity = new THREE.Vector3();
+// const direction = new THREE.Vector3();
+// const vertex = new THREE.Vector3();
+// const color = new THREE.Color();
 
 class App {
     //_로 시작하는 핃드, 메소드는 App 클래스 내에서만 쓰이는 private 필드, 메소드임
     //js에서는 필드, 메소드를 정의할 때 private 속성을 주는 기능이 없음 
     //_은 개발자들간의 약속
     //constructor은 클래스의 인스턴스 객체를 생성하고 초기화하는 메서드
+    
     constructor() {
         //div요소를 가져옴
         const divContainer = document.querySelector("#webgl-container");
         //divContainer를 클래스 필드로 지정하는 이유는 divContainer를 this._divContainer로 다른 메소드에서 참조하기 위함
         this._divContainer = divContainer;
+
 
         //Renderer 생성
         //생성 시 옵션을 줄 수 있음 antialias : 3차원 장면이 렌더링될 때 오브젝트에 계단 현상 없이 표현됨
@@ -31,7 +43,7 @@ class App {
         this._setupCamera(); //Camera객체를 구성하는 메소드 호출
         this._setupLight(); //Ligth 설정
         this._setupModel(); //3차원 Model 설정
-        this._setupControls();
+        // this._setupControls();
 
         //renderer랑 camera는 창 크기가 바뀔 때마다 그 크기에 맞게 재정의 되어야 함
         //resize이벤트에 resize메소드를 bind를 사용해서 지정 -> resize 안에서 this가 가리키는 객체가 이벤트객체가 아닌 이 앱 클래스의 객체가 되게 하기 위해
@@ -41,19 +53,51 @@ class App {
 
         //3차원 그래픽 장면을 만들어주는 메소드
         requestAnimationFrame(this.render.bind(this));
+        
     }
 
-    _setupControls() {
-        //OrbitControls객체를 생성하려면 camera객체와 마우스 이벤트를 받는 dom요소가 필요
-        new OrbitControls(this._camera, this._divContainer);
-    }
+    // _setupControls() {
+    //     //OrbitControls객체를 생성하려면 camera객체와 마우스 이벤트를 받는 dom요소가 필요
+    //     new OrbitControls(this._camera, this._divContainer);
+    // }
 
     _setupModel() {
-        //카메라 객체와 마우스 이벤트를 받는 dom요소가 필요함
-        new OrbitControls(this._camera, this._divContainer);
+        //정육면체 형상을 정의
+        //인자(가로, 세로, 깊이)
+        const geometry = new THREE.BoxGeometry(7, 4, 10);
+        
+        const fillmaterial = new THREE.MeshPhongMaterial({color: 0xffffff, side: THREE.BackSide});
+        const cube = new THREE.Mesh(geometry, fillmaterial);
+
+        const group = new THREE.Group()
+
+        group.add(cube);
+        // objects.push( cube );
+
+        this._scene.add(group);
+        this._cube = group;
+        const gltfloader = new GLTFLoader();
+        const url = './sumin_object/Stand_light.glb';
+        
+        gltfloader.load(
+            url,
+            ( gltf ) => {
+                const root = gltf.scene;
+                group.add( root ); //group 없으면 _scene.add( root );
+            }
+        );
+
     }
 
+
     _setupCamera() {
+        // let raycaster;
+
+        // let moveForward = false;
+        // let moveBackward = false;
+        // let moveLeft = false;
+        // let moveRight = false;
+        
         //three.js가 3차원 영역을 출력할 부분의 가로, 세로
         const width = this._divContainer.clientWidth;
         const height = this._divContainer.clientHeight;
@@ -68,7 +112,22 @@ class App {
         camera.position.z = 6;
         //생성된 camera 객체를 다른 메소드에서 사용할 수 있도록
         this._camera = camera;
+        const controls = new PointerLockControls(this._camera, this._divContainer);
+
+        document.body.addEventListener( 'click', function() {
+            controls.lock();
+            // animate();
+        })
+
+        controls.addEventListener( 'lock', function () {
+
+        } );
+
+        controls.addEventListener( 'unlock', function () {
+
+        } );
     }
+
     _setupLight() {
         //광원의 색상
         const color = 0xffffff;
@@ -84,29 +143,7 @@ class App {
         this._scene.add(rightlight);
         this._scene.add(leftlight);
     }
-    // 파란색 계열의 정육면제 mesh를 생성
-    _setupModel() {
-        //정육면체 형상을 정의
-        //인자(가로, 세로, 깊이)
-        const geometry = new THREE.BoxGeometry(7, 4, 10);
-        
-        const fillmaterial = new THREE.MeshPhongMaterial({color: 0xffffff, side: THREE.BackSide});
-        const cube = new THREE.Mesh(geometry, fillmaterial);
-
-        // const lineMaterial = new THREE.LineBasicMaterial({color: 0xffff00});
-        // const line = new THREE.LineSegments(
-        //     new THREE.WireframeGeometry(geometry), lineMaterial
-        // );
-        const group = new THREE.Group()
-        // group.rotation.x = -1;
-        // group.rotation.z = 1;
-
-        group.add(cube);
-        // group.add(line);
-
-        this._scene.add(group);
-        this._cube = group;
-    }
+    
 
     //창크기가 변경될 때 호출되는 메소드
     resize() {
