@@ -77,7 +77,7 @@ class App {
         this._scene.add(group);
         this._cube = group;
         const gltfloader = new GLTFLoader();
-        const url = './sumin_object/Stand_light.glb';
+        const url = './object_files/Stand_light.glb';
         
         gltfloader.load(
             url,
