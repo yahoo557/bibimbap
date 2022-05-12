@@ -56,10 +56,10 @@ class App {
         
     }
 
-    // _setupControls() {
+    //_setupControls() {
     //     //OrbitControls객체를 생성하려면 camera객체와 마우스 이벤트를 받는 dom요소가 필요
     //     new OrbitControls(this._camera, this._divContainer);
-    // }
+    //}
 
     _setupModel() {
         //정육면체 형상을 정의
