@@ -181,15 +181,6 @@ class App {
           this._player.velocity = -this._player.jumpHeight;
         }
     }
-    ixMovementUpdate() {
-        this._player.velocity += this._player.gravity;
-        this._camera.position.y -= this._player.velocity;
-        
-        if(this._camera.position.y < this._player.height) {
-            this._camera.position.y = this._player.height;
-            this._player.jumps = false;
-        }
-      }
 
     //창크기가 변경될 때 호출되는 메소드
     resize() {
