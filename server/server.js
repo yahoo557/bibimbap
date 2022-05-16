@@ -4,16 +4,17 @@ const app = express();
 
 const path = require("path");
 const post = require("./router/post.js");
-const viewPost = require("./router/viewPost");
 const login = require("./router/login.js");
-const signup = require("./router/signup.js");
-const resetPassword = require("./router/resetPassword.js");
-const userInfo = require("./router/userInfo.js");
-const postList = require("./router/postList.js");
-
-app.use(express.json());
+const register = require("./router/register.js");
+const viewPost = require("./router/viewPost");
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'ejs');
 
 app.use("/static", express.static("static"));
+
+
+app.use("/register", register);
+app.use("/login", login);
 app.use("/post", post);
 app.use("/viewPost", viewPost);
 app.use("/login", login);

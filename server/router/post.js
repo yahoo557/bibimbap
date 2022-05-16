@@ -26,7 +26,7 @@ router.post('/', (req, res, next)=>{
      const obj = Object.keys(body)
     
     //parse 처리하니 잘나옴.
-    console.log(JSON.parse(obj).contents);
+    console.log(JSON.parse(obj).title);
     const query_text = 'INSERT INTO posts(title, body) VALUES($1, $2)';
     const data_arr = [
         JSON.parse(obj).title,
