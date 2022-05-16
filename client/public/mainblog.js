@@ -113,8 +113,7 @@ class App {
         const controls = new FirstPersonControls(this._camera, this._renderer.domElement);
         this._controls = controls;
         this._controls.movementSpeed = 0.000001; // 카메라의 이동 속도
-        this._controls.lookSpeed = 0.00000015; // 카메라의 look around 속도
-        this._controls.heightMax = 10;
+        this._controls.lookSpeed = 0.00000013; // 카메라의 look around 속도
 
         /*
         document.body.addEventListener( 'click', function() {
@@ -159,6 +158,9 @@ class App {
 
         //renderer의 크기를 설정
         this._renderer.setSize(width, height);
+
+        //컨트롤 창 크기 조절
+        this._controls.handleResize();
     }
     //time : 렌더링이 처음 시작된 이후에 경과된 값, 단위 : 밀리초
     //time 인자를 장면의 애니메이션에 이용할 수 있음
