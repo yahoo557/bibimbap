@@ -1,0 +1,35 @@
+body {
+    min-width: 400px;
+}
+
+h2 {
+    margin: 2px;
+}
+
+button {
+    border: none;
+    width: 85px;
+    height: 20px;
+}
+
+#editBtn {
+    border-radius: 15px 0px 0px 15px;
+    background-color: #D8FF80;
+}
+
+#delBtn {
+    border-radius: 0px 15px 15px 0px;
+    background-color: #FF6C6C;
+}
+
+.element {
+    display: flex;
+}
+
+.postDetail {
+    flex-grow: 1;
+}
+
+.btnsContainer {
+    text-align: right;
+}

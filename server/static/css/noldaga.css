@@ -15,3 +15,7 @@
 .headerLogo {
     margin: 10px;
 }
+
+button {
+    cursor: pointer;
+}
