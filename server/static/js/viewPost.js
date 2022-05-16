@@ -9,7 +9,6 @@ let qViewer = new Quill("#viewer", {
 function setData(str) {
     str = str.replace(/\r/gi, '\\r').replace(/\n/gi, '\\n').replace(/\t/gi, '\\t').replace(/\f/gi, '\\f');
     const obj = JSON.parse(str);
-
     const titleDiv = document.getElementById("title");
     const createdTimeDiv = document.getElementById("createdTime");
     titleDiv.innerText = obj.title;
