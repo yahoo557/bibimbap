@@ -1,8 +1,7 @@
 import * as THREE from './three.js-master/build/three.module.js';
 import { OrbitControls } from "./three.js-master/examples/jsm/controls/OrbitControls.js"
 import { GLTFLoader } from './three.js-master/examples/jsm/loaders/GLTFLoader.js';
-//import { PointerLockControls } from "./three.js-master/examples/jsm/controls/PointerLockControls.js";
-import { FirstPersonControls } from './three.js-master/examples/jsm/controls/FirstPersonControls.js';
+import { PointerLockControls } from "./three.js-master/examples/jsm/controls/PointerLockControls.js";
 
 
 // const objects = [];
@@ -109,13 +108,8 @@ class App {
         this._camera.position.set(0, -1, 0);
         this._camera.lookAt(0, -1, 0);
 
-        //const controls = new PointerLockControls(this._camera, this._divContainer);
-        const controls = new FirstPersonControls(this._camera, this._renderer.domElement);
-        this._controls = controls;
-        this._controls.movementSpeed = 0.000001; // 카메라의 이동 속도
-        this._controls.lookSpeed = 0.00000013; // 카메라의 look around 속도
-
-        /*
+        const controls = new PointerLockControls(this._camera, this._divContainer);
+        
         document.body.addEventListener( 'click', function() {
             controls.lock();
             // animate();
@@ -127,7 +121,7 @@ class App {
 
         controls.addEventListener( 'unlock', function () {
 
-        } );*/
+        } );
     }
 
     _setupLight() {
@@ -158,9 +152,6 @@ class App {
 
         //renderer의 크기를 설정
         this._renderer.setSize(width, height);
-
-        //컨트롤 창 크기 조절
-        this._controls.handleResize();
     }
     //time : 렌더링이 처음 시작된 이후에 경과된 값, 단위 : 밀리초
     //time 인자를 장면의 애니메이션에 이용할 수 있음
@@ -173,7 +164,6 @@ class App {
         //render 메소드가 무한으로 반복해서 호출이 됨
         //적당한 시점에 최대한 빠르게 툴을 해준다.
         requestAnimationFrame(this.render.bind(this));
-        this._controls.update(time);
     }
     update(time) {
         //밀리세컨단위를 세컨단위로 바꿈
