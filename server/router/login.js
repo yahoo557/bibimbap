@@ -6,12 +6,6 @@ const Query = require('pg').Query // DB 쿼리
 const bcrypt = require("bcrypt"); // 비밀번호 암호화
 
 //HTTP CORS를 위한 미들웨어
-const cors = require("cors");
-const corsOption = {
-  origin : "http://localhost:3000/",
-  optionsSuccessStatus: 200
-}
-router.use(cors());
 
 const client = require("../config/db.config"); // DB 연결
 

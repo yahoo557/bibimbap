@@ -3,10 +3,13 @@ const express = require("express");
 const app = express();
 
 const path = require("path");
-const post = require("./router/post.js");
-const login = require("./router/login.js");
 const register = require("./router/register.js");
+const login = require("./router/login.js");
+const post = require("./router/post.js");
 const viewPost = require("./router/viewPost");
+const resetPassword = require("./router/resetPassword");
+const userInfo = require("./router/userInfo");
+const postList = require("./router/postList.js");
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 
@@ -17,8 +20,6 @@ app.use("/register", register);
 app.use("/login", login);
 app.use("/post", post);
 app.use("/viewPost", viewPost);
-app.use("/login", login);
-app.use("/signup", signup);
 app.use("/resetPassword", resetPassword);
 app.use("/userInfo", userInfo);
 app.use("/postList", postList);

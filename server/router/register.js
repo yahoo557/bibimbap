@@ -9,10 +9,6 @@ const client = require("../config/db.config");
 
 
 router.use(bodyparser.urlencoded({ extended: false }));
-const e = require("cors");
-// router.get("/", (req, res) => {
-//     res.sendFile('/Users/seungbaek/Desktop/Graduation_work/server/public/signup.html');
-// });
 
 
 
