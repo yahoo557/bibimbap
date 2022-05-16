@@ -111,7 +111,7 @@ class App {
         const controls = new PointerLockControls(this._camera, this._divContainer);
         
         document.body.addEventListener( 'click', function() {
-            controls.lock();
+            // controls.lock();
             // animate();
         })
 
