@@ -1,26 +1,17 @@
 const express = require("express");
 const router = express.Router();
-// const Quill = require("quill");
 const { Pool, Client } = require('pg')
 const Query = require('pg').Query
+const path = require('path');
 
 const client = new Client({
-    user: 'seungbaek',
+    user: 'bibimbap',
     host: '127.0.0.1',
     database: 'noldaga',
-    password: '111111',
+    password: 'bi1234',
     port: 5432,
 });
 client.connect();
-
-
-const bodyparser = require("body-parser");
-
-router.use(bodyparser.urlencoded({ extended: false }));
-
-const path = require('path');
-const e = require("express");
-
 
 router.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, '../public', 'post.html'));
@@ -35,8 +26,8 @@ router.post('/', (req, res, next)=>{
      const obj = Object.keys(body)
     
     //parse 처리하니 잘나옴.
-    console.log(JSON.parse(obj).title);
-    const query_text = 'INSERT INTO post(title, body) VALUES($1, $2)';
+    console.log(JSON.parse(obj).contents);
+    const query_text = 'INSERT INTO posts(title, body) VALUES($1, $2)';
     const data_arr = [
         JSON.parse(obj).title,
         obj

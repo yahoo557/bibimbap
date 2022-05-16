@@ -6,3 +6,12 @@
 * {
     font-family: Cafe24SsurroundAir;
 }
+
+.btns {
+    text-align: center;
+    cursor: pointer;
+}
+
+.headerLogo {
+    margin: 10px;
+}
