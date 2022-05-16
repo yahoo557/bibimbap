@@ -1,26 +1,17 @@
 const express = require("express");
 const router = express.Router();
-// const Quill = require("quill");
 const { Pool, Client } = require('pg')
 const Query = require('pg').Query
+const path = require('path');
 
 const client = new Client({
-    user: 'seungbaek',
+    user: 'bibimbap',
     host: '127.0.0.1',
     database: 'noldaga',
-    password: '111111',
+    password: 'bi1234',
     port: 5432,
 });
 client.connect();
-
-
-const bodyparser = require("body-parser");
-
-router.use(bodyparser.urlencoded({ extended: false }));
-
-const path = require('path');
-const e = require("express");
-
 
 router.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, '../public', 'post.html'));

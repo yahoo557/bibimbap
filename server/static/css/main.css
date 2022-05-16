@@ -84,6 +84,7 @@ body {
 #blogList {
     display: flex;
     flex-flow: row wrap;
+    justify-content: space-evenly;
 }
 
 #article {
@@ -92,16 +93,15 @@ body {
     overflow-y: auto;
 }
 
+.blogItem {
+    margin: 3px;
+}
+
 .sidebarContainer {
     display: flex;
     flex-flow: column wrap;
     justify-content: space-evenly;
     align-items: center;
-}
-
-.btns {
-    text-align: center;
-    cursor: pointer;
 }
 
 .smallText {
