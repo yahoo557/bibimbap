@@ -73,7 +73,7 @@ function setupModel() {
 
     scene.add(group);
     const gltfloader = new GLTFLoader();
-    const url = '../../../object_files/Stand_light.glb';
+    const url = '../../object_files/Stand_light.glb';
     
     gltfloader.load(
         url,
