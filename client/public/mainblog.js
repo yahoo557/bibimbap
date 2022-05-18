@@ -241,6 +241,7 @@ function setupLight() {
     // objParentTransform.add(leftlight);
     // objParentTransform.add(rightlight);
 }
+
     
 
     //창크기가 변경될 때 호출되는 메소드
