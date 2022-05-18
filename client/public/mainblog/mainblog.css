@@ -119,6 +119,7 @@ body {
     display: inline-block;
     position: relative;
     top: 25vh;
+    left: 0vh;
 
     font-size: 5vh;
     background-color: var(--button-orange);
@@ -130,6 +131,7 @@ body {
     display: inline-block;
     position: relative;
     top: 28vh;
+    left: 0vh;
 
     font-size: 4.5vh;
     background-color: var(--button-green);
@@ -141,6 +143,7 @@ body {
     display: inline-block;
     position: relative;
     top: 31vh;
+    left: 0vh;
 
     font-size: 5vh;
     background-color: var(--button-blue);
