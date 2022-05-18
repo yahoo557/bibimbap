@@ -1,31 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
-const { Pool, Client } = require('pg');
-const Query = require('pg').Query;
-
-const client = new Client({
-    user: 'bibimbap',
-    host: '127.0.0.1',
-    database: 'noldaga',
-    password: 'bi1234',
-    port: 5432,
-});
-client.connect();
-
-
-
-const { Pool, Client } = require('pg')
+const client = require("../config/db.config"); // DB 연결
 const Query = require('pg').Query
 
-const client = new Client({
-    user: 'seungbaek',
-    host: '127.0.0.1',
-    database: 'noldaga',
-    password: '111111',
-    port: 5432,
-});
-client.connect();
 
 
 
