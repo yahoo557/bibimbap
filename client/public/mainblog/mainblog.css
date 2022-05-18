@@ -184,8 +184,10 @@ body {
 }
 /* 오브젝트 리스트 */
 .object-list {
-    display: inline-block;
+    display: grid;
+    grid-template-columns: 1fr 2fr 2fr 2fr 2fr 1fr;
     position: relative;
+    margin: 0 5vh 0 5vh;
     top: 70vh;
     z-index: 10000;
 
@@ -194,34 +196,18 @@ body {
     background-color: var(--light-blue);
 
     text-align: center;
+    align-items: center;
 }
-/* 오브젝트 이미지, 정보 */
-.object-select {
-    display: inline-block;
-    margin: 0 3vh 0 3vh;
+/* 이전 목록, 다음 목록 이동 버튼 */
+.bi-caret-left-fill, .bi-caret-right-fill {
+    position: relative;
+    font-size: 6vh;
 }
 /* 오브젝트 이미지 */
-.thumbnail {
-    display: inline-block;
+.object-thumbnail {
+    display: block;
     position: relative;
-    width: 26vh;
-    height: 26vh;
-}
-/* 오브젝트 정보 */
-.object-info {
-    display: inline-block;
-    position: relative;
-    bottom: 11vh;
-
-    text-align: center;
-    font-family: 'Cafe24SsurroundAir';
-}
-/* 오브젝트 이름 */
-.object-name {
-    font-size: 2.5vh;
-}
-/* 오브젝트 크기 */
-.object-size {
-    margin-top: 1.5vh;
-    font-size: 2vh;
+    width: 25vh;
+    height: 25vh;
+    margin: 0 auto;
 }
