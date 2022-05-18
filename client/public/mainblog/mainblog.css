@@ -118,7 +118,7 @@ body {
 .bi-box {
     display: inline-block;
     position: relative;
-    top: 26vh;
+    top: 25vh;
 
     font-size: 5vh;
     background-color: var(--button-orange);
@@ -129,7 +129,7 @@ body {
 .bi-tools {
     display: inline-block;
     position: relative;
-    top: 29vh;
+    top: 28vh;
 
     font-size: 4.5vh;
     background-color: var(--button-green);
@@ -140,7 +140,7 @@ body {
 .bi-file-text {
     display: inline-block;
     position: relative;
-    top: 32vh;
+    top: 31vh;
 
     font-size: 5vh;
     background-color: var(--button-blue);
@@ -150,7 +150,7 @@ body {
 /* 하단 메뉴 */
 .bottom-menu {
     position: relative;
-    top: 41vh;
+    top: 42vh;
 }
 .bi-search, .bi-shuffle {
     font-size: 3vh;
