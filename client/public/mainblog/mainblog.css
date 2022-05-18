@@ -1,0 +1,227 @@
+/* 색 변수 지정 */
+:root {
+    --main-color: #A3C2F1;
+    --light-blue: #EFF6FF;
+    --logout-button: #D8FF80;
+    --blog-info: #D48166;
+    --button-orange: #DEB992;
+    --button-green: #A7BC5B;
+    --button-blue: #7DA2A9;
+}
+/* 폰트 */
+@font-face {
+    font-family: 'Cafe24SsurroundAir';
+    src: url('../../fonts/Cafe24SsurroundAir.ttf') format('truetype');
+}
+
+* {
+    outline: none;
+    margin: 0;
+}
+
+body {
+    /*혹시 스크롤바가 생겨도 보이지 않게 함*/
+    overflow: hidden;
+}
+
+#webgl-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* ------------------------------------------------------ 메뉴 바 --------------------------------------------------------*/
+/* 메뉴 바 버튼 */
+.menu-button {
+    position: fixed;
+    top: 3vh;
+    left: 4vh;
+    z-index: 10000;
+
+    width: 8vh;
+    height: 8vh;
+    background-color: white;
+    border-radius: 50%; /* 메뉴 아이콘 둥글게 */
+    
+    text-align: center;
+    align-items: center;
+
+    cursor: pointer; /* 마우스 커서 모양 */
+}
+/* 메뉴 바 열기 아이콘*/
+.bi-list{
+    display: block;
+    font-size: 5.5vh;
+}
+/* 메뉴 바 닫기 아이콘 */
+.bi-x {
+    display: none;
+    font-size: 5.5vh;
+}
+/* 메뉴 바 프레임 */
+.menu-bar {
+    position: fixed;
+    top: 0;
+    left: -16vh;
+    z-index: 9000;
+
+    width: 16vh;
+    height: 100%;
+    background-color: var(--main-color);
+
+    transition: all .35s;
+    text-align: center;
+}
+/* 로고 */
+.logo-icon {
+    display: inline-block;
+    position: relative;
+    top: 13vh;
+
+    width: 11.3vh;
+    height: 11.3vh;
+}
+/* 로그아웃 버튼 */
+.logout-button {
+    display: inline-block;
+    position: relative;
+    top: 15.5vh;
+
+    background-color: var(--logout-button);
+    padding: 0.7vh 1.8vh 0.7vh 1.8vh;
+    border-radius: 3vh;
+
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 2.2vh;
+}
+/* 블로그 정보 */
+.blog-info {
+    display: inline-block;
+    position: relative;
+    top: 18vh;
+
+    background-color: white;
+    padding: 1vh 2vh 1vh 2vh;
+    border-radius: 1vh;
+
+    font-family: 'Cafe24SsurroundAir';
+    color: var(--blog-info);
+}
+.blog-name {
+    font-size: 2.5vh;
+}
+.blog-owner {
+    margin-top: 1vh;
+    font-size: 2vh;
+}
+/* 오브젝트 추가 버튼 */
+.bi-box {
+    display: inline-block;
+    position: relative;
+    top: 25vh;
+    left: 0vh;
+
+    font-size: 5vh;
+    background-color: var(--button-orange);
+    padding: 1vh 2.2vh 1.5vh 2.2vh;
+    border-radius: 50%;
+}
+/* 편집모드 버튼 */
+.bi-tools {
+    display: inline-block;
+    position: relative;
+    top: 28vh;
+    left: 0vh;
+
+    font-size: 4.5vh;
+    background-color: var(--button-green);
+    padding: 1.2vh 2.4vh 1.5vh 2.2vh;
+    border-radius: 50%;
+}
+/* 게시물 리스트 버튼 */
+.bi-file-text {
+    display: inline-block;
+    position: relative;
+    top: 31vh;
+    left: 0vh;
+
+    font-size: 5vh;
+    background-color: var(--button-blue);
+    padding: 1vh 2.2vh 1.5vh 2.2vh;
+    border-radius: 50%;
+}
+/* 하단 메뉴 */
+.bottom-menu {
+    position: relative;
+    top: 42vh;
+}
+.bi-search, .bi-shuffle {
+    font-size: 3vh;
+    margin: 0.5vh;
+    padding: 0.6vh 1.2vh 0.8vh 1.2vh;
+    border-radius: 50%;
+}
+/* 검색 버튼 */
+.bi-search {
+    background-color: var(--button-orange);
+}
+/* 랜덤 방문 버튼 */
+.bi-shuffle {
+    background-color: var(--button-blue);
+}
+
+/* ------------------------------------------------ 오브젝트 추가 ------------------------------------------------------*/
+.object-add {
+    display: none;
+    margin-left: 16vh; /* 메뉴 바 공간만큼 */
+
+    text-align: center;
+    align-items: center;
+
+    cursor: pointer; /* 마우스 커서 모양 */
+}
+/* 오브젝트 리스트 */
+.object-list {
+    display: inline-block;
+    position: relative;
+    top: 70vh;
+    z-index: 10000;
+
+    width: 88vw;
+    height: 27vh;
+    background-color: var(--light-blue);
+
+    text-align: center;
+}
+/* 오브젝트 이미지, 정보 */
+.object-select {
+    display: inline-block;
+    margin: 0 3vh 0 3vh;
+}
+/* 오브젝트 이미지 */
+.thumbnail {
+    display: inline-block;
+    position: relative;
+    width: 26vh;
+    height: 26vh;
+}
+/* 오브젝트 정보 */
+.object-info {
+    display: inline-block;
+    position: relative;
+    bottom: 11vh;
+
+    text-align: center;
+    font-family: 'Cafe24SsurroundAir';
+}
+/* 오브젝트 이름 */
+.object-name {
+    font-size: 2.5vh;
+}
+/* 오브젝트 크기 */
+.object-size {
+    margin-top: 1.5vh;
+    font-size: 2vh;
+}

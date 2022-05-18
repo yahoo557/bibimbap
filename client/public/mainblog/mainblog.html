@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="mainblog.css">
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "../three.js-master/build/three.module.js"
+            }
+        }
+    </script>
+    <!--js파일이 모듈타입으로 추가됨 -> three.js파일을 모듈로 받기 위해-->
+    <!--defer : 이 페이지가 모두 로딩된 이후에 js파일을 실행-->
+    <script type="module" src="mainblog.js" defer></script>
+
+    <!-- bootstrap icon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+</head>
+<body>
+    <!-- three.js 공간 -->
+    <div id="webgl-container"></div>
+    <!-- 메뉴 열고 닫기 버튼 -->
+    <div class="menu-button">
+        <i class="bi bi-list" onclick="showMenu()"></i>
+        <i class="bi bi-x" onclick="closeMenu()"></i>
+    </div>
+    <!-- 메뉴바 -->
+    <div class="menu-bar">
+        <img class="logo-icon" src="../../images/logo.png">
+        <div class="logout-button">로그아웃</div>
+        <div class="blog-info">
+            <div class="blog-name">블로그명</div>
+            <div class="blog-owner">사용자</div>
+        </div>
+        <i class="bi bi-box" onclick="objectAdd()"></i> <!-- 오브젝트 추가 -->
+        <i class="bi bi-tools" onclick="editMode()"></i> <!-- 편집 모드-->
+        <i class="bi bi-file-text" onclick="postList()"></i> <!-- 게시물 리스트 -->
+        <div class="bottom-menu">
+            <i class="bi bi-search"></i> <!-- 검색-->
+            <i class="bi bi-shuffle"></i> <!-- 랜덤 방문 -->
+        </div>
+    </div>
+    <!-- 오브젝트 추가 -->
+    <div class="object-add">
+        <div class="object-list">
+            <div class="object-select">
+                <img class="thumbnail" src="../../object_thumbnail/Old_Bicycle.png">
+                <div class="object-info">
+                    <div class="object-name">자전거</div>
+                    <div class="object-size">x*y*z</div>
+                </div>
+            </div>
+            <div class="object-select">
+                <img class="thumbnail" src="../../object_thumbnail/Plants_on_table.png">
+                <div class="object-info">
+                    <div class="object-name">화분</div>
+                    <div class="object-size">x*y*z</div>
+                </div>
+            </div>
+            <div class="object-select">
+                <img class="thumbnail" src="../../object_thumbnail/Stand_light.png">
+                <div class="object-info">
+                    <div class="object-name">스탠드 조명</div>
+                    <div class="object-size">x*y*z</div>
+                </div>
+            </div>
+            <div class="object-select">
+                <img class="thumbnail" src="../../object_thumbnail/angle_clock.png">
+                <div class="object-info">
+                    <div class="object-name">시계</div>
+                    <div class="object-size">x*y*z</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="menubar.js"></script>
+</body>
+</html>
