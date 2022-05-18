@@ -229,12 +229,15 @@ function setupLight() {
     //광원 생성
     const leftlight = new THREE.DirectionalLight(color, intensity);
     const rightlight = new THREE.DirectionalLight(color, intensity);
+    const underlight = new THREE.DirectionalLight(color, 0.7);
     //위치 잡아줌
     leftlight.position.set(-10, 2.5, 11);
     rightlight.position.set(3.5, 2.5, -3);
+    underlight.position.set(0, -2.5, 0);
     //_scene객체에 넣어줌
     scene.add(rightlight);
     scene.add(leftlight);
+    scene.add(underlight);
     // objParentTransform.add(leftlight);
     // objParentTransform.add(rightlight);
 }
