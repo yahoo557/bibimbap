@@ -176,6 +176,7 @@ body {
 .object-add {
     display: none;
     z-index: 10000;
+
     margin-left: 16vh; /* 메뉴 바 공간만큼 */
 
     text-align: center;
@@ -190,6 +191,7 @@ body {
     position: relative;
     margin: 0 5vh 0 5vh;
     top: 70vh;
+
 
     width: 88vw;
     height: 27vh;

@@ -21,6 +21,7 @@ const blank = '../../object_thumbnail/blank.png';
 const editIcon = document.getElementsByClassName("bi-tools");
 const editView = document.getElementsByClassName("edit-mode");
 
+
 /* 게시물 리스트 */
 const listIcon = document.getElementsByClassName("bi-file-text");
 
@@ -44,8 +45,10 @@ const closeMenu = () => {
     listIcon[0].style.left = "0vh"; // 게시물 리스트 버튼 비활성화
 }
 
+
 let page = 0; // 현재 페이지
 const maxObject = 4; // 한 페이지에 최대로 배치될 수 있는 썸네일 수
+
 // 오브젝트 추가
 const objectAdd = () => {
     if(addIcon[0].style.left == "0vh") {
@@ -60,6 +63,7 @@ const objectAdd = () => {
         if(thumnailsUrl.length <= maxObject) next[0].style.opacity = "30%"; // 다음 버튼 비활성화
         page = 0; // 첫 페이지
         objectList(); // 오브젝트 이미지 로드
+
     }
     else {
         addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
@@ -97,6 +101,7 @@ const objectList = () => {
         else {/* 더이상 오브젝트가 없는 경우 */
             objectThumnail[i].src = blank;
         }
+
     }
 }
 
@@ -114,6 +119,7 @@ const editMode = () => {
         editIcon[0].style.left = "0vh"; // 편집 모드 버튼 비활성화
         editView[0].style.display = "none"; // 편집 모드 화면 숨기기
     }
+
 }
 
 // 게시물 리스트
@@ -129,4 +135,5 @@ const postList = () => {
     else {
         listIcon[0].style.left = "0vh"; // 게시물 리스트 버튼 비활성화
     }
+
 }

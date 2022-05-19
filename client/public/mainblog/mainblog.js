@@ -74,6 +74,7 @@ function setupModel() {
     scene.add(group);
     const gltfloader = new GLTFLoader();
     const url = '../../object_files/Old_Bicycle.glb';
+
     
     gltfloader.load(
         url,
@@ -94,6 +95,7 @@ function setupModel() {
             group.add( objectRange );
             objectRange.position.set( 1, -1.9, -3 );
             objectRange.rotation.x = - Math.PI / 2;
+
         }
     );
 
@@ -253,9 +255,9 @@ function setupLight() {
     // objParentTransform.add(leftlight);
     // objParentTransform.add(rightlight);
 }
-    
 
 //창크기가 변경될 때 호출되는 메소드
+
 function resize () {
     //this._divContainer의 크기를 얻어옴
     const width = divContainer.clientWidth;
