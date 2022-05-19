@@ -26,7 +26,7 @@
         <i class="bi bi-x" onclick="closeMenu()"></i>
     </div>
     <!-- 메뉴바 -->
-    <div class="menu-bar">
+    <nav class="menu-bar">
         <img class="logo-icon" src="../../images/logo.png">
         <div class="logout-button">로그아웃</div>
         <div class="blog-info">
@@ -40,9 +40,9 @@
             <i class="bi bi-search"></i> <!-- 검색-->
             <i class="bi bi-shuffle"></i> <!-- 랜덤 방문 -->
         </div>
-    </div>
+    </nav>
     <!-- 오브젝트 추가 -->
-    <div class="object-add">
+    <section class="object-add">
         <div class="object-list"> <!-- 오브젝트 선택 리스트 -->
             <i class="bi bi-caret-left-fill" onclick="prePage()"></i> <!-- 이전 목록으로 -->
             <img class="object-thumbnail ob1" src="">
@@ -51,7 +51,14 @@
             <img class="object-thumbnail ob4" src="">
             <i class="bi bi-caret-right-fill"  onclick="nextPage()"></i> <!-- 다음 목록으로 -->
         </div>
-    </div>
+    </section>
+    <!-- 편집 모드 -->
+    <section class="edit-mode">
+        <div class="capture-button"> <!-- 썸네일 촬영 버튼 -->
+            <i class="bi bi-camera-fill"></i>
+            <div class="capture-text">썸네일 촬영하기</div>
+        </div>
+    </section>
     
     <script src="menubar.js"></script>
 </body>

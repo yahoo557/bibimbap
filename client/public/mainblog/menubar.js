@@ -19,6 +19,7 @@ const blank = '../../object_thumbnail/blank.png';
 
 /* 편집 모드 */
 const editIcon = document.getElementsByClassName("bi-tools");
+const editView = document.getElementsByClassName("edit-mode");
 
 /* 게시물 리스트 */
 const listIcon = document.getElementsByClassName("bi-file-text");
@@ -50,6 +51,11 @@ const objectAdd = () => {
     if(addIcon[0].style.left == "0vh") {
         addIcon[0].style.left = "15vh"; // 오브젝트 추가 버튼 활성화
         addView[0].style.display = "block"; // 오브젝트 추가 화면 보이기
+
+        editIcon[0].style.left = "0vh"; // 편집 모드 버튼 비활성화
+        editView[0].style.display = "none"; // 편집 모드 화면 숨기기
+        listIcon[0].style.left = "0vh"; // 게시물 리스트 버튼 비활성화
+
         pre[0].style.opacity = "30%"; // 이전 버튼 비활성화
         if(thumnailsUrl.length <= maxObject) next[0].style.opacity = "30%"; // 다음 버튼 비활성화
         page = 0; // 첫 페이지
@@ -96,16 +102,31 @@ const objectList = () => {
 
 // 편집 모드
 const editMode = () => {
-    if(editIcon[0].style.left == "0vh")
+    if(editIcon[0].style.left == "0vh") {
         editIcon[0].style.left = "15vh"; // 편집 모드 버튼 활성화
-    else
+        editView[0].style.display = "block"; // 편집 모드 화면 보이기
+
+        addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
+        addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
+        listIcon[0].style.left = "0vh"; // 게시물 리스트 버튼 비활성화
+    }
+    else {
         editIcon[0].style.left = "0vh"; // 편집 모드 버튼 비활성화
+        editView[0].style.display = "none"; // 편집 모드 화면 숨기기
+    }
 }
 
 // 게시물 리스트
 const postList = () => {
-    if(listIcon[0].style.left == "0vh")
+    if(listIcon[0].style.left == "0vh") {
         listIcon[0].style.left = "15vh"; // 게시물 리스트 버튼 활성화
-    else
+
+        addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
+        addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
+        editIcon[0].style.left = "0vh"; // 편집 모드 버튼 비활성화
+        editView[0].style.display = "none"; // 편집 모드 화면 숨기기
+    }
+    else {
         listIcon[0].style.left = "0vh"; // 게시물 리스트 버튼 비활성화
+    }
 }

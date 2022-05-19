@@ -88,7 +88,7 @@ function setupModel() {
             const objectSize = boundingBox.getSize(new THREE.Vector3()); // 바운딩 박스 사이즈 정보
             
             const rangeGeometry = new THREE.PlaneGeometry(objectSize.x, objectSize.z);
-            const rangeMaterial = new THREE.MeshBasicMaterial( {color: "#4a4a4a"} );
+            const rangeMaterial = new THREE.MeshBasicMaterial( {color: "#858585"} );
             const objectRange = new THREE.Mesh( rangeGeometry, rangeMaterial );
 
             group.add( objectRange );
