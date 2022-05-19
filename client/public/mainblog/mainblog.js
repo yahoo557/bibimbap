@@ -1,8 +1,45 @@
 import * as THREE from '../three.js-master/build/three.module.js';
 import { GLTFLoader } from '../three.js-master/examples/jsm/loaders/GLTFLoader.js';
 import { PointerLockControls } from "../three.js-master/examples/jsm/controls/PointerLockControls.js";
+import { DragControls } from "../three.js-master/examples/jsm/controls/DragControls.js";
+
+// 오브젝트 id : 오브젝트 파일 경로
+const objectUrl = {'ob1': '../../object_files/Old_Bicycle.glb', 'ob2': '../../object_files/Plants_on_table.gltf', 'ob3': '../../object_files/Stand_light.glb'};
+
+/* 배치하고 싶은 오브젝트 선택 시 */
+const selectObject = document.getElementsByClassName("object-thumbnail"); // 오브젝트 썸네일
+//const menuButton = document.getElementsByClassName("menu-button"); // 메뉴 버튼
+const cancleButton = document.getElementsByClassName("select-cancle"); // 취소 버튼
+const addIcon = document.getElementsByClassName("bi-box"); // 오브젝트 추가 버튼
+const addView = document.getElementsByClassName("object-add"); // 오브젝트 추가 기능
+
+window.onload = function () {
+    for(let i = 0; i < 4; i++) {
+        selectObject[i].addEventListener( 'click', function() {
+            const key = selectObject[i].classList.item(1); // 오브젝트 아이디
+            const url = objectUrl[key]; // 오브젝트 url
+            if(objectUrl[key])
+                assignObject( url );
+        })
+    }
+    //menuButton[0].onclick = cancle;
+    cancleButton[0].onclick = cancle;
+}
+function cancle() { // 오브젝트 추가하기 비활성화
+    selectRemove();
+    addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
+    addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
+}
+function selectRemove() { // 이전에 선택한 오브젝트 제거
+    const allChildren = selectGroup.children;
+    const lastObject = [allChildren[allChildren.length - 1], allChildren[allChildren.length - 2]];
+    selectGroup.remove(lastObject[0]);
+    selectGroup.remove(lastObject[1]);
+}
 
 let camera;
+const group = new THREE.Group();
+const selectGroup = new THREE.Group();
 const Constants = {
     "Camera": {
         "FOV": 50,
@@ -24,7 +61,6 @@ let prevTime = performance.now();
 //div요소를 가져옴
 const divContainer = document.querySelector("#webgl-container");
 //divContainer를 클래스 필드로 지정하는 이유는 divContainer를 this._divContainer로 다른 메소드에서 참조하기 위함
-
 
 //Renderer 생성
 //생성 시 옵션을 줄 수 있음 antialias : 3차원 장면이 렌더링될 때 오브젝트에 계단 현상 없이 표현됨
@@ -61,39 +97,63 @@ function setupModel() {
     const geometry = new THREE.BoxGeometry(7, 4, 10);
     
     const fillmaterial = new THREE.MeshPhongMaterial({color: 0xffffff, side: THREE.BackSide});
-    const cube = new THREE.Mesh(geometry, fillmaterial);
-    objParentTransform.push(cube);
-    const group = new THREE.Group()
+    const room = new THREE.Mesh(geometry, fillmaterial);
+    objParentTransform.push(room);
 
-    group.add(cube);
-
+    group.add(room);
     scene.add(group);
-    const gltfloader = new GLTFLoader();
-    const url = '../../object_files/Old_Bicycle.glb';
+}
 
+// 선택된 오브젝트
+function assignObject( url ) {
+    selectRemove(); // 이전에 선택한 오브젝트 삭제
+
+    const gltfloader = new GLTFLoader();
+    const dragObject = [];
     
     gltfloader.load(
         url,
         ( gltf ) => {
             const root = gltf.scene;
-            group.add( root ); //group 없으면 _scene.add( root );
+            selectGroup.add( root ); //group 없으면 _scene.add( root );
             objParentTransform.push( root );
             root.position.set( 1, -1.7, -3 ); //모델 위치 지정
 
-            // 오브젝트 배치할 때 아래에 배치 위치 표시되는 그림자?
+            // 오브젝트 배치할 때 아래에 위치 표시
             const boundingBox = new THREE.Box3().setFromObject( root ); // 모델의 바운딩 박스 생성
             const objectSize = boundingBox.getSize(new THREE.Vector3()); // 바운딩 박스 사이즈 정보
             
             const rangeGeometry = new THREE.PlaneGeometry(objectSize.x, objectSize.z);
-            const rangeMaterial = new THREE.MeshBasicMaterial( {color: "#858585"} );
+            const rangeMaterial = new THREE.MeshBasicMaterial({ color: "#858585" });
             const objectRange = new THREE.Mesh( rangeGeometry, rangeMaterial );
 
-            group.add( objectRange );
+            selectGroup.add( objectRange );
             objectRange.position.set( 1, -1.9, -3 );
             objectRange.rotation.x = - Math.PI / 2;
-
         }
     );
+    
+    scene.add(selectGroup);
+    renderer.render(scene, camera);
+    requestAnimationFrame(setupModel);
+
+    // 드래그 앱 드롭으로 오브젝트 옮기기
+    dragObject.push(selectGroup);
+    const dragControls = new DragControls( [... dragObject], camera, divContainer);
+    dragControls.addEventListener( 'dragstart', function ( event ) {
+
+        event.object.material.emissive.set( 0xaaaaaa );
+    
+    } );
+
+    dragControls.dragControls.addEventListener('drag', (event) => {
+        event.object.parent.position.copy(event.object.postion);
+        event.object.position.set(0, 0, 0);
+    });
+    
+    dragControls.addEventListener( 'dragend', function ( event ) {
+        event.object.material.emissive.set( 0x000000 );
+    } );
 }
 
 function setupCamera() {
@@ -108,6 +168,9 @@ function setupCamera() {
     raycaster = new THREE.Raycaster();
     
     divContainer.addEventListener( 'click', function() {
+        if(addView[0].style.display == "block") { // 오브젝트 배치 중일 때는 포인트 락 안 됨
+            return;
+        }
         controls.lock();
     })
 
@@ -167,7 +230,7 @@ function animate () {
     drawRay();
 
     requestAnimationFrame(animate);
-    renderer.render(scene, camera);      
+    renderer.render(scene, camera);
 }
 
 function drawRay() {
