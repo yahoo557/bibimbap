@@ -73,15 +73,27 @@ function setupModel() {
 
     scene.add(group);
     const gltfloader = new GLTFLoader();
-    const url = '../../object_files/Stand_light.glb';
+    const url = '../../object_files/Old_Bicycle.glb';
     
     gltfloader.load(
         url,
         ( gltf ) => {
             const root = gltf.scene;
             group.add( root ); //group 없으면 _scene.add( root );
-            objParentTransform.push(root);
-            gltf.scene.position.set(2, -2, -4); //모델 위치
+            objParentTransform.push( root );
+            root.position.set( 1, -1.7, -3 ); //모델 위치 지정
+
+            // 오브젝트 배치할 때 아래에 배치 위치 표시되는 그림자?
+            const boundingBox = new THREE.Box3().setFromObject( root ); // 모델의 바운딩 박스 생성
+            const objectSize = boundingBox.getSize(new THREE.Vector3()); // 바운딩 박스 사이즈 정보
+            
+            const rangeGeometry = new THREE.PlaneGeometry(objectSize.x, objectSize.z);
+            const rangeMaterial = new THREE.MeshBasicMaterial( {color: "#4a4a4a"} );
+            const objectRange = new THREE.Mesh( rangeGeometry, rangeMaterial );
+
+            group.add( objectRange );
+            objectRange.position.set( 1, -1.9, -3 );
+            objectRange.rotation.x = - Math.PI / 2;
         }
     );
 
