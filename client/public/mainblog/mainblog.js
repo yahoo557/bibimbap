@@ -36,8 +36,6 @@ renderer.setPixelRatio(window.devicePixelRatio);
 //renderer.domElement : canvas 타입의 dom객체
 divContainer.appendChild(renderer.domElement);
 
-
-
 const scene = new THREE.Scene();
 
 
@@ -56,8 +54,6 @@ animate();
 
 //3차원 그래픽 장면을 만들어주는 메소드
 // requestAnimationFrame(this.render.bind(this));
-
-
 
 function setupModel() {
     //정육면체 형상을 정의
@@ -98,20 +94,9 @@ function setupModel() {
 
         }
     );
-
 }
 
-
 function setupCamera() {
-    
-    // const width = this._divContainer.clientWidth;
-    // const height = this._divContainer.clientHeight;
-    // const camera = new THREE.PerspectiveCamera(
-    //     75,
-    //     width / height,
-    //     0.1,
-    //     100
-    // );
     camera = new THREE.PerspectiveCamera(75, 
         window.innerWidth / window.innerHeight, 0.1, 2000);
     
@@ -122,7 +107,7 @@ function setupCamera() {
 
     raycaster = new THREE.Raycaster();
     
-    document.body.addEventListener( 'click', function() {
+    divContainer.addEventListener( 'click', function() {
         controls.lock();
     })
 
@@ -173,16 +158,9 @@ function boolToInt(b) {
 
 
 function animate () {
-    
-
     const time = performance.now();
     const delta = ( time - prevTime ) / 20000;
     cameraMovement(delta);
-
-    //console.log(`${controls.isLocked}
-    //x : ${camera.position.x}
-    //y : ${camera.position.y}
-    //z : ${camera.position.z}`);
     
     prevTime = time;
 
@@ -257,7 +235,6 @@ function setupLight() {
 }
 
 //창크기가 변경될 때 호출되는 메소드
-
 function resize () {
     //this._divContainer의 크기를 얻어옴
     const width = divContainer.clientWidth;
