@@ -3,6 +3,7 @@ import { GLTFLoader } from '../three.js-master/examples/jsm/loaders/GLTFLoader.j
 import { PointerLockControls } from "../three.js-master/examples/jsm/controls/PointerLockControls.js";
 
 let camera;
+
 const Constants = {
     "Camera": {
         "FOV": 50,
@@ -29,12 +30,14 @@ const divContainer = document.querySelector("#webgl-container");
 //Renderer 생성
 //생성 시 옵션을 줄 수 있음 antialias : 3차원 장면이 렌더링될 때 오브젝트에 계단 현상 없이 표현됨
 const renderer = new THREE.WebGLRenderer({ antialias: true });
-
+const canvas = renderer.domElement;
 //장치 픽셀 비율을 설정, 캔버스가 흐려지는 것을 방지
 renderer.setPixelRatio(window.devicePixelRatio);
 //renderer.domElement를 divContainer에 자식으로 추가
 //renderer.domElement : canvas 타입의 dom객체
 divContainer.appendChild(renderer.domElement);
+
+
 
 
 
@@ -47,6 +50,12 @@ setupLight(); //Ligth 설정
 setupModel(); //3차원 Model 설정
 resize();
 animate();
+//제일 처음 기본 썸네일 저장
+//썸네일을 저장하기 전엔 항상 rendering을 해준 후에 해야 함
+render();
+  canvas.toBlob((blob) => {
+    saveBlob(blob, `screencapture-${ canvas.width }x${ canvas.height }.png`);
+  });
 // this._setupControls();
 
 //renderer랑 camera는 창 크기가 바뀔 때마다 그 크기에 맞게 재정의 되어야 함
@@ -188,8 +197,55 @@ function animate () {
 
     drawRay();
 
+    render();
     requestAnimationFrame(animate);
-    renderer.render(scene, camera);      
+          
+}
+// function thumbnailFilming () {
+//     render();
+//     canvas.toBlob((blob) => {
+//     saveBlob(blob, `screencapture-${ canvas.width }x${ canvas.height }.png`);
+    
+//     });    
+    
+//     // html2canvas(document.body).then(canvas => {
+//     //     document.body.appendChild(canvas);
+//     //     const link = document.createElement('a')
+//     //     link.download = 'filename.jpg'
+//     //     link.href = canvas.toDataURL()
+//     //     document.body.appendChild(link)
+//     //     link.click()
+//     // });
+//     // divContainer.toBlob((blob) => {
+
+//     //   saveBlob(blob, `screencapture-${divContainer.width}x${divContainer.height}.png`);
+//     // });    
+// }
+
+
+// 썸네일 촬영하기 버튼 구현
+const thumbnailButton = document.querySelector('#thumbnailButton');
+thumbnailButton.addEventListener('click', () => {
+    //thumbnail을 촬영하기 전엔 항상 rendering을 해주어야 함
+    render();
+    canvas.toBlob((blob) => {
+        saveBlob(blob, `screencapture-${ canvas.width }x${ canvas.height }.png`);
+    });
+});
+const saveBlob = (function() {
+    const a = document.createElement('a');
+    document.body.appendChild(a);
+    a.style.display = 'none';
+    return function saveData(blob, fileName) {
+       const url = window.URL.createObjectURL(blob);
+       a.href = url;
+       a.download = fileName;
+       a.click();
+    };
+  }());
+
+function render() {
+    renderer.render(scene, camera);
 }
 
 function drawRay() {
