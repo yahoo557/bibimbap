@@ -26,7 +26,8 @@
         <i class="bi bi-x" onclick="closeMenu()"></i>
     </div>
     <!-- 메뉴바 -->
-    <div class="menu-bar">
+    <nav class="menu-bar">
+
         <img class="logo-icon" src="../../images/logo.png">
         <div class="logout-button">로그아웃</div>
         <div class="blog-info">
@@ -40,40 +41,25 @@
             <i class="bi bi-search"></i> <!-- 검색-->
             <i class="bi bi-shuffle"></i> <!-- 랜덤 방문 -->
         </div>
-    </div>
+    </nav>
     <!-- 오브젝트 추가 -->
-    <div class="object-add">
-        <div class="object-list">
-            <div class="object-select">
-                <img class="thumbnail" src="../../object_thumbnail/Old_Bicycle.png">
-                <div class="object-info">
-                    <div class="object-name">자전거</div>
-                    <div class="object-size">x*y*z</div>
-                </div>
-            </div>
-            <div class="object-select">
-                <img class="thumbnail" src="../../object_thumbnail/Plants_on_table.png">
-                <div class="object-info">
-                    <div class="object-name">화분</div>
-                    <div class="object-size">x*y*z</div>
-                </div>
-            </div>
-            <div class="object-select">
-                <img class="thumbnail" src="../../object_thumbnail/Stand_light.png">
-                <div class="object-info">
-                    <div class="object-name">스탠드 조명</div>
-                    <div class="object-size">x*y*z</div>
-                </div>
-            </div>
-            <div class="object-select">
-                <img class="thumbnail" src="../../object_thumbnail/angle_clock.png">
-                <div class="object-info">
-                    <div class="object-name">시계</div>
-                    <div class="object-size">x*y*z</div>
-                </div>
-            </div>
+    <section class="object-add">
+        <div class="object-list"> <!-- 오브젝트 선택 리스트 -->
+            <i class="bi bi-caret-left-fill" onclick="prePage()"></i> <!-- 이전 목록으로 -->
+            <img class="object-thumbnail ob1" src="">
+            <img class="object-thumbnail ob2" src="">
+            <img class="object-thumbnail ob3" src="">
+            <img class="object-thumbnail ob4" src="">
+            <i class="bi bi-caret-right-fill"  onclick="nextPage()"></i> <!-- 다음 목록으로 -->
         </div>
-    </div>
+    </section>
+    <!-- 편집 모드 -->
+    <section class="edit-mode">
+        <div class="capture-button"> <!-- 썸네일 촬영 버튼 -->
+            <i class="bi bi-camera-fill"></i>
+            <div class="capture-text">썸네일 촬영하기</div>
+        </div>
+    </section>
     
     <script src="menubar.js"></script>
 </body>
