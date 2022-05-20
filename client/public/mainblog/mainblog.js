@@ -80,20 +80,14 @@ setupLight(); //Ligth 설정
 setupModel(); //3차원 Model 설정
 resize();
 animate();
-//제일 처음 기본 썸네일 저장
-//썸네일을 저장하기 전엔 항상 rendering을 해준 후에 해야 함
-render();
-  canvas.toBlob((blob) => {
-    saveBlob(blob, `screencapture-${ canvas.width }x${ canvas.height }.png`);
-  });
-// this._setupControls();
 
-//renderer랑 camera는 창 크기가 바뀔 때마다 그 크기에 맞게 재정의 되어야 함
-//resize이벤트에 resize메소드를 bind를 사용해서 지정 -> resize 안에서 this가 가리키는 객체가 이벤트객체가 아닌 이 앱 클래스의 객체가 되게 하기 위해
+
+// renderer랑 camera는 창 크기가 바뀔 때마다 그 크기에 맞게 재정의 되어야 함
+// resize이벤트에 resize메소드를 bind를 사용해서 지정 -> resize 안에서 this가 가리키는 객체가 이벤트객체가 아닌 이 앱 클래스의 객체가 되게 하기 위해
 // window.onresize = this.resize.bind(this);
-//resize이벤트와는 상관없이 한 번 실행 -> renderer나 camera의 속성을 창 크기에 맞게 설정
+// resize이벤트와는 상관없이 한 번 실행 -> renderer나 camera의 속성을 창 크기에 맞게 설정
 
-//3차원 그래픽 장면을 만들어주는 메소드
+// 3차원 그래픽 장면을 만들어주는 메소드
 // requestAnimationFrame(this.render.bind(this));
 
 function setupModel() {
@@ -114,7 +108,6 @@ function assignObject( url ) {
     selectRemove(); // 이전에 선택한 오브젝트 삭제
 
     const gltfloader = new GLTFLoader();
-    const dragObject = [];
     
     gltfloader.load(
         url,
@@ -143,6 +136,7 @@ function assignObject( url ) {
     requestAnimationFrame(setupModel);
 
     // 드래그 앱 드롭으로 오브젝트 옮기기
+    const dragObject = [];
     dragObject.push(selectGroup);
     const dragControls = new DragControls( [... dragObject], camera, divContainer);
     dragControls.addEventListener( 'dragstart', function ( event ) {
