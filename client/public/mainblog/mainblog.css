@@ -280,6 +280,97 @@ body {
     background-color: var(--main-color);;
     border-radius: 1.5vh;
 }
+/* 게시물 작성 또는 연결 선택 페이지 */
+.post-write-or-link {
+    display: none;
+    z-index: 12000;
+
+    margin-left: 31vh; /* 메뉴 바 공간만큼 */
+}
+/* 게시물 작성 또는 연결 페이지 제목 */
+.post-write-or-link-title {
+    display: inline-block;
+    position: relative;
+    z-index: 12000;
+
+    margin-top: 5vh;
+    margin-left: 1vh;
+
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 5vh;
+}
+/* 게시물 연결 패스 버튼 */
+.post-pass-button {
+    display: inline-block;
+    position: relative;
+    z-index: 12000;
+
+    margin-left: 58.5vw;
+    padding: 1vh 2.3vh 1vh 2.3vh;
+
+    background-color: var(--main-color);
+    border-radius: 2vh;
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 3vh;
+
+    cursor: pointer; /* 마우스 커서 모양 */
+}
+/* 게시물 작성 또는 연결 선택 공간 */
+.post-write-or-link-choice {
+    display: grid;
+    grid-template-columns: 20fr 1fr 20fr;
+    position: relative;
+    margin-top: 2vh;
+
+    width: 82vw;
+    height: 82vh;
+    text-align: center;
+
+    background-color: white;
+    border-radius: 3vh;
+}
+/* 세로 구분선 */
+.half-line {
+    display: block;
+    position: relative;
+    border-left: medium solid darkgray;
+    height: 78vh;
+    margin-top: 2vh;
+}
+/* 게시물 작성 및 연결 안내 공간 */
+.post-write-choice, .post-link-choice {
+    z-index: 12000;
+}
+/* 게시글 작성 및 연결 아이콘 */
+.post-write-icon, .post-link-icon {
+    margin-top: 9vh;
+    width: 43vh;
+    height: 43vh;
+}
+/*게시물 작성 및 연결 안내글*/
+.post-write-comment, .post-link-comment {
+    margin: 4vh;
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 3.8vh;
+}
+/*게시물 작성 및 연결 버튼*/
+.post-write-button, .post-link-button {
+    display: block;
+    margin: 4vh 29vh 4vh 29vh;
+    padding: 2vh;
+    border-radius: 3vh;
+
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 3vh;
+
+    cursor: pointer; /* 마우스 커서 모양 */
+}
+.post-write-button {
+    background-color: var(--button-orange);
+}
+.post-link-button {
+    background-color: var(--button-blue);
+}
 
 /* ------------------------------------ 편집 모드 --------------------------------------------- */
 .edit-mode {

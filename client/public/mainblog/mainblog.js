@@ -13,6 +13,8 @@ const cancleButton = document.getElementsByClassName("select-cancle"); // 취소
 const completeButton = document.getElementsByClassName("select-complete"); // 완료 버튼
 const addIcon = document.getElementsByClassName("bi-box"); // 오브젝트 추가 버튼
 const addView = document.getElementsByClassName("object-add"); // 오브젝트 추가 기능
+const menuArea = document.getElementsByClassName("menu-area"); // 메뉴 사용 환경
+const postWriteOrLink = document.getElementsByClassName("post-write-or-link"); // 게시물 작성 또는 연결 선택 페이지
 
 let key; // 오브젝트 id
 let prePosition = [1, -2, -4]; // 배치 위치
@@ -42,10 +44,19 @@ function selectRemove() { // 이전에 선택한 오브젝트 제거
     selectGroup.remove(lastObject[1]);
 }
 function complete() { // 오브젝트 배치 완료
-    console.log(key); // 오브젝트 id
-    console.log(prePosition); // 위치 정보 
-    // 완료되면 object db에 해당 정보 저장.
-    // 이후 3D 공간 전체를 reload 하여 배치에 사용했던 오브젝트는 삭제하고, 배치 완료된 오브젝트로...
+    if(!key) {
+        alert("물건을 선택 후 배치해주세요.");
+    }
+    else {
+        console.log(key); // 오브젝트 id
+        console.log(prePosition); // 위치 정보 
+        // 완료되면 object db에 해당 정보 저장.
+        // 이후 3D 공간 전체를 reload 하여 배치에 사용했던 오브젝트는 삭제하고, 배치 완료된 오브젝트로...
+
+        addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
+        menuArea[0].style.display = "block"; // 메뉴 사용 환경 활성화
+        postWriteOrLink[0].style.display = "block"; // 게시물 작성 또는 연결 선택 페이지 활성화
+    }
 }
 
 let camera;
@@ -298,7 +309,7 @@ const saveBlob = (function() {
        a.download = fileName;
        a.click();
     };
-  }());
+}());
 
 function render() {
     renderer.render(scene, camera);

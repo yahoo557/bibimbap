@@ -43,6 +43,7 @@
             <i class="bi bi-shuffle"></i> <!-- 랜덤 방문 -->
         </div>
     </nav>
+
     <!-- 오브젝트 추가 -->
     <section class="object-add">
         <div class="object-list"> <!-- 오브젝트 선택 리스트 -->
@@ -60,16 +61,35 @@
             <i class="bi bi-caret-up-fill" onclick="openObjectList()"></i> <!-- 오브젝트 리스트 열기-->
         </div>
     </section>
+    <!-- 게시물 작성 또는 연결 선택 페이지 -->
+    <section class="post-write-or-link">
+        <div class="post-write-or-link-title">물건 배치하기</div>
+        <div class="post-pass-button">건너뛰기</div> <!-- 건너뛰기: 오브젝트 배치 정보만 DB에 저장 -->
+        <div class="post-write-or-link-choice">
+            <div class="post-write-choice"> <!-- 게시물 작성 선택 -->
+                <img class="post-write-icon" src="../../images/post-write-icon.png">
+                <div class="post-write-comment">새롭게 게시물을 작성하려면?</div>
+                <div class="post-write-button">게시물 작성하기</div>
+            </div>
+            <div class="half-line"></div> <!-- 구분선 -->
+            <div class="post-link-choice"> <!-- 게시물 연결 선택 -->
+                <img class="post-link-icon" src="../../images/post-link-icon.png">
+                <div class="post-link-comment">기존의 게시물을 연결하려면?</div>
+                <div class="post-link-button">게시물 연결하기</div>
+            </div>
+        </div>
+    </section>
+
     <!-- 편집 모드 -->
-    <script>
-        
-    </script>
     <section class="edit-mode">
         <div class="capture-button" id="thumbnailButton"> <!-- 썸네일 촬영 버튼 -->
             <i class="bi bi-camera-fill"></i>
-            <div class="capture-text">썸네일 촬영하기</div>       
+            <div class="capture-text">썸네일 촬영하기</div>
         </div>
-        <canvas id="c"></canvas>
+    </section>
+    <!-- 썸네일 변경 확인창 -->
+    <section class="thumnail-complete">
+        썸네일 변경 확인
     </section>
 </body>
 <script src="menubar.js"></script>
