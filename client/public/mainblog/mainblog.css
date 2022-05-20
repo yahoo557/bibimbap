@@ -192,8 +192,7 @@ body {
     margin: 0 5vh 0 5vh;
     top: 70vh;
 
-
-    width: 88vw;
+    width: auto;
     height: 27vh;
     background-color: var(--light-blue);
 
@@ -212,6 +211,22 @@ body {
     width: 25vh;
     height: 25vh;
     margin: 0 auto;
+}
+/* 오브젝트 추가 취소 버튼 */
+.select-cancle {
+    display: inline;
+    position: relative;
+    float: right;
+    top: 37.5vh;
+    margin-right: 6vh;
+    padding: 1vh 2.5vh 1vh 2.5vh;
+    z-index: 12000;
+
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 2vh;
+
+    background-color: var(--main-color);;
+    border-radius: 1.5vh;
 }
 
 /* ------------------------------------ 편집 모드 --------------------------------------------- */
