@@ -13,7 +13,7 @@
     <!--js파일이 모듈타입으로 추가됨 -> three.js파일을 모듈로 받기 위해-->
     <!--defer : 이 페이지가 모두 로딩된 이후에 js파일을 실행-->
     <script type="module" src="mainblog.js" defer></script>
-
+    <script src="edit.js" defer></script>
     <!-- bootstrap icon -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 </head>
@@ -54,11 +54,15 @@
         <div class="select-cancle">취소</div>
     </section>
     <!-- 편집 모드 -->
+    <script>
+        
+    </script>
     <section class="edit-mode">
         <div class="capture-button"> <!-- 썸네일 촬영 버튼 -->
             <i class="bi bi-camera-fill"></i>
-            <div class="capture-text">썸네일 촬영하기</div>
+            <div class="capture-text" id="thumbnailButton">썸네일 촬영하기</div>       
         </div>
+        <canvas id="c"></canvas>
     </section>
 </body>
 <script src="menubar.js"></script>

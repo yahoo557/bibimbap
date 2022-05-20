@@ -134,3 +134,4 @@ const postList = () => {
         listIcon[0].style.left = "0vh"; // 게시물 리스트 버튼 비활성화
     }
 }
+
