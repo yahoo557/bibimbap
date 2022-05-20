@@ -6,6 +6,12 @@ const menuBar = document.getElementsByClassName("menu-bar");
 /* 오브젝트 추가 */
 const addIcon = document.getElementsByClassName("bi-box");
 const addView = document.getElementsByClassName("object-add");
+const objectListView = document.getElementsByClassName("object-list");
+const objectListShowButton = document.getElementsByClassName("list-show");
+const ListCloseButton = document.getElementsByClassName("bi-caret-down-fill");
+const ListOpenButton = document.getElementsByClassName("bi-caret-up-fill");
+const objectSelectCancle = document.getElementsByClassName("select-cancle");
+const objectSelectComplete = document.getElementsByClassName("select-complete");
 
 const pre = document.getElementsByClassName("bi-caret-left-fill");
 const next = document.getElementsByClassName("bi-caret-right-fill");
@@ -52,6 +58,7 @@ const objectAdd = () => {
     if(addIcon[0].style.left == "0vh") {
         addIcon[0].style.left = "15vh"; // 오브젝트 추가 버튼 활성화
         addView[0].style.display = "block"; // 오브젝트 추가 화면 보이기
+        openObjectList(); // 오브젝트 리스트 열기
 
         editIcon[0].style.left = "0vh"; // 편집 모드 버튼 비활성화
         editView[0].style.display = "none"; // 편집 모드 화면 숨기기
@@ -102,6 +109,26 @@ const objectList = () => {
             objectThumnail[i].src = blank;
         }
     }
+}
+// 오브젝트 리스트 닫기
+const closeObjectList = () => {
+    ListCloseButton[0].style.display = "none"; // 리스트 닫기 버튼 비활성화
+    ListOpenButton[0].style.display = "block"; // 리스트 열기 버튼 활성화
+
+    objectListView[0].style.top = "100vh"; // 오브젝트 리스트 숨기기
+    objectListShowButton[0].style.top = "65.5vh"; // 오브젝트 리스트 열기/닫기 버튼 아래로 이동
+    objectSelectCancle[0].style.top = "67vh"; // 배치 취소 버튼 아래로 이동
+    objectSelectComplete[0].style.top = "67vh"; // 배치 완료 버튼 아래로 이동
+}
+// 오브젝트 열기
+const openObjectList = () => {
+    ListCloseButton[0].style.display = "block"; // 리스트 닫기 버튼 활성화
+    ListOpenButton[0].style.display = "none"; // 리스트 열기 버튼 비활성화
+
+    objectListView[0].style.top = "70vh"; // 오브젝트 리스트 보이기
+    objectListShowButton[0].style.top = "35.5vh"; // 오브젝트 리스트 열기/닫기 버튼 위로 이동
+    objectSelectCancle[0].style.top = "37vh"; // 배치 취소 버튼 위로 이동
+    objectSelectComplete[0].style.top = "37vh"; // 배치 완료 버튼 위로 이동
 }
 
 // 편집 모드

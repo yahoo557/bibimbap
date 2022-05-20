@@ -10,13 +10,17 @@ const objectUrl = {'ob1': '../../object_files/Old_Bicycle.glb', 'ob2': '../../ob
 const selectObject = document.getElementsByClassName("object-thumbnail"); // 오브젝트 썸네일
 //const menuButton = document.getElementsByClassName("menu-button"); // 메뉴 버튼
 const cancleButton = document.getElementsByClassName("select-cancle"); // 취소 버튼
+const completeButton = document.getElementsByClassName("select-complete"); // 완료 버튼
 const addIcon = document.getElementsByClassName("bi-box"); // 오브젝트 추가 버튼
 const addView = document.getElementsByClassName("object-add"); // 오브젝트 추가 기능
+
+let key; // 오브젝트 id
+let prePosition = [1, -2, -4]; // 배치 위치
 
 window.onload = function () {
     for(let i = 0; i < 4; i++) {
         selectObject[i].addEventListener( 'click', function() {
-            const key = selectObject[i].classList.item(1); // 오브젝트 아이디
+            key = selectObject[i].classList.item(1); // 오브젝트 아이디
             const url = objectUrl[key]; // 오브젝트 url
             if(objectUrl[key])
                 assignObject( url );
@@ -24,6 +28,7 @@ window.onload = function () {
     }
     //menuButton[0].onclick = cancle;
     cancleButton[0].onclick = cancle;
+    completeButton[0].onclick = complete;
 }
 function cancle() { // 오브젝트 추가하기 비활성화
     selectRemove();
@@ -35,6 +40,12 @@ function selectRemove() { // 이전에 선택한 오브젝트 제거
     const lastObject = [allChildren[allChildren.length - 1], allChildren[allChildren.length - 2]];
     selectGroup.remove(lastObject[0]);
     selectGroup.remove(lastObject[1]);
+}
+function complete() { // 오브젝트 배치 완료
+    console.log(key); // 오브젝트 id
+    console.log(prePosition); // 위치 정보 
+    // 완료되면 object db에 해당 정보 저장.
+    // 이후 3D 공간 전체를 reload 하여 배치에 사용했던 오브젝트는 삭제하고, 배치 완료된 오브젝트로...
 }
 
 let camera;
@@ -104,29 +115,34 @@ function setupModel() {
 }
 
 // 선택된 오브젝트
+let pastpositionZ = -4;
+let pastpositionY = -1.7;
 function assignObject( url ) {
     selectRemove(); // 이전에 선택한 오브젝트 삭제
 
     const gltfloader = new GLTFLoader();
+    const dragObject = [];
+    let objectSize;
     
     gltfloader.load(
         url,
         ( gltf ) => {
             const root = gltf.scene;
-            selectGroup.add( root ); //group 없으면 _scene.add( root );
+            selectGroup.add(root);
+            dragObject.push(root);
             objParentTransform.push( root );
-            root.position.set( 1, -1.7, -3 ); //모델 위치 지정
+            root.position.set( 1, -1.7, -4 ); //모델 위치 지정
 
             // 오브젝트 배치할 때 아래에 위치 표시
             const boundingBox = new THREE.Box3().setFromObject( root ); // 모델의 바운딩 박스 생성
-            const objectSize = boundingBox.getSize(new THREE.Vector3()); // 바운딩 박스 사이즈 정보
+            objectSize = boundingBox.getSize(new THREE.Vector3()); // 바운딩 박스 사이즈 정보
             
             const rangeGeometry = new THREE.PlaneGeometry(objectSize.x, objectSize.z);
             const rangeMaterial = new THREE.MeshBasicMaterial({ color: "#858585" });
             const objectRange = new THREE.Mesh( rangeGeometry, rangeMaterial );
 
-            selectGroup.add( objectRange );
-            objectRange.position.set( 1, -1.9, -3 );
+            selectGroup.add(objectRange);
+            objectRange.position.set( 1, -1.999, -4 );
             objectRange.rotation.x = - Math.PI / 2;
         }
     );
@@ -135,23 +151,33 @@ function assignObject( url ) {
     renderer.render(scene, camera);
     requestAnimationFrame(setupModel);
 
-    // 드래그 앱 드롭으로 오브젝트 옮기기
-    const dragObject = [];
-    dragObject.push(selectGroup);
-    const dragControls = new DragControls( [... dragObject], camera, divContainer);
-    dragControls.addEventListener( 'dragstart', function ( event ) {
+    // 드래그 앤 드롭으로 오브젝트 옮기기
+    const dragControls = new DragControls( dragObject, camera, divContainer);
+    dragControls.transformGroup = true;
 
-        event.object.material.emissive.set( 0xaaaaaa );
-    
-    } );
+    dragControls.addEventListener( 'drag', function ( event ) {
+        // 위로는 못 움직이게 제한(바닥 오브젝트 기준) + 마우스 위아래 이동을 z축에 적용
+        if(event.object.position.y != -1.7) {
+            event.object.position.z = pastpositionZ + (pastpositionY - event.object.position.y); // z축(앞뒤 거리) 이동
+            pastpositionY = event.object.position.y;
+            event.object.position.y = -1.7; // y축(높이) 고정
+        }
+        // x축이 벽 밖으로 나가지 않도록
+        if(event.object.position.x < -3.5 + objectSize.x/2) event.object.position.x = -3.5 + objectSize.x/2;
+        if(event.object.position.x > 3.5 - objectSize.x/2) event.object.position.x = 3.5 - objectSize.x/2;
 
-    dragControls.dragControls.addEventListener('drag', (event) => {
-        event.object.parent.position.copy(event.object.postion);
-        event.object.position.set(0, 0, 0);
-    });
-    
-    dragControls.addEventListener( 'dragend', function ( event ) {
-        event.object.material.emissive.set( 0x000000 );
+        // z축이 벽 밖으로 나가지 않도록
+        if(event.object.position.z < -5 + objectSize.z/2) event.object.position.z = -5 + objectSize.z/2;
+        if(event.object.position.z > 5 - objectSize.z/2) event.object.position.z = 5 - objectSize.z/2;
+        // 아래 그림자도 같이 움직임
+        const allChildren = selectGroup.children;
+        const objectRange = allChildren[allChildren.length - 1];
+        objectRange.position.set(event.object.position.x, -1.999, event.object.position.z);
+        pastpositionZ = event.object.position.z;
+
+        prePosition[0] = event.object.position.x;
+        prePosition[1] = event.object.position.y;
+        prePosition[2] = event.object.position.z;
     } );
 }
 
