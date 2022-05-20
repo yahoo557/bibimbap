@@ -50,12 +50,12 @@ setupLight(); //Ligth 설정
 setupModel(); //3차원 Model 설정
 resize();
 animate();
-//제일 처음 기본 썸네일 저장
-//썸네일을 저장하기 전엔 항상 rendering을 해준 후에 해야 함
-render();
-  canvas.toBlob((blob) => {
-    saveBlob(blob, `screencapture-${ canvas.width }x${ canvas.height }.png`);
-  });
+// //제일 처음 기본 썸네일 저장
+// //썸네일을 저장하기 전엔 항상 rendering을 해준 후에 해야 함
+// render();
+//   canvas.toBlob((blob) => {
+//     saveBlob(blob, `screencapture-${ canvas.width }x${ canvas.height }.png`);
+//   });
 // this._setupControls();
 
 //renderer랑 camera는 창 크기가 바뀔 때마다 그 크기에 맞게 재정의 되어야 함
@@ -201,26 +201,7 @@ function animate () {
     requestAnimationFrame(animate);
           
 }
-// function thumbnailFilming () {
-//     render();
-//     canvas.toBlob((blob) => {
-//     saveBlob(blob, `screencapture-${ canvas.width }x${ canvas.height }.png`);
-    
-//     });    
-    
-//     // html2canvas(document.body).then(canvas => {
-//     //     document.body.appendChild(canvas);
-//     //     const link = document.createElement('a')
-//     //     link.download = 'filename.jpg'
-//     //     link.href = canvas.toDataURL()
-//     //     document.body.appendChild(link)
-//     //     link.click()
-//     // });
-//     // divContainer.toBlob((blob) => {
 
-//     //   saveBlob(blob, `screencapture-${divContainer.width}x${divContainer.height}.png`);
-//     // });    
-// }
 
 
 // 썸네일 촬영하기 버튼 구현
