@@ -3,8 +3,9 @@ import { GLTFLoader } from '../three.js-master/examples/jsm/loaders/GLTFLoader.j
 import { PointerLockControls } from "../three.js-master/examples/jsm/controls/PointerLockControls.js";
 import { DragControls } from "../three.js-master/examples/jsm/controls/DragControls.js";
 
-// 오브젝트 파일 => 오브젝트 id : 오브젝트 파일 경로
-const objectUrl = {'ob1': '../../object_files/Old_Bicycle.glb', 'ob2': '../../object_files/Plants_on_table.gltf', 'ob3': '../../object_files/Stand_light.glb'};
+// 오브젝트 파일 => 오브젝트 id : { 'objectUrl': 오브젝트 파일 경로, 'ablePosition': 배치 가능한 위치(0: 바닥, 1: 벽, 2: 천장)}
+const objectInfo = {'ob1': {'objectUrl': '../../object_files/Old_Bicycle.glb', 'ablePosition': 0}, 'ob2': {'objectUrl': '../../object_files/Plants_on_table.gltf', 'ablePosition': 0},
+                    'ob3': {'objectUrl': '../../object_files/Stand_light.glb', 'ablePosition': 0}};
 // 오브젝트 썸네일 파일 => 오브젝트 id : 오브젝트 썸네일 이미지 경로
 const objectThumbnailUrl = {'ob1': '../../object_thumbnail/Old_Bicycle.png', 'ob2': '../../object_thumbnail/Plants_on_table.png', 'ob3': '../../object_thumbnail/Stand_light.png'};
 
@@ -77,10 +78,12 @@ function setupModel() {
 // 배치를 위해 선택된 오브젝트
 function assignObject( url ) {
     selectRemove(); // 이전에 선택한 오브젝트 삭제
+    let rotaionZ = 1;
 
     // 카메라가 바라보고 있는 방향
-    let lookCamera = new THREE.Vector3(); 
+    let lookCamera = new THREE.Vector3();
     camera.getWorldDirection(lookCamera);
+    if(lookCamera.z < 0) rotaionZ = -1;
 
     // 사용자가 보고 있는 방향을 기준으로 오브젝트가 생성되도록
     prePosition[0] = camera.position.x + lookCamera.x;
@@ -139,7 +142,7 @@ function assignObject( url ) {
     dragControls.addEventListener( 'drag', function ( event ) {
         // 위로는 못 움직이게 제한(바닥 오브젝트 기준) + 마우스 위아래 이동을 z축에 적용
         if(event.object.position.y != -1.7) {
-            event.object.position.z = prePosition[2] + (prePosition[1]- event.object.position.y + 0.3); // z축(앞뒤 거리) 이동
+            event.object.position.z = prePosition[2] - rotaionZ * (prePosition[1]- event.object.position.y + 0.3); // z축(앞뒤 거리) 이동
             event.object.position.y = -1.7; // y축(높이) 고정
         }
         // x축이 벽 밖으로 나가지 않도록
@@ -155,7 +158,7 @@ function assignObject( url ) {
         objectRange.position.set(event.object.position.x, prePosition[1] + 0.001, event.object.position.z);
 
         prePosition[0] = event.object.position.x;
-        prePosition[1] = event.object.position.y;
+        prePosition[1] = event.object.position.y - 0.3;
         prePosition[2] = event.object.position.z;
     } );
 }
@@ -337,8 +340,8 @@ window.onload = () => {
     for(let i = 0; i < 4; i++) {
         selectObject[i].addEventListener( 'click', () => {
             key = selectObject[i].classList.item(1); // 오브젝트 아이디
-            const url = objectUrl[key]; // 오브젝트 url
-            if(objectUrl[key])
+            const url = objectInfo[key]['objectUrl']; // 오브젝트 url
+            if(objectInfo[key])
                 assignObject( url );
         })
     }
@@ -463,7 +466,7 @@ const saveBlob = (function() {
     document.body.appendChild(a);
     a.style.display = 'none';
     return function saveData(blob, fileName) {
-       const url = window.URL.createObjectURL(blob);
+       const url = window.URL.createobjectInfo(blob);
        a.href = url;
        a.download = fileName;
        a.click();
