@@ -3,6 +3,10 @@ const menuIcon = document.getElementsByClassName('bi-list');
 const closeIcon = document.getElementsByClassName('bi-x');
 const menuBar = document.getElementsByClassName("menu-bar");
 
+// 메뉴 사용 환경
+const menuArea = document.getElementsByClassName("menu-area");
+
+
 /* 오브젝트 추가 */
 const addIcon = document.getElementsByClassName("bi-box");
 const addView = document.getElementsByClassName("object-add");
@@ -17,14 +21,31 @@ const pre = document.getElementsByClassName("bi-caret-left-fill");
 const next = document.getElementsByClassName("bi-caret-right-fill");
 
 const objectThumnail = document.getElementsByClassName("object-thumbnail");
+// 오브젝트 id : 오브젝트 썸네일 이미지 경로
 const thumnailsUrl = {'ob1': '../../object_thumbnail/Old_Bicycle.png', 'ob2': '../../object_thumbnail/Plants_on_table.png', 'ob3': '../../object_thumbnail/Stand_light.png',
                     'ob4': '../../object_thumbnail/angle_clock.png', 'ob5': '../../object_thumbnail/Books_Magazines.png', 'ob6': '../../object_thumbnail/mouse_doll.png',
-                    'ob7': '../../object_thumbnail/air_jordan.png'}; // 오브젝트 id : 오브젝트 썸네일 경로
+                    'ob7': '../../object_thumbnail/air_jordan.png'};
 const blank = '../../object_thumbnail/blank.png';
+
+// 게시물 작성 또는 연결
+const postWriteOrLink = document.getElementsByClassName("post-write-or-link");
+const postWriteView = document.getElementsByClassName("post-write-view");
+const postLinkView = document.getElementsByClassName("post-link-view");
+const linkPostListField = document.getElementsByClassName("link-post-list-view");
+
+// 게시물 id : { 'postTitle' : 게시물 제목, 'postDate' : 게시물 작성일 }
+// 날짜 데이터는 받아와서 string으로 바꿔서 저장하는 작업 필요
+const postInfo = { 'po1' : {'postTitle' : '테스트를 해봅시다 1', 'postDate' : '2022.04.06 01:52'}, 'po2' : {'postTitle' : '테스트를 해봅시다 2', 'postDate' : '2022.04.06 14:52'},
+                'po3' : {'postTitle' : '테스트를 해봅시다 3', 'postDate' : '2022.04.07 10:23'}, 'po4' : {'postTitle' : '테스트를 해봅시다 4', 'postDate' : '2022.04.08 03:23'}};
+
 
 /* 편집 모드 */
 const editIcon = document.getElementsByClassName("bi-tools");
 const editView = document.getElementsByClassName("edit-mode");
+
+// 썸네일 변경 확인창
+const changeThumbnailView = document.getElementsByClassName("change-thumbnail");
+
 
 /* 게시물 리스트 */
 const listIcon = document.getElementsByClassName("bi-file-text");
@@ -130,6 +151,43 @@ const openObjectList = () => {
     objectSelectCancle[0].style.top = "37vh"; // 배치 취소 버튼 위로 이동
     objectSelectComplete[0].style.top = "37vh"; // 배치 완료 버튼 위로 이동
 }
+// 게시물 작성
+const postWrite = () => {
+    postWriteOrLink[0].style.display = "none"; // 게시물 작성 또는 연결 선택 페이지 비활성화
+    postWriteView[0].style.display = "block"; // 게시물 작성 페이지 활성화
+}
+// 게시물 연결
+const postLink = () => {
+    postWriteOrLink[0].style.display = "none"; // 게시물 작성 또는 연결 선택 페이지 비활성화
+    postLinkView[0].style.display = "block"; // 게시물 연결 페이지 활성화
+    linkPostList(); // 연결할 게시물 리스트 가져오기
+}
+// 연결할 게시물 리스트 가져오기
+const linkPostList = () => {
+    const postListLen = Object.keys(postInfo).length; // 게시물 개수
+    let checkRadio = "checked";
+    for(let i = 0; i < postListLen; i++) {
+        const postId = Object.keys(postInfo)[i]; // 게시물
+        const postTextTitle = "<div class='post-text-title'>" + postInfo[postId]['postTitle'] + "</div>"; // 게시물 제목
+        const postTextDate = "<div class='post-text-date'>" + "작성일 : " + postInfo[postId]['postDate'] + "</div>"; // 게시물 작성일자
+        const postText = "<div class='post-text'>" + postTextTitle + postTextDate + "</div>"; // 게시물 제목 + 게시물 작성일자
+        if(i != 0) checkRadio = ""; // 첫 번째 게시물에 radio checked를 하기 위해
+
+        const postDiv = document.createElement('div'); // div 태그 생성
+        postDiv.setAttribute('class', 'post-text-div'); // div 태그 class명 지정
+        // radio 태그, label 태그 내용 작성
+        const radioTag = "<input class='post-text-radio' type='radio' id='" + postId + "' name='postListRadio' value='" + postId + "' " + checkRadio + ">";
+        let labelTag = "<label class='post-text-label'>" + radioTag + postText + "</label>";
+
+        if(i != postListLen-1) { // 마지막 게시물이 아닌 경우
+            const hrTag = "<hr class='post-text-hr'>"; // hr 태그
+            labelTag += hrTag; // label 태그 뒤에 hr 태그 추가
+        }
+
+        postDiv.innerHTML = labelTag; // div 태그에 <label><radio></label> 추가
+        linkPostListField[0].appendChild(postDiv); // 리스트에 div 태그 삽입
+    }
+}
 
 // 편집 모드
 const editMode = () => {
@@ -146,6 +204,21 @@ const editMode = () => {
         editView[0].style.display = "none"; // 편집 모드 화면 숨기기
     }
 }
+// 블로그 썸네일 변경 최종 확인
+const thumbnailChangeComplete = () => {
+    alert("블로그 썸네일 변경이 완료되었습니다.");
+    editIcon[0].style.left = "0vh"; // 편집 모드 버튼 비활성화
+    menuArea[0].style.display = "none"; // 메뉴 사용 환경(반투명 배경) 비활성화
+    changeThumbnailView[0].style.display = "none"; // 썸네일 변경 이미지 확인 창 비활성화
+
+}
+// 블로그 썸네일 변경 취소
+const thumbnailChangeCancle = () => {
+    alert("블로그 썸네일 변경이 취소되었습니다.");
+    editView[0].style.display = "block"; // 썸네일을 다시 촬영할 수 있도록 다시 편집 모드 활성화
+    menuArea[0].style.display = "none"; // 메뉴 사용 환경(반투명 배경) 비활성화
+    changeThumbnailView[0].style.display = "none"; // 썸네일 변경 이미지 확인 창 비활성화
+}
 
 // 게시물 리스트
 const postList = () => {
@@ -161,4 +234,3 @@ const postList = () => {
         listIcon[0].style.left = "0vh"; // 게시물 리스트 버튼 비활성화
     }
 }
-

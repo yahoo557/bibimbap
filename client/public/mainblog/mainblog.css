@@ -8,6 +8,8 @@
     --button-orange: #DEB992;
     --button-green: #A7BC5B;
     --button-blue: #7DA2A9;
+    --bright-green: #80FF80;
+    --bright-red: #FF8080;
 }
 /* 폰트 */
 @font-face {
@@ -72,7 +74,7 @@ body {
     font-size: 5.5vh;
 }
 /* 메뉴 바 닫기 아이콘 */
-.bi-x {
+.bi-x-menu {
     display: none;
     font-size: 5.5vh;
 }
@@ -98,6 +100,8 @@ body {
 
     width: 11.3vh;
     height: 11.3vh;
+
+    cursor: pointer; /* 마우스 커서 모양 */
 }
 /* 로그아웃 버튼 */
 .logout-button {
@@ -111,6 +115,8 @@ body {
 
     font-family: 'Cafe24SsurroundAir';
     font-size: 2.2vh;
+
+    cursor: pointer; /* 마우스 커서 모양 */
 }
 /* 블로그 정보 */
 .blog-info {
@@ -143,6 +149,8 @@ body {
     background-color: var(--button-orange);
     padding: 1vh 2.2vh 1.5vh 2.2vh;
     border-radius: 50%;
+
+    cursor: pointer; /* 마우스 커서 모양 */
 }
 /* 편집모드 버튼 */
 .bi-tools {
@@ -155,6 +163,8 @@ body {
     background-color: var(--button-green);
     padding: 1.2vh 2.4vh 1.5vh 2.2vh;
     border-radius: 50%;
+
+    cursor: pointer; /* 마우스 커서 모양 */
 }
 /* 게시물 리스트 버튼 */
 .bi-file-text {
@@ -167,11 +177,15 @@ body {
     background-color: var(--button-blue);
     padding: 1vh 2.2vh 1.5vh 2.2vh;
     border-radius: 50%;
+
+    cursor: pointer; /* 마우스 커서 모양 */
 }
 /* 하단 메뉴 */
 .bottom-menu {
     position: relative;
     top: 42vh;
+
+    cursor: pointer; /* 마우스 커서 모양 */
 }
 .bi-search, .bi-shuffle {
     font-size: 3vh;
@@ -285,7 +299,7 @@ body {
     display: none;
     z-index: 12000;
 
-    margin-left: 31vh; /* 메뉴 바 공간만큼 */
+    margin-left: 31vh; /* 메뉴 바 + 추가하기 버튼 공간만큼 */
 }
 /* 게시물 작성 또는 연결 페이지 제목 */
 .post-write-or-link-title {
@@ -320,6 +334,7 @@ body {
     display: grid;
     grid-template-columns: 20fr 1fr 20fr;
     position: relative;
+    z-index: 12000;
     margin-top: 2vh;
 
     width: 82vw;
@@ -371,6 +386,186 @@ body {
 .post-link-button {
     background-color: var(--button-blue);
 }
+/* 게시물 작성 페이지 */
+.post-write-view {
+    display: none;
+    z-index: 12000;
+
+    margin-left: 31vh; /* 메뉴 바 + 추가하기 버튼 공간만큼 */
+}
+/* 게시물 작성 페이지 제목 */
+.post-write-title {
+    display: inline-block;
+    position: relative;
+    z-index: 12000;
+
+    margin-top: 5vh;
+    margin-left: 1vh;
+
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 5vh;
+}
+/* 메모 */
+.memo {
+    display: block;
+    position: relative;
+    z-index: 12000;
+
+    margin-top: 2vh;
+    margin-left: 1vh;
+
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 3vh;
+}
+/* 게시물 연결 페이지 */
+.post-link-view {
+    display: none;
+    z-index: 12000;
+
+    margin-left: 31vh; /* 메뉴 바 + 추가하기 버튼 공간만큼 */
+}
+/* 게시물 연결 페이지 제목 */
+.post-link-title {
+    display: inline-block;
+    position: relative;
+    z-index: 12000;
+
+    margin-top: 5vh;
+    margin-left: 1vh;
+
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 5vh;
+}
+/* 게시물 연결 리스트 나타날 공간 */
+.post-link-frame {
+    display: block;
+    position: relative;
+    z-index: 12000;
+    margin-top: 2vh;
+
+    width: 82vw;
+    height: 82vh;
+    text-align: center;
+
+    background-color: white;
+    border-radius: 3vh;
+}
+/* 연결 게시물 선택 완료 버튼 */
+.post-link-complete-button {
+    display: inline-block;
+    position: relative;
+    z-index: 12000;
+
+    margin-left: 56vw;
+    padding: 1vh 2.3vh 1vh 2.3vh;
+
+    background-color: var(--main-color);
+    border-radius: 2vh;
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 3vh;
+
+    cursor: pointer; /* 마우스 커서 모양 */
+}
+/* 연결할 물건 표시 */
+.post-link-image-frame {
+    display: flex;
+    position: relative;
+    z-index: 12000;
+
+    text-align: center;
+    align-items: center;
+}
+/* 연결할 물건 썸네일 안내글 */
+.post-link-image-comment {
+    display: inline-block;
+    position: relative;
+    z-index: 12000;
+    margin: 0.5vh 1vh 0 auto;
+
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 3.5vh;
+}
+/* 연결할 물건 썸네일 이미지 */
+.post-link-image {
+    display: inline-block;
+    position: relative;
+    z-index: 12000;
+    margin: 0.5vh auto 0 0;
+
+    width: 23vh;
+    height: 23vh;
+}
+/* 연결할 게시물 목록 공간 */
+.link-post-list-view {
+    display: block;
+    position: relative;
+    z-index: 12000;
+    margin: -2vh auto 0 auto;
+
+    width: 76vw;
+    height: 55vh;
+    overflow: auto; /* 공간 넘어가면 스크롤 생성 */
+
+    background-color: var(--light-blue);
+    border-radius: 3vh;
+}
+/* 스크롤바 디자인 */
+.link-post-list-view::-webkit-scrollbar {
+    width: 0.5vw;
+}
+.link-post-list-view::-webkit-scrollbar-thumb {
+    background-color: var(--dark-blue);
+    border-radius: 1vh;
+}
+.link-post-list-view::-webkit-scrollbar-track {
+    background-color: var(--main-color);
+    border-radius: 1vh;
+}
+/* 게시물 목록 하나 */
+.post-text-div {
+    margin: 2vw;
+}
+/* 게시물 라벨 */
+.post-text-label {
+    display: flex;
+    position: relative;
+    margin: 3vh 0 3vh 0;
+
+    text-align: left;
+    align-items: center;
+
+    cursor: pointer; /* 마우스 커서 모양 */
+}
+/* 게시물 라디오 버튼 */
+.post-text-radio {
+    display: inline-block;
+    position: relative;
+    margin: 0 5vh 0 5vh;
+
+    width: 2.3vh;
+    height: 2.3vh;
+
+    accent-color: black; /* 라디오버튼 색상 */
+}
+/* 게시물 제목 + 작성일 */
+.post-text {
+    display: inline-block;
+    position: relative;
+
+    font-family: 'Cafe24SsurroundAir';
+}
+/* 게시물 제목 */
+.post-text-title {
+    font-size: 4vh;
+}
+/* 게시물 작성일 */
+.post-text-date {
+    font-size: 3vh;
+}
+/* 게시물 구분선 */
+.post-text-hr {
+    width: 72vw;
+}
 
 /* ------------------------------------ 편집 모드 --------------------------------------------- */
 .edit-mode {
@@ -408,4 +603,75 @@ body {
 .capture-text{
     display: inline-block;
     font-size: 3vh;
+}
+/* 썸네일 촬영 이미지 확인 페이지 */
+.change-thumbnail {
+    display: none;
+    z-index: 12000;
+
+    margin-left: 42vh; /* 메뉴 바 + 편집모드 버튼 공간만큼 */
+}
+/* 썸네일 변경 확인 제목 */
+.change-thumbnail-title {
+    display: inline-block;
+    position: relative;
+    z-index: 12000;
+
+    margin-top: 5vh;
+    margin-left: 1vh; 
+
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 5vh;
+}
+/* 썸네일 이미지 */
+.change-thumbnail-image {
+    display: block;
+    position: relative;
+    z-index: 12000;
+    margin-top: 1vh;
+
+    width: 65vw;
+    height: 65vh;
+    object-fit: cover;
+    border-radius: 3vh;
+}
+/* 썸네일 변경 안내 문구 */
+.change-thumbnail-comment {
+    display: block;
+    position: relative;
+    z-index: 12000;
+    margin-top: 2vh;
+    margin-left: 3vh;
+
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 4vh;
+}
+/* 썸네일 변경 확인 버튼 */
+.bi-check-lg, .bi-x-thumbnail {
+    display: inline-block;
+    position: relative;
+    margin: 1vh;
+
+    z-index: 12000;
+
+    cursor: pointer; /* 마우스 커서 모양 */
+}
+/* 변경 완료 */
+.bi-check-lg {
+    float: right;
+    padding: 1vh 2.2vh 1.5vh 2.2vh;
+
+    font-size: 5.3vh;
+    background-color: var(--bright-green);
+    border-radius: 50%;
+}
+/* 변경 취소 */
+.bi-x-thumbnail {
+    float: right;
+    margin-right: 10vh;
+    padding: 0 1.2vh 0.2vh 1.2vh;
+
+    font-size: 7vh;
+    background-color: var(--bright-red);
+    border-radius: 50%;
 }

@@ -3,61 +3,10 @@ import { GLTFLoader } from '../three.js-master/examples/jsm/loaders/GLTFLoader.j
 import { PointerLockControls } from "../three.js-master/examples/jsm/controls/PointerLockControls.js";
 import { DragControls } from "../three.js-master/examples/jsm/controls/DragControls.js";
 
-// 오브젝트 id : 오브젝트 파일 경로
+// 오브젝트 파일 => 오브젝트 id : 오브젝트 파일 경로
 const objectUrl = {'ob1': '../../object_files/Old_Bicycle.glb', 'ob2': '../../object_files/Plants_on_table.gltf', 'ob3': '../../object_files/Stand_light.glb'};
-
-/* 배치하고 싶은 오브젝트 선택 시 */
-const selectObject = document.getElementsByClassName("object-thumbnail"); // 오브젝트 썸네일
-//const menuButton = document.getElementsByClassName("menu-button"); // 메뉴 버튼
-const cancleButton = document.getElementsByClassName("select-cancle"); // 취소 버튼
-const completeButton = document.getElementsByClassName("select-complete"); // 완료 버튼
-const addIcon = document.getElementsByClassName("bi-box"); // 오브젝트 추가 버튼
-const addView = document.getElementsByClassName("object-add"); // 오브젝트 추가 기능
-const menuArea = document.getElementsByClassName("menu-area"); // 메뉴 사용 환경
-const postWriteOrLink = document.getElementsByClassName("post-write-or-link"); // 게시물 작성 또는 연결 선택 페이지
-
-let key; // 오브젝트 id
-let prePosition = [1, -2, -4]; // 배치 위치
-
-window.onload = function () {
-    for(let i = 0; i < 4; i++) {
-        selectObject[i].addEventListener( 'click', function() {
-            key = selectObject[i].classList.item(1); // 오브젝트 아이디
-            const url = objectUrl[key]; // 오브젝트 url
-            if(objectUrl[key])
-                assignObject( url );
-        })
-    }
-    //menuButton[0].onclick = cancle;
-    cancleButton[0].onclick = cancle;
-    completeButton[0].onclick = complete;
-}
-function cancle() { // 오브젝트 추가하기 비활성화
-    selectRemove();
-    addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
-    addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
-}
-function selectRemove() { // 이전에 선택한 오브젝트 제거
-    const allChildren = selectGroup.children;
-    const lastObject = [allChildren[allChildren.length - 1], allChildren[allChildren.length - 2]];
-    selectGroup.remove(lastObject[0]);
-    selectGroup.remove(lastObject[1]);
-}
-function complete() { // 오브젝트 배치 완료
-    if(!key) {
-        alert("물건을 선택 후 배치해주세요.");
-    }
-    else {
-        console.log(key); // 오브젝트 id
-        console.log(prePosition); // 위치 정보 
-        // 완료되면 object db에 해당 정보 저장.
-        // 이후 3D 공간 전체를 reload 하여 배치에 사용했던 오브젝트는 삭제하고, 배치 완료된 오브젝트로...
-
-        addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
-        menuArea[0].style.display = "block"; // 메뉴 사용 환경 활성화
-        postWriteOrLink[0].style.display = "block"; // 게시물 작성 또는 연결 선택 페이지 활성화
-    }
-}
+// 오브젝트 썸네일 파일 => 오브젝트 id : 오브젝트 썸네일 이미지 경로
+const objectThumbnailUrl = {'ob1': '../../object_thumbnail/Old_Bicycle.png', 'ob2': '../../object_thumbnail/Plants_on_table.png', 'ob3': '../../object_thumbnail/Stand_light.png'};
 
 let camera;
 const group = new THREE.Group();
@@ -268,52 +217,6 @@ function animate () {
     render();
     requestAnimationFrame(animate);      
 }
-// function thumbnailFilming () {
-//     render();
-//     canvas.toBlob((blob) => {
-//     saveBlob(blob, `screencapture-${ canvas.width }x${ canvas.height }.png`);
-    
-//     });    
-    
-//     // html2canvas(document.body).then(canvas => {
-//     //     document.body.appendChild(canvas);
-//     //     const link = document.createElement('a')
-//     //     link.download = 'filename.jpg'
-//     //     link.href = canvas.toDataURL()
-//     //     document.body.appendChild(link)
-//     //     link.click()
-//     // });
-//     // divContainer.toBlob((blob) => {
-
-//     //   saveBlob(blob, `screencapture-${divContainer.width}x${divContainer.height}.png`);
-//     // });    
-// }
-
-
-// 썸네일 촬영하기 버튼 구현
-const thumbnailButton = document.querySelector('#thumbnailButton');
-thumbnailButton.addEventListener('click', () => {
-    //thumbnail을 촬영하기 전엔 항상 rendering을 해주어야 함
-    render();
-    canvas.toBlob((blob) => {
-        saveBlob(blob, `screencapture-${ canvas.width }x${ canvas.height }.png`);
-    });
-});
-const saveBlob = (function() {
-    const a = document.createElement('a');
-    document.body.appendChild(a);
-    a.style.display = 'none';
-    return function saveData(blob, fileName) {
-       const url = window.URL.createObjectURL(blob);
-       a.href = url;
-       a.download = fileName;
-       a.click();
-    };
-}());
-
-function render() {
-    renderer.render(scene, camera);
-}
 
 function drawRay() {
     let camDir = new THREE.Vector3();
@@ -391,4 +294,135 @@ function resize () {
 
     //renderer의 크기를 설정
     renderer.setSize(width, height);
+}
+
+// 배치하고 싶은 오브젝트 선택 시
+const selectObject = document.getElementsByClassName("object-thumbnail"); // 오브젝트 썸네일
+//const menuButton = document.getElementsByClassName("menu-button"); // 메뉴 버튼
+const cancleButton = document.getElementsByClassName("select-cancle"); // 취소 버튼
+const completeButton = document.getElementsByClassName("select-complete"); // 완료 버튼
+const addIcon = document.getElementsByClassName("bi-box"); // 오브젝트 추가 버튼
+const addView = document.getElementsByClassName("object-add"); // 오브젝트 추가 기능
+const menuArea = document.getElementsByClassName("menu-area"); // 메뉴 사용 환경
+const postWriteOrLink = document.getElementsByClassName("post-write-or-link"); // 게시물 작성 또는 연결 선택 페이지
+
+let key; // 오브젝트 id
+let prePosition = [1, -2, -4]; // 배치 위치
+
+window.onload = function () {
+    for(let i = 0; i < 4; i++) {
+        selectObject[i].addEventListener( 'click', function() {
+            key = selectObject[i].classList.item(1); // 오브젝트 아이디
+            const url = objectUrl[key]; // 오브젝트 url
+            if(objectUrl[key])
+                assignObject( url );
+        })
+    }
+    //menuButton[0].onclick = cancle;
+    cancleButton[0].onclick = cancle;
+    completeButton[0].onclick = complete;
+}
+function cancle() { // 오브젝트 추가하기 비활성화
+    selectRemove();
+    addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
+    addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
+}
+function selectRemove() { // 이전에 선택한 오브젝트 제거
+    const allChildren = selectGroup.children;
+    const lastObject = [allChildren[allChildren.length - 1], allChildren[allChildren.length - 2]];
+    selectGroup.remove(lastObject[0]);
+    selectGroup.remove(lastObject[1]);
+}
+function complete() { // 오브젝트 배치 완료
+    if(!key) {
+        alert("물건을 선택 후 배치해주세요.");
+    }
+    else {
+        selectRemove();
+        // 게시물 연결 페이지에서 보일 오브젝트 썸네일 이미지 경로 설정
+        const postLinkImage = document.getElementsByClassName('post-link-image');
+        postLinkImage[0].src = objectThumbnailUrl[key];
+
+        addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
+        menuArea[0].style.display = "block"; // 메뉴 사용 환경 활성화
+        postWriteOrLink[0].style.display = "block"; // 게시물 작성 또는 연결 선택 페이지 활성화
+
+        // 게시물 연결 건너뛰기를 선택한 경우 = 게시물 연결 없이 오브젝트만 배치
+        const postPassButton = document.getElementsByClassName('post-pass-button');
+        postPassButton[0].onclick = ObjectAssignNullPost;
+        
+        // 게시물 작성이 완료된 경우도 추가 필요
+
+        // 연결할 게시물 선택이 완료된 경우
+        const postLinkCompleteButton = document.getElementsByClassName('post-link-complete-button');
+        postLinkCompleteButton[0].onclick = objectAndPostLink;
+    }
+}
+const ObjectAssignNullPost = () => {
+    alert("오브젝트 배치 정보 db에 저장하기(console 확인)");
+    console.log("오브젝트 id: " + key); // 오브젝트 id
+    console.log("오브젝트 배치 위치: " + prePosition); // 위치 정보
+    // 완료되면 object db에 해당 정보 저장하고 3d 공간 reload
+
+    menuArea[0].style.display = "none"; // 메뉴 사용 환경 비활성화
+    postWriteOrLink[0].style.display = "none"; // 게시물 작성 또는 연결 선택 페이지 비활성화
+    addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
+}
+const objectAndPostLink = () => {
+    let postId;
+    const postTextRadio = document.getElementsByClassName('post-text-radio');
+    for(let i = 0; i < postTextRadio.length; i++) {
+        if(postTextRadio[i].checked) {
+            postId = postTextRadio[i].value; // 연결할 게시물 id
+        }
+    }
+    menuArea[0].style.display = "none"; // 메뉴 사용 환경 비활성화
+    document.getElementsByClassName('post-link-view')[0].style.display = "none"; // 게시물 연결 페이지 비활성화
+    addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
+
+    alert("오브젝트 배치 정보 + 게시물 연결 정보 db에 저장하기(console 확인)");
+    console.log("오브젝트 id: " + key); // 오브젝트 id
+    console.log("오브젝트 배치 위치: " + prePosition); // 위치 정보
+    console.log("연결할 게시물 id: " + postId); // 게시물 id
+    // 완료되면 object db에 해당 정보 저장하고 3d 공간 reload
+}
+
+// 썸네일 촬영하기 기능 구현
+const thumbnailButton = document.getElementsByClassName('capture-button');
+thumbnailButton[0].addEventListener('click', () => {
+    //thumbnail을 촬영하기 전엔 항상 rendering을 해주어야 함
+    render();
+    canvas.toBlob((blob) => {
+        saveBlob(blob, `screencapture-${ canvas.width }x${ canvas.height }.png`);
+    });
+
+    const thumbnailImageUrl = "../../images/test-thumnail.png"; // 썸네일 이미지 파일 경로
+
+    // 편집모드 비활성화
+    const editMode = document.getElementsByClassName('edit-mode');
+    editMode[0].style.display = "none";
+
+    // 썸네일 변경 확인 페이지 활성화
+    const changeThumbnailCheck = document.getElementsByClassName('change-thumbnail');
+    changeThumbnailCheck[0].style.display = "block";
+    menuArea[0].style.display = "block";
+
+    // 변경된 이미지 보여주기
+    const changeThumbnailImage = document.getElementsByClassName('change-thumbnail-image');
+    changeThumbnailImage[0].src = thumbnailImageUrl;
+});
+const saveBlob = (function() {
+    const a = document.createElement('a');
+    document.body.appendChild(a);
+    a.style.display = 'none';
+    return function saveData(blob, fileName) {
+       const url = window.URL.createObjectURL(blob);
+       a.href = url;
+       a.download = fileName;
+       a.click();
+    };
+}());
+
+function render() {
+    renderer.render(scene, camera);
 }
