@@ -21,6 +21,8 @@ const objectListView = document.getElementsByClassName("object-list");
 const objectListShowButton = document.getElementsByClassName("list-show");
 const ListCloseButton = document.getElementsByClassName("bi-caret-down-fill");
 const ListOpenButton = document.getElementsByClassName("bi-caret-up-fill");
+const objectLeftRotaion = document.getElementsByClassName("bi-arrow-counterclockwise");
+const objectRightRotaion = document.getElementsByClassName("bi-arrow-clockwise");
 const objectSelectCancle = document.getElementsByClassName("select-cancle");
 const objectSelectComplete = document.getElementsByClassName("select-complete");
 
@@ -152,6 +154,8 @@ const closeObjectList = () => {
     ListOpenButton[0].style.display = "block"; // 리스트 열기 버튼 활성화
 
     objectListView[0].style.top = "100vh"; // 오브젝트 리스트 숨기기
+    objectLeftRotaion[0].style.top = "65.5vh"; // 오브젝트 좌방향 회전 버튼 아래로 이동
+    objectRightRotaion[0].style.top = "65.5vh"; // 오브젝트 우방향 회전 버튼 아래로 이동
     objectListShowButton[0].style.top = "65.5vh"; // 오브젝트 리스트 열기/닫기 버튼 아래로 이동
     objectSelectCancle[0].style.top = "67vh"; // 배치 취소 버튼 아래로 이동
     objectSelectComplete[0].style.top = "67vh"; // 배치 완료 버튼 아래로 이동
@@ -162,6 +166,8 @@ const openObjectList = () => {
     ListOpenButton[0].style.display = "none"; // 리스트 열기 버튼 비활성화
 
     objectListView[0].style.top = "70vh"; // 오브젝트 리스트 보이기
+    objectLeftRotaion[0].style.top = "35.5vh"; // 오브젝트 좌방향 회전 버튼 위로 이동
+    objectRightRotaion[0].style.top = "35.5vh"; // 오브젝트 우방향 회전 버튼 위로 이동
     objectListShowButton[0].style.top = "35.5vh"; // 오브젝트 리스트 열기/닫기 버튼 위로 이동
     objectSelectCancle[0].style.top = "37vh"; // 배치 취소 버튼 위로 이동
     objectSelectComplete[0].style.top = "37vh"; // 배치 완료 버튼 위로 이동

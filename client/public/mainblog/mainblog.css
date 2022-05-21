@@ -242,6 +242,19 @@ body {
     height: 25vh;
     margin: 0 auto;
 }
+/* 오브젝트 좌방향 회전 버튼 */
+.bi-arrow-counterclockwise, .bi-arrow-clockwise {
+    display: inline;
+    position: relative;
+    float: right;
+    top: 35.5vh;
+    margin-right: 1.2vh;
+
+    font-size: 5.5vh;
+}
+.bi-arrow-clockwise {
+    margin-right: 2vh;
+}
 /* 오브젝트 리스트 열고 닫기 버튼 */
 .list-show {
     display: inline;

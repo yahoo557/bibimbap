@@ -74,7 +74,7 @@ function setupModel() {
     scene.add(group);
 }
 
-// 선택된 오브젝트
+// 배치를 위해 선택된 오브젝트
 let pastpositionZ = -4;
 let pastpositionY = -1.7;
 function assignObject( url ) {
@@ -298,7 +298,9 @@ function resize () {
 
 // 배치하고 싶은 오브젝트 선택 시
 const selectObject = document.getElementsByClassName("object-thumbnail"); // 오브젝트 썸네일
-//const menuButton = document.getElementsByClassName("menu-button"); // 메뉴 버튼
+const menuBar = document.getElementsByClassName("menu-bar"); // 메뉴 버튼
+const objectLeftRotaionButton = document.getElementsByClassName("bi-arrow-counterclockwise"); // 오브젝트 좌방향 회전 버튼
+const objectRightRotaionButton = document.getElementsByClassName("bi-arrow-clockwise"); // 오브젝트 우방향 회전 버튼
 const cancleButton = document.getElementsByClassName("select-cancle"); // 취소 버튼
 const completeButton = document.getElementsByClassName("select-complete"); // 완료 버튼
 const addIcon = document.getElementsByClassName("bi-box"); // 오브젝트 추가 버튼
@@ -308,32 +310,58 @@ const postWriteOrLink = document.getElementsByClassName("post-write-or-link"); /
 
 let key; // 오브젝트 id
 let prePosition = [1, -2, -4]; // 배치 위치
+let preRotation = 0; // 배치 방향 - 0: 정면, 1: 우측: 2: 뒤, 3: 좌측
 
-window.onload = function () {
+// 오브젝트 썸네일 클릭
+window.onload = () => {
     for(let i = 0; i < 4; i++) {
-        selectObject[i].addEventListener( 'click', function() {
+        selectObject[i].addEventListener( 'click', () => {
             key = selectObject[i].classList.item(1); // 오브젝트 아이디
             const url = objectUrl[key]; // 오브젝트 url
             if(objectUrl[key])
                 assignObject( url );
         })
     }
-    //menuButton[0].onclick = cancle;
-    cancleButton[0].onclick = cancle;
-    completeButton[0].onclick = complete;
 }
-function cancle() { // 오브젝트 추가하기 비활성화
+// 오브젝트 좌방향 회전
+objectLeftRotaionButton[0].addEventListener( 'click', () => {
+    if(key) { // 선택된 오브젝트가 있을 때만 작동
+        const allChildren = selectGroup.children;
+        const selectObject = allChildren[allChildren.length - 2];
+        const objectRange = allChildren[allChildren.length - 1];
+
+        preRotation = (preRotation + 3) % 4;
+        selectObject.rotation.y += Math.PI / 2;
+        objectRange.rotation.z += Math.PI / 2;
+    }
+});
+// 오브젝트 우방향 회전
+objectRightRotaionButton[0].addEventListener( 'click', () => {
+    if(key) { // 선택된 오브젝트가 있을 때만 작동
+        const allChildren = selectGroup.children;
+        const selectObject = allChildren[allChildren.length - 2];
+        const objectRange = allChildren[allChildren.length - 1];
+
+        preRotation = (preRotation + 1) % 4;
+        selectObject.rotation.y -= Math.PI / 2;
+        objectRange.rotation.z -= Math.PI / 2;
+    }
+});
+// 취소 버튼 => 오브젝트 추가하기 비활성화
+cancleButton[0].addEventListener( 'click', () => {
     selectRemove();
     addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
     addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
-}
-function selectRemove() { // 이전에 선택한 오브젝트 제거
+});
+// 이전에 선택한 오브젝트 제거
+const selectRemove = () => {
     const allChildren = selectGroup.children;
     const lastObject = [allChildren[allChildren.length - 1], allChildren[allChildren.length - 2]];
     selectGroup.remove(lastObject[0]);
     selectGroup.remove(lastObject[1]);
 }
-function complete() { // 오브젝트 배치 완료
+// 완료 버튼 선택 => 오브젝트 배치 완료
+completeButton[0].addEventListener( 'click', () => {
     if(!key) {
         alert("물건을 선택 후 배치해주세요.");
     }
@@ -357,11 +385,12 @@ function complete() { // 오브젝트 배치 완료
         const postLinkCompleteButton = document.getElementsByClassName('post-link-complete-button');
         postLinkCompleteButton[0].onclick = objectAndPostLink;
     }
-}
+});
 const ObjectAssignNullPost = () => {
     alert("오브젝트 배치 정보 db에 저장하기(console 확인)");
     console.log("오브젝트 id: " + key); // 오브젝트 id
     console.log("오브젝트 배치 위치: " + prePosition); // 위치 정보
+    console.log("오브젝트 배치 방향: " + preRotation); // 방향 정보
     // 완료되면 object db에 해당 정보 저장하고 3d 공간 reload
 
     menuArea[0].style.display = "none"; // 메뉴 사용 환경 비활성화
@@ -383,6 +412,7 @@ const objectAndPostLink = () => {
     alert("오브젝트 배치 정보 + 게시물 연결 정보 db에 저장하기(console 확인)");
     console.log("오브젝트 id: " + key); // 오브젝트 id
     console.log("오브젝트 배치 위치: " + prePosition); // 위치 정보
+    console.log("오브젝트 배치 방향: " + preRotation); // 방향 정보
     console.log("연결할 게시물 id: " + postId); // 게시물 id
     // 완료되면 object db에 해당 정보 저장하고 3d 공간 reload
 }
