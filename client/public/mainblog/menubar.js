@@ -45,7 +45,8 @@ const linkPostListField = document.getElementsByClassName("link-post-list-view")
 // 게시물 id : { 'postTitle' : 게시물 제목, 'postDate' : 게시물 작성일 }
 // 날짜 데이터는 받아와서 string으로 바꿔서 저장하는 작업 필요
 const postInfo = { 'po1' : {'postTitle' : '테스트를 해봅시다 1', 'postDate' : '2022.04.06 01:52'}, 'po2' : {'postTitle' : '테스트를 해봅시다 2', 'postDate' : '2022.04.06 14:52'},
-                'po3' : {'postTitle' : '테스트를 해봅시다 3', 'postDate' : '2022.04.07 10:23'}, 'po4' : {'postTitle' : '테스트를 해봅시다 4', 'postDate' : '2022.04.08 03:23'}};
+                'po3' : {'postTitle' : '테스트를 해봅시다 3', 'postDate' : '2022.04.07 10:23'}, 'po4' : {'postTitle' : '테스트를 해봅시다 4', 'postDate' : '2022.04.08 03:23'},
+                'po5' : {'postTitle' : '테스트를 해봅시다 5', 'postDate' : '2022.04.09 21:32'}};
 
 
 /* 편집 모드 */
@@ -58,6 +59,8 @@ const changeThumbnailView = document.getElementsByClassName("change-thumbnail");
 
 /* 게시물 리스트 */
 const listIcon = document.getElementsByClassName("bi-file-text");
+const postListView = document.getElementsByClassName("post-list");
+const postListField = document.getElementsByClassName("post-list-frame");
 
 // 메뉴바 보이기
 const showMenu = () => { 
@@ -101,6 +104,8 @@ const objectAdd = () => {
         editIcon[0].style.left = "0vh"; // 편집 모드 버튼 비활성화
         editView[0].style.display = "none"; // 편집 모드 화면 숨기기
         listIcon[0].style.left = "0vh"; // 게시물 리스트 버튼 비활성화
+        postListView[0].style.display = "none"; // 게시물 리스트 화면 비활성화
+        menuArea[0].style.display = "none"; // 메뉴 사용 환경(반투명 배경) 비활성화
 
         pre[0].style.opacity = "30%"; // 이전 버튼 비활성화
         if(Object.keys(thumnailsUrl).length <= maxObject) next[0].style.opacity = "30%"; // 다음 버튼 비활성화
@@ -219,6 +224,8 @@ const editMode = () => {
         addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
         addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
         listIcon[0].style.left = "0vh"; // 게시물 리스트 버튼 비활성화
+        postListView[0].style.display = "none"; // 게시물 리스트 화면 비활성화
+        menuArea[0].style.display = "none"; // 메뉴 사용 환경(반투명 배경) 비활성화
     }
     else {
         editIcon[0].style.left = "0vh"; // 편집 모드 버튼 비활성화
@@ -245,6 +252,9 @@ const thumbnailChangeCancle = () => {
 const postList = () => {
     if(listIcon[0].style.left == "0vh") {
         listIcon[0].style.left = "15vh"; // 게시물 리스트 버튼 활성화
+        postListView[0].style.display = "block"; // 게시물 리스트 화면 활성화
+        menuArea[0].style.display = "block"; // 메뉴 사용 환경(반투명 배경) 활성화
+        postListLoad();
 
         addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
         addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
@@ -253,5 +263,37 @@ const postList = () => {
     }
     else {
         listIcon[0].style.left = "0vh"; // 게시물 리스트 버튼 비활성화
+        postListView[0].style.display = "none"; // 게시물 리스트 화면 비활성화
+        menuArea[0].style.display = "none"; // 메뉴 사용 환경(반투명 배경) 비활성화
+    }
+}
+// 게시물 리스트 나타나기
+const postListLoad = () =>{
+    const postListLen = Object.keys(postInfo).length; // 게시물 개수
+    for(let i = 0; i < postListLen; i++) {
+        const postId = Object.keys(postInfo)[i]; // 게시물
+        const postTextTitle = "<div class='post-list-title'>" + postInfo[postId]['postTitle'] + "</div>"; // 게시물 제목
+        const postTextDate = "<div class='post-list-date'>" + "작성일 : " + postInfo[postId]['postDate'] + "</div>"; // 게시물 작성일자
+
+        const postText = document.createElement('div'); // div 태그 생성
+        postText.setAttribute('class', 'post-list-text'); // div 태그 class명 지정
+        postText.innerHTML = postTextTitle + postTextDate;
+
+        postListField[0].appendChild(postText); // 리스트에 div 태그 삽입
+
+        if(blogInfo["ownerId"] == userId) { // 타인의 블로그가 아니라 자신의 블로그인 경우
+            const buttonSet = document.createElement('div');
+            buttonSet.setAttribute('class', 'post-modify-and-delete'); // div 태그 class명 지정
+            const modifyButton = "<div class='post-modify'>수정하기</div>";
+            const deleteButton = "<div class='post-delete'>삭제하기</div>";
+            buttonSet.innerHTML = modifyButton + deleteButton;
+            postListField[0].appendChild(buttonSet);
+        }
+
+        if(i != postListLen-1) { // 마지막 게시물이 아닌 경우
+            const hrTag = document.createElement('hr'); // hr 태그 생성
+            hrTag.setAttribute('class', 'post-list-hr'); // hr 태그 class명 지정
+            postListField[0].appendChild(hrTag); // 리스트에 hr 태그 삽입
+        }
     }
 }

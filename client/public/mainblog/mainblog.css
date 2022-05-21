@@ -688,3 +688,104 @@ body {
     background-color: var(--bright-red);
     border-radius: 50%;
 }
+
+/* ----------------------------------------------------- 게시물 리스트 -------------------------------------------------*/
+.post-list {
+    display: none;
+    z-index: 12000;
+
+    margin-left: 31vh; /* 메뉴 바 + 게시물 리스트 버튼 공간만큼 */
+}
+/* 게시물 리스트 제목 */
+.post-list-page-title {
+    display: inline-block;
+    position: relative;
+    z-index: 12000;
+
+    margin-top: 5vh;
+    margin-left: 1vh;
+
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 5vh;
+}
+/* 게시물 리스트 공간 */
+.post-list-frame {
+    display: block;
+    position: relative;
+    z-index: 12000;
+    margin-top: 2vh;
+
+    width: 82vw;
+    height: 82vh;
+    text-align: center;
+
+    background-color: white;
+    border-radius: 3vh;
+    overflow: auto;
+}
+/* 스크롤바 디자인 */
+.post-list-frame::-webkit-scrollbar {
+    width: 0.5vw;
+}
+.post-list-frame::-webkit-scrollbar-thumb {
+    background-color: var(--dark-blue);
+    border-radius: 1vh;
+}
+.post-list-frame::-webkit-scrollbar-track {
+    background-color: var(--main-color);
+    border-radius: 1vh;
+}
+/* 게시물 목록 하나 */
+.post-list-text {
+    display: inline-block;
+    position: relative;
+    margin: 0 23vw 5vh 0;
+    padding-top: 6vh;
+}
+/* 게시물 제목 + 작성일 */
+.post-list-title, .post-list-date {
+    font-family: 'Cafe24SsurroundAir';
+    cursor: pointer; /* 마우스 커서 모양 */
+}
+/* 게시물 제목 */
+.post-list-title {
+    font-size: 4vh;
+}
+/* 게시물 작성일 */
+.post-list-date {
+    margin: 1vh 0 0 3.3vh;
+    font-size: 3vh;
+}
+/* 게시물 수정, 삭제 버튼 */
+.post-modify-and-delete {
+    display: inline-block;
+    position: relative;
+    margin-left: 20vw;
+
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 2.5vh;
+
+    cursor: pointer; /* 마우스 커서 모양 */
+}
+/* 게시물 수정하기 버튼 */
+.post-modify {
+    display: inline-block;
+    position: relative;
+    padding: 1vh 1.5vh;
+
+    background-color: var(--bright-green);
+    border-radius: 3vh 0 0 3vh;
+}
+/* 게시물 삭제하기 버튼 */
+.post-delete {
+    display: inline-block;
+    position: relative;
+    padding: 1vh 1.5vh;
+    background-color: var(--bright-red);
+    border-radius: 0 3vh 3vh 0;
+}
+/* 게시물 구분선 */
+.post-list-hr {
+    margin-left: 4vh;
+    width: 77vw;
+}
