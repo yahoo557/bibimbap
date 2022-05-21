@@ -75,10 +75,17 @@ function setupModel() {
 }
 
 // 배치를 위해 선택된 오브젝트
-let pastpositionZ = -4;
-let pastpositionY = -1.7;
 function assignObject( url ) {
     selectRemove(); // 이전에 선택한 오브젝트 삭제
+
+    // 카메라가 바라보고 있는 방향
+    let lookCamera = new THREE.Vector3(); 
+    camera.getWorldDirection(lookCamera);
+
+    // 사용자가 보고 있는 방향을 기준으로 오브젝트가 생성되도록
+    prePosition[0] = camera.position.x + lookCamera.x;
+    prePosition[2] = camera.position.z + lookCamera.z * 4;
+
 
     const gltfloader = new GLTFLoader();
     const dragObject = [];
@@ -91,7 +98,6 @@ function assignObject( url ) {
             selectGroup.add(root);
             dragObject.push(root);
             objParentTransform.push( root );
-            root.position.set( 1, -1.7, -4 ); //모델 위치 지정
 
             // 오브젝트 배치할 때 아래에 위치 표시
             const boundingBox = new THREE.Box3().setFromObject( root ); // 모델의 바운딩 박스 생성
@@ -101,8 +107,23 @@ function assignObject( url ) {
             const rangeMaterial = new THREE.MeshBasicMaterial({ color: "#858585" });
             const objectRange = new THREE.Mesh( rangeGeometry, rangeMaterial );
 
+            // 최초 배치 위치가 벽을 벗어나는 경우 방 안으로 배치되도록
+            if(prePosition[0] < -3.5 + objectSize.x/2) {
+                prePosition[0] = -3.5 + objectSize.x/2;
+            }
+            if(prePosition[0] > 3.5 - objectSize.x/2) {
+                prePosition[0] = 3.5 - objectSize.x/2;
+            }
+            if(prePosition[2] < -5 + objectSize.z/2) {
+                prePosition[2] = -5 + objectSize.z/2;
+            }
+            if(prePosition[2] > 5 - objectSize.z/2) {
+                prePosition[2] = 5 - objectSize.z/2;
+            }
+            root.position.set( prePosition[0], prePosition[1] + 0.3, prePosition[2] ); //모델 위치 지정
+
             selectGroup.add(objectRange);
-            objectRange.position.set( 1, -1.999, -4 );
+            objectRange.position.set( prePosition[0], prePosition[1] + 0.001, prePosition[2] );
             objectRange.rotation.x = - Math.PI / 2;
         }
     );
@@ -118,8 +139,7 @@ function assignObject( url ) {
     dragControls.addEventListener( 'drag', function ( event ) {
         // 위로는 못 움직이게 제한(바닥 오브젝트 기준) + 마우스 위아래 이동을 z축에 적용
         if(event.object.position.y != -1.7) {
-            event.object.position.z = pastpositionZ + (pastpositionY - event.object.position.y); // z축(앞뒤 거리) 이동
-            pastpositionY = event.object.position.y;
+            event.object.position.z = prePosition[2] + (prePosition[1]- event.object.position.y + 0.3); // z축(앞뒤 거리) 이동
             event.object.position.y = -1.7; // y축(높이) 고정
         }
         // x축이 벽 밖으로 나가지 않도록
@@ -132,8 +152,7 @@ function assignObject( url ) {
         // 아래 그림자도 같이 움직임
         const allChildren = selectGroup.children;
         const objectRange = allChildren[allChildren.length - 1];
-        objectRange.position.set(event.object.position.x, -1.999, event.object.position.z);
-        pastpositionZ = event.object.position.z;
+        objectRange.position.set(event.object.position.x, prePosition[1] + 0.001, event.object.position.z);
 
         prePosition[0] = event.object.position.x;
         prePosition[1] = event.object.position.y;
@@ -146,6 +165,7 @@ function setupCamera() {
         window.innerWidth / window.innerHeight, 0.1, 2000);
     
     camera.position.set(0, -1, 0);
+    camera.lookAt(0, -1, 1);
     //생성된 camera 객체를 다른 메소드에서 사용할 수 있도록
     controls = new PointerLockControls(camera, divContainer);
     scene.add(controls.getObject());
@@ -309,7 +329,7 @@ const menuArea = document.getElementsByClassName("menu-area"); // 메뉴 사용 
 const postWriteOrLink = document.getElementsByClassName("post-write-or-link"); // 게시물 작성 또는 연결 선택 페이지
 
 let key; // 오브젝트 id
-let prePosition = [1, -2, -4]; // 배치 위치
+let prePosition = [0, -2, -4]; // 배치 위치
 let preRotation = 0; // 배치 방향 - 0: 정면, 1: 우측: 2: 뒤, 3: 좌측
 
 // 오브젝트 썸네일 클릭
@@ -355,10 +375,7 @@ cancleButton[0].addEventListener( 'click', () => {
 });
 // 이전에 선택한 오브젝트 제거
 const selectRemove = () => {
-    const allChildren = selectGroup.children;
-    const lastObject = [allChildren[allChildren.length - 1], allChildren[allChildren.length - 2]];
-    selectGroup.remove(lastObject[0]);
-    selectGroup.remove(lastObject[1]);
+    selectGroup.clear();
 }
 // 완료 버튼 선택 => 오브젝트 배치 완료
 completeButton[0].addEventListener( 'click', () => {
