@@ -6,6 +6,13 @@ const menuBar = document.getElementsByClassName("menu-bar");
 // 메뉴 사용 환경
 const menuArea = document.getElementsByClassName("menu-area");
 
+// 블로그명, 블로그 주인 닉네임, 블로그 주인 아이디 정보
+const blogInfo = {'blogName': '블로그명', 'blogOwner': '블로거', 'ownerId': 'owner123'};
+const blogNameText = document.getElementsByClassName("blog-name");
+const blogOwnerText = document.getElementsByClassName("blog-owner");
+
+// 방문자 id
+const userId = 'owner123';
 
 /* 오브젝트 추가 */
 const addIcon = document.getElementsByClassName("bi-box");
@@ -55,6 +62,14 @@ const showMenu = () => {
     menuIcon[0].style.display = "none"; // 메뉴 아이콘 숨기기
     closeIcon[0].style.display = "block"; // 닫기 아이콘 보이기
     menuBar[0].style.left = "0vw"; // 메뉴 바 보이기
+
+    blogNameText[0].innerHTML = blogInfo["blogName"];
+    blogOwnerText[0].innerHTML = blogInfo["blogOwner"];
+
+    if(blogInfo["ownerId"] != userId) { // 자신의 블로그가 아니라 타인의 블로그인 경우
+        addIcon[0].style.left = "-20vh"; // 추가하기 아이콘 숨기기
+        editIcon[0].style.left = "-20vh"; // 편집모드 아이콘 숨기기
+    }
 }
 
 // 메뉴바 숨기기
