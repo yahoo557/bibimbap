@@ -13,6 +13,10 @@ const cancleButton = document.getElementsByClassName("select-cancle"); // 취소
 const addIcon = document.getElementsByClassName("bi-box"); // 오브젝트 추가 버튼
 const addView = document.getElementsByClassName("object-add"); // 오브젝트 추가 기능
 
+let physicsWorld;
+
+const clock = new THREE.Clock();
+
 window.onload = function () {
     for(let i = 0; i < 4; i++) {
         selectObject[i].addEventListener( 'click', function() {
@@ -77,9 +81,10 @@ const scene = new THREE.Scene();
 //밑의 3개는 정의되어 있지 않음
 setupCamera(); //Camera객체를 구성하는 메소드 호출
 setupLight(); //Ligth 설정
-setupModel(); //3차원 Model 설정
+// setupModel(); //3차원 Model 설정
 resize();
 animate();
+setupAmmo();
 // //제일 처음 기본 썸네일 저장
 // //썸네일을 저장하기 전엔 항상 rendering을 해준 후에 해야 함
 // render();
@@ -96,18 +101,47 @@ animate();
 //3차원 그래픽 장면을 만들어주는 메소드
 // requestAnimationFrame(this.render.bind(this));
 
-function setupModel() {
+function setupRoom() {
     //정육면체 형상을 정의
     //인자(가로, 세로, 깊이)
-    const geometry = new THREE.BoxGeometry(7, 4, 10);
+    const position = {x: 0, y:0, z:0};
+    const scale = { x: 7, y: 4, z: 10}
+    const geometry = new THREE.BoxGeometry();
     
     const fillmaterial = new THREE.MeshPhongMaterial({color: 0xffffff, side: THREE.BackSide});
     const room = new THREE.Mesh(geometry, fillmaterial);
+
+    room.position.set(position.x, position.y, position.z);
+    room.scale.set(scale.x, scale.y, scale.z);
+
     objParentTransform.push(room);
 
     group.add(room);
     scene.add(group);
+
+    // //오브젝트와 같은 사이즈의 물리 객체를 생성해야 함
+    // // Ammo.btTransform을 통해 위치와 회전값을 전해줌
+    // const transform = new Ammo.btTransform();
+    // const quaternion = { x: 0, y: 0, z: 0, w: 1 };
+    // transform.setIdentity();
+    // transform.setOrigin(new Ammo.btVector3(position.x, position.y, position.z));
+    // transform.setRotation(
+    //     new Ammo.btQuaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w));
+    // const motionState = new Ammo.btDefaultMotionState(transform);
+    // const colShape = new Ammo.btBoxShape(
+    //     new Ammo.btVector3(scale.x * 0.5, scale.y * 0.5, scale.z * 0.5)
+    // );
+    // // 질량이 0이면 물리적인 영향을 전혀 받지 않고 어떠한 변형도 없이 지정된 자리에 가만히 있음
+    // const mass = 0;
+    // // world에 추가
+    // colShape.calculateLocalInertia(mass);
+    // const rbInfo = new Ammo.btRigidBodyConstructionInfo(mass, motionState, colShape);
+    // const roomEngine = new Ammo.btRigidBody(rbInfo);
+    // physicsWorld.addRigidBody(roomEngine);   
+    
+    // createFpsBox();
 }
+
 
 // 선택된 오브젝트
 function assignObject( url ) {
@@ -122,7 +156,7 @@ function assignObject( url ) {
             const root = gltf.scene;
             selectGroup.add( root ); //group 없으면 _scene.add( root );
             objParentTransform.push( root );
-            root.position.set( 1, -1.7, -3 ); //모델 위치 지정
+            root.position.set( 1, 0, -3 ); //모델 위치 지정
 
             // 오브젝트 배치할 때 아래에 위치 표시
             const boundingBox = new THREE.Box3().setFromObject( root ); // 모델의 바운딩 박스 생성
@@ -140,7 +174,7 @@ function assignObject( url ) {
     
     scene.add(selectGroup);
     renderer.render(scene, camera);
-    requestAnimationFrame(setupModel);
+    requestAnimationFrame(setupRoom);
 
     // 드래그 앱 드롭으로 오브젝트 옮기기
     dragObject.push(selectGroup);
@@ -160,6 +194,45 @@ function assignObject( url ) {
         event.object.material.emissive.set( 0x000000 );
     } );
 }
+
+// function createFpsBox() {
+//     const scale = {x: 1, y: 1, z:1};
+//     const fpsBoxGeometry = new THREE.BoxGeometry(scale.x, scale.y, scale.z);
+//     const fpsBoxMaterial = new THREE.MeshPhongMaterial({
+//         color: 0x111111,
+//         opacity: 0.9
+//     });
+
+//     const fpsBox = new THREE.Mesh(fpsBoxGeometry, fpsBoxMaterial);
+//     fpsBox.position.set(0, -0.5, -1.2);
+//     camera.add(fpsBox);
+
+//     // Ammo.btTransform을 통해 위치와 회전값을 전해줌
+//     const mass = 0;
+
+//     //fpsBox의 현재 회전값을 가져옴
+//     const quaternion = {x:0, y:0, z:0, w:1};  
+    
+//     const transform = new Ammo.btTransform();
+//     transform.setIdentity();
+//     transform.setOrigin( new Ammo.btVector3(camera.position.x, camera.position.y, camera.position.z));
+//     transform.setRotation( new Ammo.btQuaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w));
+//     const motionState = new Ammo.btDefaultMotionState(transform);
+//     const colShape = new Ammo.btBoxShape(new Ammo.btVector3(scale.x * 0.5, scale.y * 0.5, scale.z * 0.5));    
+
+//     //관성의 법칙
+//     const localInertia = new Ammo.btVector3(0, 0, 0);
+//     colShape.calculateLocalInertia(mass, localInertia);
+
+//     const rbInfo = new Ammo.btRigidBodyConstructionInfo(mass, motionState, colShape);
+//     const body = new Ammo.btRigidBody( rbInfo );
+//     physicsWorld.addRigidBody(body);    
+
+//     //fpsBox와 물리엔진을 연결
+//     fpsBox.physicsWorld = body;
+// }
+
+
 
 function setupCamera() {
     camera = new THREE.PerspectiveCamera(75, 
@@ -263,6 +336,7 @@ const saveBlob = (function() {
 
 function render() {
     renderer.render(scene, camera);
+    // update();
 }
 
 function drawRay() {
@@ -270,7 +344,7 @@ function drawRay() {
     camera.getWorldDirection(camDir);
     raycaster.set(camera.position, camDir);
 
-    const intersects = raycaster.intersectObjects( objParentTransform, false );
+    // const intersects = raycaster.intersectObjects( objParentTransform, false );
     
     // console.log(intersects.length);
 	// if(intersects.length > 0) {
@@ -342,3 +416,56 @@ function resize () {
     //renderer의 크기를 설정
     renderer.setSize(width, height);
 }
+
+function setupAmmo () {
+    Ammo().then(() => {
+        //물리적인 충돌과 관련된 객체
+        const overlappingPairCache = new Ammo.btDbvtBroadphase();
+        const collisionConfiguration  = new Ammo.btDefaultCollisionConfiguration();
+        const dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration);
+        const solver = new Ammo.btSequentialImpulseConstraintSolver();
+
+        //중력의 가속도 값인 -9.807을 지정하고 있음
+        physicsWorld = new Ammo.btDiscreteDynamicsWorld(
+            dispatcher, overlappingPairCache, solver, collisionConfiguration);
+        physicsWorld.setGravity(new Ammo.btVector3(0, -9.807, 0));
+
+        setupRoom();
+    });
+}
+
+// function update () {
+//     //이전 업데이트 호출 시간부터 현재 업데이트 호출 시간까지의 차이 값을 구함
+//     const deltaTime = clock.getDelta();
+
+//     if(physicsWorld){
+//         //deltaTime 값을 적용해서 물리적인 적용값을 시뮬레이션 함
+//         physicsWorld.stepSimulation(deltaTime);
+        
+//         //장면을 구상하는 객체들을 순회
+//         scene.traverse(obj3d => {
+//             //현재 순회 대상이 되는 객체의 타입이 Mesh일 경우에 Mesh에 연결된 물리 객체가 있는지 검사
+//             if(obj3d instanceof THREE.Mesh) {
+//                 const objThree = obj3d;
+//                 const objAmmo = objThree.physicsBody;
+//                 //물리 객체가 연결되어 있다면 물리적인 특성으로 인해 변경되는 위치와 회전값을 얻어서 three.js의 mesh에 반영
+//                 if(objAmmo) {
+//                     const motionState = objAmmo.getMotionState();
+    
+//                     if(motionState) {
+//                         let tmpTrans;
+//                         if(tmpTrans === undefined) tmpTrans  = new Ammo.btTransform();
+//                         motionState.getWorldTransform(tmpTrans);
+                        
+//                         const pos = tmpTrans.getOrigin();
+//                         const quat = tmpTrans.getRotation();
+                        
+//                         objThree.position.set(pos.x(), pos.y(), pos.z());
+//                         objThree.quaternion.set(quat.x(), quat.y(), quat.z(), quat.w());
+//                     }                    
+//                 }
+//             }
+//         });
+
+//     }
+// }

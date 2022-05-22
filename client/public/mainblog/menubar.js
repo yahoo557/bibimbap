@@ -1,3 +1,6 @@
+
+
+
 // 메뉴 바 보이기/숨기기
 const menuIcon = document.getElementsByClassName('bi-list');
 const closeIcon = document.getElementsByClassName('bi-x');
