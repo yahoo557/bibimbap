@@ -4,6 +4,11 @@ import { PointerLockControls } from "../three.js-master/examples/jsm/controls/Po
 import { DragControls } from "../three.js-master/examples/jsm/controls/DragControls.js";
 
 // 배치 정보 => 배치 id : { 'objectId': 오브젝트id,  'objectPosition': 오브젝트 위치,  'objectRotaion': 오브젝트 방향,  'postId': 게시물id}
+// object.name에 배치id 적을 것
+const objectAssign = {'as1': { 'objectId': 'ob1',  'objectPosition': [0, -2, 3],  'objectRotation': 0,  'postId': 'po2' },
+                    'as2': { 'objectId': 'ob3',  'objectPosition': [2, -2, 3],  'objectRotation': 1,  'postId': null },
+                    'as3': { 'objectId': 'ob2',  'objectPosition': [-2, -2, 3],  'objectRotation': 2,  'postId': 'po1' }};
+
 // 오브젝트 템플릿 파일 => 오브젝트 id : { 'objectUrl': 오브젝트 파일 경로, 'ablePosition': 배치 가능한 위치(0: 바닥, 1: 벽, 2: 천장)}
 const objectTemplete = {'ob1': {'objectUrl': '../../object_files/Old_Bicycle.glb', 'ablePosition': 0}, 'ob2': {'objectUrl': '../../object_files/Plants_on_table.gltf', 'ablePosition': 0},
                     'ob3': {'objectUrl': '../../object_files/Stand_light.glb', 'ablePosition': 0}};
@@ -73,10 +78,37 @@ function setupModel() {
     objParentTransform.push(room);
 
     group.add(room);
+    setObjectInBlog();
     scene.add(group);
 }
 
-// 배치를 위해 선택된 오브젝트 = 바닥
+// 배치된 오브젝트 불러와서 배치
+function setObjectInBlog() {
+    const objectAssignLen = Object.keys(objectAssign).length; // 오브젝트 배치 개수
+    const gltfloader = new GLTFLoader();
+
+    for(let i = 0; i < objectAssignLen; i++) {
+        const key = Object.keys(objectAssign)[i]; // 배치 아이디
+        const objectKey = objectAssign[key]['objectId']; // 오브젝트 id
+        const url = objectTemplete[objectKey]['objectUrl']; // 오브젝트 url
+        const objectPosi = objectAssign[key]['objectPosition']; // 오브젝트 위치
+        const objectRota = objectAssign[key]['objectRotation']; // 오브젝트 방향
+        gltfloader.load(
+            url,
+            ( gltf ) => {
+                const root = gltf.scene;
+                scene.add(root);
+                objParentTransform.push( root );
+    
+                root.position.set( objectPosi[0], objectPosi[1], objectPosi[2] ); //모델 위치
+                root.rotation.y = objectRota * Math.PI / 2; // 모델 방향
+                root.name = key; // 오브젝트 이름: 배치 id
+            }
+        );
+    }
+} 
+
+// 새롭게 배치를 위해 선택된 오브젝트 = 바닥
 function assignObjectFloor( url ) {
     selectRemove(); // 이전에 선택한 오브젝트 삭제
     let rotaionX = 1;
@@ -86,7 +118,7 @@ function assignObjectFloor( url ) {
     // 카메라가 바라보고 있는 방향
     let lookCamera = new THREE.Vector3();
     camera.getWorldDirection(lookCamera);
-    console.log(lookCamera);
+    //console.log(lookCamera);
     if(lookCamera.x < 0) rotaionX = -1;
     if(lookCamera.z < 0) rotaionZ = -1;
     if(Math.abs(lookCamera.x) > Math.abs(lookCamera.z)) checkXZ = true;
@@ -241,7 +273,6 @@ function boolToInt(b) {
     } return 0;
 }
 
-
 function animate () {
     const time = performance.now();
     const delta = ( time - prevTime ) / 20000;
@@ -351,7 +382,7 @@ let preRotation = 0; // 배치 방향 - 0: 정면, 1: 좌측: 2: 뒤, 3: 우측
 
 // 오브젝트 썸네일 클릭
 window.onload = () => {
-    for(let i = 0; i < 4; i++) {
+    for(let i = 0; i < 4; i++) { // 한 페이지에 오브젝트 썸네일 4개
         selectObject[i].addEventListener( 'click', () => {
             key = selectObject[i].classList.item(1); // 오브젝트 아이디
             const url = objectTemplete[key]['objectUrl']; // 오브젝트 url
@@ -452,7 +483,6 @@ const objectAndPostLink = () => {
     // 완료되면 object db에 해당 정보 저장하고 3d 공간 reload
 }
 
-// 썸네일 촬영하기 기능 구현
 const thumbnailButton = document.getElementsByClassName('capture-button');
 thumbnailButton[0].addEventListener('click', () => {
     //thumbnail을 촬영하기 전엔 항상 rendering을 해주어야 함
@@ -481,12 +511,12 @@ const saveBlob = (function() {
     document.body.appendChild(a);
     a.style.display = 'none';
     return function saveData(blob, fileName) {
-       const url = window.URL.createobjectTemplete(blob);
+       const url = window.URL.createObjectURL(blob);
        a.href = url;
        a.download = fileName;
        a.click();
     };
-}());
+  }());
 
 function render() {
     renderer.render(scene, camera);
