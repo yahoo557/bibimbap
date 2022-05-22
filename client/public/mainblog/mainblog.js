@@ -3,8 +3,9 @@ import { GLTFLoader } from '../three.js-master/examples/jsm/loaders/GLTFLoader.j
 import { PointerLockControls } from "../three.js-master/examples/jsm/controls/PointerLockControls.js";
 import { DragControls } from "../three.js-master/examples/jsm/controls/DragControls.js";
 
-// 오브젝트 파일 => 오브젝트 id : { 'objectUrl': 오브젝트 파일 경로, 'ablePosition': 배치 가능한 위치(0: 바닥, 1: 벽, 2: 천장)}
-const objectInfo = {'ob1': {'objectUrl': '../../object_files/Old_Bicycle.glb', 'ablePosition': 0}, 'ob2': {'objectUrl': '../../object_files/Plants_on_table.gltf', 'ablePosition': 0},
+// 배치 정보 => 배치 id : { 'objectId': 오브젝트id,  'objectPosition': 오브젝트 위치,  'objectRotaion': 오브젝트 방향,  'postId': 게시물id}
+// 오브젝트 템플릿 파일 => 오브젝트 id : { 'objectUrl': 오브젝트 파일 경로, 'ablePosition': 배치 가능한 위치(0: 바닥, 1: 벽, 2: 천장)}
+const objectTemplete = {'ob1': {'objectUrl': '../../object_files/Old_Bicycle.glb', 'ablePosition': 0}, 'ob2': {'objectUrl': '../../object_files/Plants_on_table.gltf', 'ablePosition': 0},
                     'ob3': {'objectUrl': '../../object_files/Stand_light.glb', 'ablePosition': 0}};
 // 오브젝트 썸네일 파일 => 오브젝트 id : 오브젝트 썸네일 이미지 경로
 const objectThumbnailUrl = {'ob1': '../../object_thumbnail/Old_Bicycle.png', 'ob2': '../../object_thumbnail/Plants_on_table.png', 'ob3': '../../object_thumbnail/Stand_light.png'};
@@ -75,8 +76,8 @@ function setupModel() {
     scene.add(group);
 }
 
-// 배치를 위해 선택된 오브젝트
-function assignObject( url ) {
+// 배치를 위해 선택된 오브젝트 = 바닥
+function assignObjectFloor( url ) {
     selectRemove(); // 이전에 선택한 오브젝트 삭제
     let rotaionX = 1;
     let rotaionZ = 1;
@@ -346,16 +347,17 @@ const postWriteOrLink = document.getElementsByClassName("post-write-or-link"); /
 
 let key; // 오브젝트 id
 let prePosition = [0, -2, -4]; // 배치 위치
-let preRotation = 0; // 배치 방향 - 0: 정면, 1: 우측: 2: 뒤, 3: 좌측
+let preRotation = 0; // 배치 방향 - 0: 정면, 1: 좌측: 2: 뒤, 3: 우측
 
 // 오브젝트 썸네일 클릭
 window.onload = () => {
     for(let i = 0; i < 4; i++) {
         selectObject[i].addEventListener( 'click', () => {
             key = selectObject[i].classList.item(1); // 오브젝트 아이디
-            const url = objectInfo[key]['objectUrl']; // 오브젝트 url
-            if(objectInfo[key])
-                assignObject( url );
+            const url = objectTemplete[key]['objectUrl']; // 오브젝트 url
+            if(objectTemplete[key]) {
+                if(objectTemplete[key]['ablePosition'] == 0) assignObjectFloor( url );
+            }
         })
     }
 }
@@ -366,7 +368,7 @@ objectLeftRotaionButton[0].addEventListener( 'click', () => {
         const selectObject = allChildren[allChildren.length - 2];
         const objectRange = allChildren[allChildren.length - 1];
 
-        preRotation = (preRotation + 3) % 4;
+        preRotation = (preRotation + 1) % 4;
         selectObject.rotation.y += Math.PI / 2;
         objectRange.rotation.z += Math.PI / 2;
     }
@@ -378,7 +380,7 @@ objectRightRotaionButton[0].addEventListener( 'click', () => {
         const selectObject = allChildren[allChildren.length - 2];
         const objectRange = allChildren[allChildren.length - 1];
 
-        preRotation = (preRotation + 1) % 4;
+        preRotation = (preRotation + 3) % 4;
         selectObject.rotation.y -= Math.PI / 2;
         objectRange.rotation.z -= Math.PI / 2;
     }
@@ -479,7 +481,7 @@ const saveBlob = (function() {
     document.body.appendChild(a);
     a.style.display = 'none';
     return function saveData(blob, fileName) {
-       const url = window.URL.createobjectInfo(blob);
+       const url = window.URL.createobjectTemplete(blob);
        a.href = url;
        a.download = fileName;
        a.click();
