@@ -3,17 +3,16 @@ import { GLTFLoader } from '../three.js-master/examples/jsm/loaders/GLTFLoader.j
 import { PointerLockControls } from "../three.js-master/examples/jsm/controls/PointerLockControls.js";
 import { DragControls } from "../three.js-master/examples/jsm/controls/DragControls.js";
 
-// 배치 정보 => 배치 id : { 'objectId': 오브젝트id,  'objectPosition': 오브젝트 위치,  'objectRotaion': 오브젝트 방향,  'postId': 게시물id}
+// 배치 정보 => 배치 id : { 'object_id': 오브젝트id,  'model_position': 오브젝트 위치,  'objectRotaion': 오브젝트 방향,  'post_id': 게시물id}
 // object.name에 배치id 적을 것
-const objectAssign = {'as1': { 'objectId': 'ob1',  'objectPosition': [0, -2, 3],  'objectRotation': 0,  'postId': 'po2' },
-                    'as2': { 'objectId': 'ob3',  'objectPosition': [2, -2, 3],  'objectRotation': 1,  'postId': null },
-                    'as3': { 'objectId': 'ob2',  'objectPosition': [-2, -2, 3],  'objectRotation': 2,  'postId': 'po1' }};
+const objectAssign = {'as1': { 'object_id': 'ob1',  'model_position': [0, -2, 3],  'object_rotation': 0,  'post_id': 'po2' },
+                    'as2': { 'object_id': 'ob3',  'model_position': [2, -2, 3],  'object_rotation': 1,  'post_id': null },
+                    'as3': { 'object_id': 'ob2',  'model_position': [-2, -2, 3],  'object_rotation': 2,  'post_id': 'po1' }};
 
-// 오브젝트 템플릿 파일 => 오브젝트 id : { 'objectUrl': 오브젝트 파일 경로, 'ablePosition': 배치 가능한 위치(0: 바닥, 1: 벽, 2: 천장)}
-const objectTemplate = {'ob1': {'objectUrl': '../../object_files/Old_Bicycle.glb', 'ablePosition': 0}, 'ob2': {'objectUrl': '../../object_files/Plants_on_table.gltf', 'ablePosition': 0},
-                    'ob3': {'objectUrl': '../../object_files/Stand_light.glb', 'ablePosition': 0}};
-// 오브젝트 썸네일 파일 => 오브젝트 id : 오브젝트 썸네일 이미지 경로
-const objectThumbnailUrl = {'ob1': '../../object_thumbnail/Old_Bicycle.png', 'ob2': '../../object_thumbnail/Plants_on_table.png', 'ob3': '../../object_thumbnail/Stand_light.png'};
+// 오브젝트 템플릿 파일 => 오브젝트 id : { 'model_path': 오브젝트 파일 경로, 'thumbnail_path': 오브젝트 썸네일 파일 경로, 'option': {'placementLocation' : 배치 가능한 위치('floor': 바닥, 1: 벽, 2: 천장)}}
+const objectTemplate = {'ob1': {'model_path': '../../object_files/Old_Bicycle.glb', 'thumbnail_path': '../../object_thumbnail/Old_Bicycle.png', 'option': {'placementLocation': 'floor'}},
+                    'ob2': {'model_path': '../../object_files/Plants_on_table.gltf', 'thumbnail_path': '../../object_thumbnail/Plants_on_table.png', 'option': {'placementLocation': 'floor'}},
+                    'ob3': {'model_path': '../../object_files/Stand_light.glb', 'thumbnail_path': '../../object_thumbnail/Stand_light.png', 'option': {'placementLocation': 'floor'}}};
 
 let camera;
 const group = new THREE.Group();
@@ -89,10 +88,10 @@ function setObjectInBlog() {
 
     for(let i = 0; i < objectAssignLen; i++) {
         const key = Object.keys(objectAssign)[i]; // 배치 아이디
-        const objectKey = objectAssign[key]['objectId']; // 오브젝트 id
-        const url = objectTemplate[objectKey]['objectUrl']; // 오브젝트 url
-        const objectPosi = objectAssign[key]['objectPosition']; // 오브젝트 위치
-        const objectRota = objectAssign[key]['objectRotation']; // 오브젝트 방향
+        const objectKey = objectAssign[key]['object_id']; // 오브젝트 id
+        const url = objectTemplate[objectKey]['model_path']; // 오브젝트 url
+        const objectPosi = objectAssign[key]['model_position']; // 오브젝트 위치
+        const objectRota = objectAssign[key]['object_rotation']; // 오브젝트 방향
         gltfloader.load(
             url,
             ( gltf ) => {
@@ -385,9 +384,9 @@ window.onload = () => {
     for(let i = 0; i < 4; i++) { // 한 페이지에 오브젝트 썸네일 4개
         selectObject[i].addEventListener( 'click', () => {
             key = selectObject[i].classList.item(1); // 오브젝트 아이디
-            const url = objectTemplate[key]['objectUrl']; // 오브젝트 url
+            const url = objectTemplate[key]['model_path']; // 오브젝트 url
             if(objectTemplate[key]) {
-                if(objectTemplate[key]['ablePosition'] == 0) assignObjectFloor( url );
+                if(objectTemplate[key]['option']['placementLocation'] == 'floor') assignObjectFloor( url );
             }
         })
     }
@@ -435,7 +434,7 @@ completeButton[0].addEventListener( 'click', () => {
         selectRemove();
         // 게시물 연결 페이지에서 보일 오브젝트 썸네일 이미지 경로 설정
         const postLinkImage = document.getElementsByClassName('post-link-image');
-        postLinkImage[0].src = objectThumbnailUrl[key];
+        postLinkImage[0].src = objectTemplate[key]['thumbnail_path'];
 
         addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
         menuArea[0].style.display = "block"; // 메뉴 사용 환경 활성화
@@ -464,11 +463,11 @@ const ObjectAssignNullPost = () => {
     addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
 }
 const objectAndPostLink = () => {
-    let postId;
+    let post_id;
     const postTextRadio = document.getElementsByClassName('post-text-radio');
     for(let i = 0; i < postTextRadio.length; i++) {
         if(postTextRadio[i].checked) {
-            postId = postTextRadio[i].value; // 연결할 게시물 id
+            post_id = postTextRadio[i].value; // 연결할 게시물 id
         }
     }
     menuArea[0].style.display = "none"; // 메뉴 사용 환경 비활성화
@@ -479,7 +478,7 @@ const objectAndPostLink = () => {
     console.log("오브젝트 id: " + key); // 오브젝트 id
     console.log("오브젝트 배치 위치: " + prePosition); // 위치 정보
     console.log("오브젝트 배치 방향: " + preRotation); // 방향 정보
-    console.log("연결할 게시물 id: " + postId); // 게시물 id
+    console.log("연결할 게시물 id: " + post_id); // 게시물 id
     // 완료되면 object db에 해당 정보 저장하고 3d 공간 reload
 }
 
@@ -511,7 +510,7 @@ const saveBlob = (function() {
     document.body.appendChild(a);
     a.style.display = 'none';
     return function saveData(blob, fileName) {
-       const url = window.URL.createObjectURL(blob);
+       const url = window.URL.createmodel_path(blob);
        a.href = url;
        a.download = fileName;
        a.click();
