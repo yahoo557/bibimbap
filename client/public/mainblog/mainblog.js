@@ -106,7 +106,7 @@ function setObjectInBlog() {
             }
         );
     }
-} 
+}
 
 // 새롭게 배치를 위해 선택된 오브젝트 = 바닥
 function assignObjectFloor( url ) {
@@ -226,6 +226,7 @@ function setupCamera() {
             return;
         }
         controls.lock();
+        document.getElementsByClassName("target-pointer")[0].style.display = "block"; // pointer lock 시 가운데 표시
     })
 
     const onKeyDown = (event) => {
@@ -520,4 +521,7 @@ const saveBlob = (function() {
 
 function render() {
     renderer.render(scene, camera);
+    if(!controls.isLocked) { // pointer lock 종료시 가운데 표시 숨김
+        document.getElementsByClassName("target-pointer")[0].style.display = "none";
+    }
 }
