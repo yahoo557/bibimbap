@@ -31,7 +31,7 @@ const next = document.getElementsByClassName("bi-caret-right-fill");
 
 const objectThumnail = document.getElementsByClassName("object-thumbnail");
 // 오브젝트 id : 오브젝트 썸네일 이미지 경로
-const thumnailsUrl = {'ob1': '../../object_thumbnail/Old_Bicycle.png', 'ob2': '../../object_thumbnail/Plants_on_table.png', 'ob3': '../../object_thumbnail/Stand_light.png',
+const thumbnailsUrl = {'ob1': '../../object_thumbnail/Old_Bicycle.png', 'ob2': '../../object_thumbnail/Plants_on_table.png', 'ob3': '../../object_thumbnail/Stand_light.png',
                     'ob4': '../../object_thumbnail/angle_clock.png', 'ob5': '../../object_thumbnail/Books_Magazines.png', 'ob6': '../../object_thumbnail/mouse_doll.png',
                     'ob7': '../../object_thumbnail/air_jordan.png'};
 const blank = '../../object_thumbnail/blank.png';
@@ -108,7 +108,7 @@ const objectAdd = () => {
         menuArea[0].style.display = "none"; // 메뉴 사용 환경(반투명 배경) 비활성화
 
         pre[0].style.opacity = "30%"; // 이전 버튼 비활성화
-        if(Object.keys(thumnailsUrl).length <= maxObject) next[0].style.opacity = "30%"; // 다음 버튼 비활성화
+        if(Object.keys(thumbnailsUrl).length <= maxObject) next[0].style.opacity = "30%"; // 다음 버튼 비활성화
         page = 0; // 첫 페이지
         objectList(); // 오브젝트 이미지 로드
     }
@@ -130,11 +130,11 @@ const prePage = () => {
 }
 // 다음 버튼
 const nextPage = () => {
-    if((page + maxObject) < Object.keys(thumnailsUrl).length) {
+    if((page + maxObject) < Object.keys(thumbnailsUrl).length) {
         page += maxObject;
         objectList();
         pre[0].style.opacity = "100%";  // 이전 버튼 활성화
-        if((page + maxObject) > Object.keys(thumnailsUrl).length) {
+        if((page + maxObject) > Object.keys(thumbnailsUrl).length) {
             next[0].style.opacity = "30%"; // 다음 버튼 비활성화
         }
     }
@@ -142,11 +142,11 @@ const nextPage = () => {
 // 오브젝트 리스트
 const objectList = () => {
     for(let i = 0; i < maxObject; i++) {
-        const key = Object.keys(thumnailsUrl)[i + page];  // 오브젝트 id
+        const key = Object.keys(thumbnailsUrl)[i + page];  // 오브젝트 id
         if(key) {
             objectThumnail[i].classList.remove(objectThumnail[i].classList.item(1)); // 이전에 추가된 오브젝트 아이디가 있다면 class 명에서 삭제
             objectThumnail[i].classList.add(key); // 오브젝트 아이디를 class 명으로 추가
-            objectThumnail[i].src = thumnailsUrl[key];
+            objectThumnail[i].src = thumbnailsUrl[key];
         }
         else {/* 더이상 오브젝트가 없는 경우 */
             objectThumnail[i].src = blank;
