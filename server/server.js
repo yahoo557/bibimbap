@@ -11,6 +11,9 @@ const viewPost = require("./router/viewPost");
 const resetPassword = require("./router/resetPassword");
 const userInfo = require("./router/userInfo");
 const postList = require("./router/postList.js");
+const blog = require("./router/blog.js");
+
+
 const jwt = require("jsonwebtoken");
 const config = require("./config/auth.config.js");
 
