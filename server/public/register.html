@@ -20,6 +20,7 @@
             </a>
         </header>
         <article>
+            <form action = "/register" method ="POST">
             <div id="mainDiv">
                 <div id="container">
                     <div id="expText">
@@ -36,7 +37,7 @@
                         <tr>
                             <td class="labelTd"><label for="userID">아이디</label></td>
                             <td>
-                                <input type="text" id="userID" />
+                                <input type="text" id="userID" name="userName"/>
                             </td>
                             <td><button>중복확인</button></td>
                         </tr>
@@ -54,6 +55,7 @@
                                     type="password"
                                     id="userPassword"
                                     placeholder="8~16자 영소/대문자 + 숫자의 조합"
+                                    name="userPassword"
                                 />
                             </td>
                         </tr>
@@ -73,6 +75,7 @@
                                     type="password"
                                     id="confirmPassword"
                                     placeholder="비밀번호를 한번 더 입력하세요"
+                                    name="userPasswordConfirm"
                                 />
                             </td>
                         </tr>
@@ -86,7 +89,7 @@
                         <tr>
                             <td class="labelTd"><label for="userNickname">닉네임</label></td>
                             <td>
-                                <input type="text" id="userNickname" />
+                                <input type="text" id="userNickname" name="userNickame"/>
                             </td>
                             <td><button>중복확인</button></td>
                         </tr>
@@ -102,12 +105,20 @@
                     </table>
                     <hr class="dashLine" />
                     <h4>비밀번호 찾기 질문/답변</h4>
+<<<<<<< HEAD:server/public/register.html
                     <select id="passwordQuestion">
+=======
+                    <select name = "findPasswordQuestion">
+>>>>>>> e06a0b2c9de15cbb3b7f1e26634aab76b3dd96a1:server/public/signup.html
                         <option value="1">초등학교 이름</option>
                         <option value="2">애완동물 이름</option>
                     </select>
                     <br />
+<<<<<<< HEAD:server/public/register.html
                     <input type="text" id="passwordAnswer" />
+=======
+                    <input type="text" id="findPasswordAnswer" name="findPasswordAnswer" />
+>>>>>>> e06a0b2c9de15cbb3b7f1e26634aab76b3dd96a1:server/public/signup.html
                     <hr class="dashLine" />
                     <table>
                         <colgroup>
@@ -118,7 +129,7 @@
                         <tr>
                             <td class="labelTd"><label for="blogName">블로그 제목</label></td>
                             <td>
-                                <input type="text" id="blogName" />
+                                <input type="text" id="blogName" name="blogName" />
                             </td>
                             <td>
                                 <button id="checkBlogName">중복확인</button>
@@ -131,6 +142,7 @@
                     <button id="applyBtn" onclick="apply()">회원가입</button><a href="/">취소</a>
                 </div>
             </div>
+        </form>
         </article>
         <footer></footer>
 

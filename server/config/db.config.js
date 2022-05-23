@@ -4,8 +4,8 @@ const client = new Client({
     user: 'bibimbap',
     host: '127.0.0.1',
     database: 'noldaga',
-    password: 'bi1234',
-    port: 5432,
+    password: '111111',
+    port: 5432
 });
 client.connect();
 
