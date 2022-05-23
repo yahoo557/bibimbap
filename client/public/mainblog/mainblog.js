@@ -655,8 +655,18 @@ objectRightRotaionButton[0].addEventListener( 'click', () => {
 // 취소 버튼 => 오브젝트 추가하기 비활성화
 cancleButton[0].addEventListener( 'click', () => {
     selectRemove();
+    key = "";
     addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
     addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
+});
+// 오브젝트 배치 중에 메뉴바 선택 => 오브젝트 추가하기 비활성화
+menuBar[0].addEventListener( 'click', () => {
+    if(key) { // 선택된 오브젝트가 있을 때만 작동
+        selectRemove();
+        key = "";
+        addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
+        addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
+    }
 });
 // 이전에 선택한 오브젝트 제거
 const selectRemove = () => {
@@ -686,6 +696,7 @@ completeButton[0].addEventListener( 'click', () => {
         // 연결할 게시물 선택이 완료된 경우
         const postLinkCompleteButton = document.getElementsByClassName('post-link-complete-button');
         postLinkCompleteButton[0].onclick = objectAndPostLink;
+        key = "";
     }
 });
 const ObjectAssignNullPost = () => {
