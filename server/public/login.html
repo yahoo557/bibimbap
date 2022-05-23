@@ -10,7 +10,9 @@
     <link rel="stylesheet" href="/static/css/login.css">
 </head>
 <body>
+    
     <article>
+        <form action="/login" method="POST">
         <div>
             <img width="400" src="/static/img/noldaga_logo_large.png">
         </div>
@@ -22,13 +24,14 @@
                     <input type="password" class="roundCorner noBorder" name="userPassword" id="userPassword" placeholder="비밀번호" required>
                 </div>
                 <div>
-                    <button id="loginBtn" class="roundCorner noBorder">로그인</button>
+                    <button id="loginBtn" type ="submit" class="roundCorner noBorder">로그인</button>
                 </div>
             </div>
             <div id="accBtns">
                 <a href="/resetPassword">PW 찾기</a> | <a href="/signup">회원가입</a>
             </div>
         </div>
+    </form>
     </article>
     <footer></footer>
 </body>
