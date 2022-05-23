@@ -7,7 +7,7 @@
         <title>회원가입 - 놀다가</title>
 
         <link rel="stylesheet" href="/static/css/noldaga.css" />
-        <link rel="stylesheet" href="/static/css/signup.css" />
+        <link rel="stylesheet" href="/static/css/register.css" />
     </head>
     <body>
         <header>
@@ -24,7 +24,7 @@
                 <div id="container">
                     <div id="expText">
                         <h2>회원가입</h2>
-                        <span>SIGNUP</span>
+                        <span>REGISTER</span>
                     </div>
                     <hr class="solidLine" />
                     <table>
@@ -102,12 +102,12 @@
                     </table>
                     <hr class="dashLine" />
                     <h4>비밀번호 찾기 질문/답변</h4>
-                    <select>
+                    <select id="passwordQuestion">
                         <option value="1">초등학교 이름</option>
                         <option value="2">애완동물 이름</option>
                     </select>
                     <br />
-                    <input type="text" id="findPasswordAnswer" />
+                    <input type="text" id="passwordAnswer" />
                     <hr class="dashLine" />
                     <table>
                         <colgroup>
@@ -128,10 +128,12 @@
                     <div class="alertMsg" id="blogNameMsg">
                         이미 사용중인 블로그제목 입니다.
                     </div>
-                    <button id="applyBtn">회원가입</button><a href="/">취소</a>
+                    <button id="applyBtn" onclick="apply()">회원가입</button><a href="/">취소</a>
                 </div>
             </div>
         </article>
         <footer></footer>
+
+        <script src="/static/js/register.js"></script>
     </body>
 </html>

@@ -14,7 +14,7 @@ app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 
 app.use("/static", express.static("static"));
-
+app.use(express.json());
 
 app.use("/register", register);
 app.use("/login", login);

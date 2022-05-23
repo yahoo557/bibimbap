@@ -8,6 +8,10 @@ let qEditor = new Quill('#editor', {
     placeholder: '여기서 본문 작성을 시작하세요',
     theme: 'snow'
 });
+qEditor.getModule('toolbar').addHandler('image', function() {
+    
+});
+
 
 function applyPost() {
     let contentsArray = {};
