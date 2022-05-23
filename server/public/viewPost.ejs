@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>글 보기 - 놀다가</title>
+
+    <link rel="stylesheet" href="/static/css/noldaga.css">
+
+    <link rel="stylesheet" href="/static/css/quill.bubble.css">
+    <link rel="stylesheet" href="/static/css/quill.snow.css">
+    <link rel="stylesheet" href="/static/css/viewPost.css">
+    <script src="/static/js/quill.min.js"></script>
+</head>
+<body>
+    <div id="container">
+        <div id="title"></div>
+        <div id="createdTime"></div>
+        <hr></hr>
+        <div id="viewer"></div>
+    </div>
+    
+    
+    <%
+        var str = rows[0];
+        
+        const obj = JSON.parse(str);
+        const titleDiv = document.getElementById("title");
+        const createdTimeDiv = document.getElementById("createdTime");
+        titleDiv.innerText = obj.title;
+        createdTimeDiv.innerText = obj.createdTime;
+        qViewer.setContents(obj.contents);
+
+    %>
+    <script src="/static/js/viewPost.js">
+
+    </script>
+</body>
+</html>
