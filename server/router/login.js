@@ -12,6 +12,7 @@ router.get('/', (req, res ) => {
   res.sendFile(path.join(__dirname, '../public', 'login.html'));
 });
 router.post('/', (req, res, next) => {
+  console.log(req.body);
   const user_id_input = req.body.userId;
   const user_pw_input = req.body.userPw;
   const text = 'SELECT * FROM users WHERE username = $1';
