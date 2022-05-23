@@ -10,7 +10,7 @@ const jwt = require("jsonwebtoken");
 
 
 router.get('/', (req, res, next) => {
-    return res.cookie('accessToken','', {maxAge : 0});
+    return res.status(200).cookie('accessToken' ,'' ,{maxAge : 0}).cookie('user' ,'' ,{maxAge : 0}).redirect("/");
 });
 // =================================
 
