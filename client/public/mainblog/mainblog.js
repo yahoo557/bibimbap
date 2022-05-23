@@ -10,7 +10,7 @@ const objectAssign = {'as1': { 'objectId': 'ob1',  'objectPosition': [0, -2, 3],
                     'as3': { 'objectId': 'ob2',  'objectPosition': [-2, -2, 3],  'objectRotation': 2,  'postId': 'po1' }};
 
 // 오브젝트 템플릿 파일 => 오브젝트 id : { 'objectUrl': 오브젝트 파일 경로, 'ablePosition': 배치 가능한 위치(0: 바닥, 1: 벽, 2: 천장)}
-const objectTemplete = {'ob1': {'objectUrl': '../../object_files/Old_Bicycle.glb', 'ablePosition': 0}, 'ob2': {'objectUrl': '../../object_files/Plants_on_table.gltf', 'ablePosition': 0},
+const objectTemplate = {'ob1': {'objectUrl': '../../object_files/Old_Bicycle.glb', 'ablePosition': 0}, 'ob2': {'objectUrl': '../../object_files/Plants_on_table.gltf', 'ablePosition': 0},
                     'ob3': {'objectUrl': '../../object_files/Stand_light.glb', 'ablePosition': 0}};
 // 오브젝트 썸네일 파일 => 오브젝트 id : 오브젝트 썸네일 이미지 경로
 const objectThumbnailUrl = {'ob1': '../../object_thumbnail/Old_Bicycle.png', 'ob2': '../../object_thumbnail/Plants_on_table.png', 'ob3': '../../object_thumbnail/Stand_light.png'};
@@ -90,7 +90,7 @@ function setObjectInBlog() {
     for(let i = 0; i < objectAssignLen; i++) {
         const key = Object.keys(objectAssign)[i]; // 배치 아이디
         const objectKey = objectAssign[key]['objectId']; // 오브젝트 id
-        const url = objectTemplete[objectKey]['objectUrl']; // 오브젝트 url
+        const url = objectTemplate[objectKey]['objectUrl']; // 오브젝트 url
         const objectPosi = objectAssign[key]['objectPosition']; // 오브젝트 위치
         const objectRota = objectAssign[key]['objectRotation']; // 오브젝트 방향
         gltfloader.load(
@@ -385,9 +385,9 @@ window.onload = () => {
     for(let i = 0; i < 4; i++) { // 한 페이지에 오브젝트 썸네일 4개
         selectObject[i].addEventListener( 'click', () => {
             key = selectObject[i].classList.item(1); // 오브젝트 아이디
-            const url = objectTemplete[key]['objectUrl']; // 오브젝트 url
-            if(objectTemplete[key]) {
-                if(objectTemplete[key]['ablePosition'] == 0) assignObjectFloor( url );
+            const url = objectTemplate[key]['objectUrl']; // 오브젝트 url
+            if(objectTemplate[key]) {
+                if(objectTemplate[key]['ablePosition'] == 0) assignObjectFloor( url );
             }
         })
     }
