@@ -30,6 +30,10 @@ let moveBackward = false;
 let moveLeft = false;
 let moveRight = false;
 
+let fpsBox;
+
+let onKeyDown, onKeyUp;
+
 const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
 
@@ -98,8 +102,18 @@ function setObjectInBlog() {
                 const root = gltf.scene;
                 scene.add(root);
                 objParentTransform.push( root );
+
+                const boundingBox = new THREE.Box3().setFromObject( root ); // 모델의 바운딩 박스 생성
+                const objectSize = boundingBox.getSize(new THREE.Vector3()); // 바운딩 박스 사이즈 정보
+
+                const objectFbsBoxGeometry = new THREE.BoxGeometry(objectSize.x, objectSize.y, objectSize.z);
+                const objectFbsBoxMaterial = new THREE.MeshPhongMaterial({opacity: 0.1});
+                const objectFbsBox = new THREE.Mesh(objectFbsBoxGeometry, objectFbsBoxMaterial);
+                objParentTransform.push(objectFbsBox);
+                scene.add(objectFbsBox);                
     
                 root.position.set( objectPosi[0], objectPosi[1], objectPosi[2] ); //모델 위치
+                objectFbsBox.position.set( objectPosi[0], objectPosi[1], objectPosi[2] );
                 root.rotation.y = objectRota * Math.PI / 2; // 모델 방향
                 root.name = key; // 오브젝트 이름: 배치 id
             }
@@ -139,12 +153,14 @@ function assignObjectFloor( url ) {
             const root = gltf.scene;
             selectGroup.add(root);
             dragObject.push(root);
-            objParentTransform.push( root );
+            // objParentTransform.push( root );
 
             // 오브젝트 배치할 때 아래에 위치 표시
             const boundingBox = new THREE.Box3().setFromObject( root ); // 모델의 바운딩 박스 생성
             objectSize = boundingBox.getSize(new THREE.Vector3()); // 바운딩 박스 사이즈 정보
             
+            
+
             const rangeGeometry = new THREE.PlaneGeometry(objectSize.x, objectSize.z);
             const rangeMaterial = new THREE.MeshBasicMaterial({ color: "#858585" });
             const objectRange = new THREE.Mesh( rangeGeometry, rangeMaterial );
@@ -338,6 +354,33 @@ function assignObjectWall( url ) {
         }
     } );
 }
+function createFpsBox() {
+    const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+    
+    const fillmaterial = new THREE.MeshPhongMaterial({color: 0x111111});
+    fpsBox = new THREE.Mesh(geometry, fillmaterial);
+
+    fpsBox.position.set(0, -0.5, -1.2);
+
+    camera.add(fpsBox);
+
+    // for (var vertexIndex = 0; vertexIndex < MovingCube.geometry.vertices.length; vertexIndex++){        
+    //     // 큐브의 각 정점을 가져오기
+	// 	var localVertex = MovingCube.geometry.vertices[vertexIndex].clone();
+	// 	//큐브의 각 정점을 큐브의 행렬과 곱하고 원근법으로 나눔
+    //     var globalVertex = localVertex.applyMatrix4( MovingCube.matrix );
+	//     //globalVertex - MovingCube.position
+    //     var directionVector = globalVertex.sub( MovingCube.position );
+        
+	// 	//normalize : 정규화
+    //     var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
+    //     //개체와 광선 사이의 모든 교차를 확인
+	// 	//결과로는 교차 배열 반환
+	// 	var collisionResults = ray.intersectObjects( collidableMeshList );
+    //     if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() )
+    //         appendText(" Hit ");
+	//   }    
+}
 
 function setupCamera() {
     camera = new THREE.PerspectiveCamera(75, 
@@ -345,10 +388,11 @@ function setupCamera() {
     
     camera.position.set(0, -1, 0);
     camera.lookAt(0, -1, 1);
-    //생성된 camera 객체를 다른 메소드에서 사용할 수 있도록
+
     controls = new PointerLockControls(camera, divContainer);
     scene.add(controls.getObject());
-
+    
+    createFpsBox();
     raycaster = new THREE.Raycaster();
     
     divContainer.addEventListener( 'click', function() {
@@ -358,7 +402,7 @@ function setupCamera() {
         controls.lock();
     })
 
-    const onKeyDown = (event) => {
+    onKeyDown = (event) => {
         switch(event.code) {
             case 'KeyW':
                 moveForward = true;
@@ -375,7 +419,7 @@ function setupCamera() {
         }
     };
 
-    const onKeyUp = (event) => {
+    onKeyUp = (event) => {
         switch(event.code) {
             case 'KeyW':
                 moveForward = false;
@@ -396,6 +440,7 @@ function setupCamera() {
 
     window.addEventListener('resize', resize);
 }
+
 
 function boolToInt(b) {
     if(b === true) {
@@ -423,16 +468,28 @@ function drawRay() {
 
     const intersects = raycaster.intersectObjects( objParentTransform, false );
     
-    // console.log(intersects.length);
+    // // console.log(intersects.length);
 	// if(intersects.length > 0) {
-    //     rayMesh.visible = true;
-    //     rayMesh.position.copy(intersects[0].point);
-    //     //console.log(intersects[0].point);
+    //     fpsBox.visible = true;
+    //     fpsBox.position.copy(intersects[0].point);
+    //     if (intersects[0].point.z < 0.3){
+    //         moveForward = false;
+    //     }
+    //     // console.log(intersects[0].point);
     // } else {
-    //     rayMesh.visible = false;
+    //     fpsBox.visible = false;
     // }
-
-    //console.log(debug);
+    for (var vertexIndex = 0; vertexIndex < fpsBox.geometry.vertices.length; vertexIndex++)
+    {        
+        var localVertex = fpsBox.geometry.vertices[vertexIndex].clone();
+        var globalVertex = localVertex.applyMatrix4( fpsBox.matrix );
+        var directionVector = globalVertex.sub( fpsBox.position );
+        
+        var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
+        var collisionResults = ray.intersectObjects( collidableMeshList );
+        if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() )
+            appendText(" Hit ");
+    }
 }
 
 function cameraMovement(deltaTime) {
