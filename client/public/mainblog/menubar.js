@@ -32,7 +32,7 @@ const next = document.getElementsByClassName("bi-caret-right-fill");
 const objectThumnail = document.getElementsByClassName("object-thumbnail");
 // 오브젝트 id : 오브젝트 썸네일 이미지 경로
 const objectTemplate = {'ob1': {'thumbnail_path': '../../object_thumbnail/Old_Bicycle.png'}, 'ob2': {'thumbnail_path': '../../object_thumbnail/Plants_on_table.png'},
-                    'ob3': {'thumbnail_path': '../../object_thumbnail/Stand_light.png'}, 'ob4': {'thumbnail_path': '../../object_thumbnail/angle_clock.png'},
+                    'ob3': {'thumbnail_path': '../../object_thumbnail/Evita_chandelier.png'}, 'ob4': {'thumbnail_path': '../../object_thumbnail/angle_clock.png'},
                     'ob5': {'thumbnail_path': '../../object_thumbnail/Books_Magazines.png'},'ob6':  {'thumbnail_path': '../../object_thumbnail/mouse_doll.png'},
                     'ob7': {'thumbnail_path': '../../object_thumbnail/air_jordan.png'}};
 const blank = '../../object_thumbnail/blank.png';
