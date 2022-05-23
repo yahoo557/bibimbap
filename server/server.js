@@ -11,14 +11,11 @@ const viewPost = require("./router/viewPost");
 const resetPassword = require("./router/resetPassword");
 const userInfo = require("./router/userInfo");
 const postList = require("./router/postList.js");
-
 const auth = require("./controller/auth.jwt.js");
-
 
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 app.use("/static", express.static("static"));
-
 
 app.use("/register", register);
 app.use("/login", login);
@@ -29,11 +26,9 @@ app.use("/viewPost",  viewPost);
 app.use("/resetPassword",auth,   resetPassword);
 app.use("/userInfo",auth, userInfo);
 
-
 app.get("/", (req, res) => {
     res.render(path.join(__dirname, '/public', 'main.ejs'));
 });
-
 
 const port = 8000;
 app.listen(port, () => {
