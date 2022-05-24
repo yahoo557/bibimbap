@@ -6,6 +6,10 @@ const menuBar = document.getElementsByClassName("menu-bar");
 // 메뉴 사용 환경
 const menuArea = document.getElementsByClassName("menu-area");
 
+// 오브젝트 선택 시 보이는 게시물 뷰
+const objectPostView = document.getElementsByClassName("object-post-view");
+const closePostButton = document.getElementsByClassName("close-post");
+
 // 블로그명, 블로그 주인 닉네임, 블로그 주인 아이디 정보
 const blogInfo = {'blogName': '블로그명', 'blogOwner': '블로거', 'ownerId': 'owner123'};
 const blogNameText = document.getElementsByClassName("blog-name");
@@ -63,6 +67,12 @@ const changeThumbnailView = document.getElementsByClassName("change-thumbnail");
 const listIcon = document.getElementsByClassName("bi-file-text");
 const postListView = document.getElementsByClassName("post-list");
 const postListField = document.getElementsByClassName("post-list-frame");
+
+// 오브젝트 선택 시 보이는 게시물 뷰 닫기
+const closePost = () => {
+    menuArea[0].style.display = "none"; // 메뉴 사용 환경(반투명 배경) 비활성화
+    objectPostView[0].style.display = "none"; // 게시물 뷰 숨기기
+}
 
 // 메뉴바 보이기
 const showMenu = () => { 
