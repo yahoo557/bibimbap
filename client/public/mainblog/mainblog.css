@@ -10,6 +10,9 @@
     --button-blue: #7DA2A9;
     --bright-green: #80FF80;
     --bright-red: #FF8080;
+    --edit-red: #E03030;
+    --edit-blue: #3030E0;
+    --edit-green: #30E030;
 }
 /* 폰트 */
 @font-face {
@@ -591,7 +594,7 @@ body {
     width: 72vw;
 }
 
-/* ------------------------------------ 편집 모드 --------------------------------------------- */
+/* ----------------------------------------- 편집 모드 ------------------------------------------------- */
 .edit-mode {
     display: none;
     z-index: 10000;
@@ -601,6 +604,43 @@ body {
     align-items: center;
 
     cursor: pointer; /* 마우스 커서 모양 */
+}
+/* 오브젝트 편집 버튼 */
+.object-edit-buttons {
+    display: block;
+    position: relative;
+    float: left;
+    margin-left: 4vh;
+    top: 90vh;
+    
+    align-items: center;
+
+    font-size: 4vh;
+    opacity: 50%; /* 비활성화 상태 */
+}
+/* 오브젝트 삭제 버튼 */
+.object-delete {
+    display: inline-block;
+    padding: 0.8vh 1.3vh;
+
+    background-color: var(--edit-red);
+    border-radius: 50%;
+}
+/* 오브젝트 이동 버튼 */
+.bi-arrows-move {
+    display: inline-block;
+    padding: 0.8vh 1.3vh;
+
+    background-color: var(--edit-blue);
+    border-radius: 50%;
+}
+/* 오브젝트 변경 버튼 */
+.bi-arrow-left-right {
+    display: inline-block;
+    padding: 0.8vh 1.3vh;
+
+    background-color: var(--edit-green);
+    border-radius: 50%;
 }
 /* 썸네일 촬영 버튼 */
 .capture-button {
