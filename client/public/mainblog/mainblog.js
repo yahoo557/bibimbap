@@ -490,11 +490,23 @@ function setupCamera() {
     raycaster = new THREE.Raycaster();
     
     divContainer.addEventListener( 'click', function() {
-        if(addView[0].style.display == "block") { // 오브젝트 배치 중일 때는 포인트 락 안 됨
+        // 오브젝트 배치 중일 때는 pointer lock 안 됨
+        if(addView[0].style.display == "block") {
             return;
         }
+
+        // pointer lock
         controls.lock();
-        document.getElementsByClassName("target-pointer")[0].style.display = "block"; // pointer lock 시 가운데 표시
+
+        // pointer lock 시 가운데 표시
+        document.getElementsByClassName("target-pointer")[0].style.display = "block";
+
+        // 이미 pointer lock인 상태에서 오브젝트를 선택해서 클릭
+        if(controls.isLocked && INTERSECTED) {
+            console.log("object(배치) id: " + INTERSECTED.name);
+            console.log("post(게시물) id: " + objectAssign[INTERSECTED.name]['post_id']);
+            menuArea[0].style.display = "block"; // 메뉴 사용 환경 활성화
+        }
     })
 
     const onKeyDown = (event) => {
