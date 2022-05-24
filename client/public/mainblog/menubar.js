@@ -89,8 +89,11 @@ const closeMenu = () => {
     addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
 
     editIcon[0].style.left = "0vh"; // 편집 모드 버튼 비활성화
+    editView[0].style.display = "none"; // 편집 모드 화면 숨기기
 
     listIcon[0].style.left = "0vh"; // 게시물 리스트 버튼 비활성화
+    postListView[0].style.display = "none"; // 게시물 리스트 화면 비활성화
+    menuArea[0].style.display = "none"; // 메뉴 사용 환경(반투명 배경) 비활성화
 }
 
 let page = 0; // 현재 페이지

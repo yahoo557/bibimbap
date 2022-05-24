@@ -64,6 +64,31 @@ body {
     opacity: 50%;
 }
 
+/* 오브젝트 선택 시 게시물 열람 창 */
+.object-post-view {
+    display: none;
+    z-index: 12000;
+
+    margin-left: 16vh; /* 메뉴 바 공간만큼 */
+}
+.close-post {
+    display: block;
+    position: relative;
+    z-index: 12000;
+
+    float: right;
+    padding: 1vh 2.3vh 1vh 2.3vh;
+    margin: 3vh;
+
+    background-color: var(--main-color);
+    border-radius: 2vh;
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 3vh;
+
+    cursor: pointer; /* 마우스 커서 모양 */
+}
+
+
 /* ------------------------------------------------------ 메뉴 바 --------------------------------------------------------*/
 /* 메뉴 바 버튼 */
 .menu-button {

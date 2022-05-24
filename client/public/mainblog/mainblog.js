@@ -506,8 +506,11 @@ function setupCamera() {
             console.log("object(배치) id: " + INTERSECTED.name);
             console.log("post(게시물) id: " + objectAssign[INTERSECTED.name]['post_id']);
 
-            if(editIcon[0].style.left == "0vh") // 편집 모드가 비활성화 되어있는 동안
+            if(editIcon[0].style.left != "15vh") { // 편집 모드가 비활성화 되어있는 동안
+                controls.unlock(); // pointer lock 비활성화
                 menuArea[0].style.display = "block"; // 메뉴 사용 환경 활성화
+                document.getElementsByClassName("object-post-view")[0].style.display = "block"; // 게시물 열람 화면 활성화
+            }
 
             document.getElementsByClassName("object-edit-buttons")[0].style.opacity = "100%"; // 편집모드 삭제, 이동, 변경 버튼 활성화
         }
