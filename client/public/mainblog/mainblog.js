@@ -107,12 +107,17 @@ function setObjectInBlog() {
     }
 }
 
+let rotationX;
+let rotationZ;
+let checkXY;
+let checkXZ;
+let objectSize;
 // 새롭게 배치를 위해 선택된 오브젝트 = 바닥
 function assignObjectFloor( url ) {
     selectRemove(); // 이전에 선택한 오브젝트 삭제
-    let rotationX = 1;
-    let rotationZ = 1;
-    let checkXZ = false;
+    rotationX = 1;
+    rotationZ = 1;
+    checkXZ = false;
 
     // 카메라가 바라보고 있는 방향
     let lookCamera = new THREE.Vector3();
@@ -131,7 +136,6 @@ function assignObjectFloor( url ) {
 
     const gltfloader = new GLTFLoader();
     const dragObject = [];
-    let objectSize;
     
     gltfloader.load(
         url,
@@ -174,7 +178,10 @@ function assignObjectFloor( url ) {
     renderer.render(scene, camera);
     requestAnimationFrame(setupModel);
 
-    // 드래그 앤 드롭으로 오브젝트 옮기기
+    assignDragFloor( dragObject )
+}
+// 드래그 앤 드롭으로 오브젝트 옮기기 = 바닥
+function assignDragFloor( dragObject ) {
     const dragControls = new DragControls( dragObject, camera, divContainer);
     dragControls.transformGroup = true;
 
@@ -211,14 +218,14 @@ function assignObjectFloor( url ) {
 // 새롭게 배치를 위해 선택된 오브젝트 = 벽
 function assignObjectWall( url ) {
     selectRemove(); // 이전에 선택한 오브젝트 삭제
-    let rotationX = 1;
-    let rotationZ = 1;
-    let checkXY = false;
+    rotationX = 1;
+    rotationZ = 1;
+    checkXY = false;
 
     // 카메라가 바라보고 있는 방향
     let lookCamera = new THREE.Vector3();
     camera.getWorldDirection(lookCamera);
-    console.log(lookCamera);
+    //console.log(lookCamera);
     if(lookCamera.x < 0) rotationX = -1;
     if(lookCamera.z < 0) rotationZ = -1;
     if(Math.abs(lookCamera.x) > Math.abs(lookCamera.y)) checkXY = true;
@@ -228,7 +235,6 @@ function assignObjectWall( url ) {
 
     const gltfloader = new GLTFLoader();
     const dragObject = [];
-    let objectSize;
     
     gltfloader.load(
         url,
@@ -280,7 +286,7 @@ function assignObjectWall( url ) {
                     objectRange.rotation.y = Math.PI/2
                     preRotation = (preRotation + 1) % 4;
                 }
-                prePosition[0] = rotationX * (3.4 - objectSize.x/2);
+                prePosition[0] = rotationX * (3.5 - objectSize.z/2);
                 prePosition[2] = camera.position.z + lookCamera.z * 2;
                 root.position.set( prePosition[0] - rotationX * 0.1, prePosition[1], prePosition[2] ); //모델 위치 지정
                 objectRange.position.set( prePosition[0] + rotationX * (objectSize.z/2 - 0.001), prePosition[1], prePosition[2] ); // 그림자 위치 지정
@@ -292,7 +298,7 @@ function assignObjectWall( url ) {
                     preRotation = (preRotation + 2) % 4;
                 }
                 prePosition[0] = camera.position.x + lookCamera.x * 2;
-                prePosition[2] = rotationZ * (4.9 - objectSize.z/2);
+                prePosition[2] = rotationZ * (5 - objectSize.z/2);
                 root.position.set( prePosition[0], prePosition[1], prePosition[2] - rotationZ * 0.1 ); //모델 위치 지정
                 objectRange.position.set( prePosition[0], prePosition[1], prePosition[2] + rotationZ * (objectSize.z/2 - 0.001) ); // 그림자 위치 지정
             }
@@ -302,8 +308,11 @@ function assignObjectWall( url ) {
     scene.add(selectGroup);
     renderer.render(scene, camera);
     requestAnimationFrame(setupModel);
-
-    // 드래그 앤 드롭으로 오브젝트 옮기기
+    
+    assignDragWall( dragObject );
+}
+// 드래그 앤 드롭으로 오브젝트 옮기기 = 벽
+function assignDragWall( dragObject ) {
     const dragControls = new DragControls( dragObject, camera, divContainer);
     dragControls.transformGroup = true;
 
@@ -318,26 +327,26 @@ function assignObjectWall( url ) {
 
         // 카메라 방향에서 x, y축 방향이 바뀌었을 경우
         if(checkXY) { // z축이 벽 밖으로 나가지 않도록
-            event.object.position.x = rotationX * 3.3; // x축 고정
+            event.object.position.x = rotationX * (3.4 - objectSize.z/2); // x축 고정
             if(event.object.position.z < -5 + objectSize.x/2) event.object.position.z = -5 + objectSize.x/2;
             if(event.object.position.z > 5 - objectSize.x/2) event.object.position.z = 5 - objectSize.x/2;
-            objectRange.position.set(prePosition[0] + rotationX * 0.199, event.object.position.y, event.object.position.z);
+            objectRange.position.set(event.object.position.x + rotationX * (objectSize.z/2 + 0.099), event.object.position.y, event.object.position.z);
         }
         else { // x축이 벽 밖으로 나가지 않도록
-            event.object.position.z = rotationZ * (4.8 - objectSize.z/2); // z축 고정
+            event.object.position.z = rotationZ * (4.9 - objectSize.z/2); // z축 고정
             if(event.object.position.x < -3.5 + objectSize.x/2) event.object.position.x = -3.5 + objectSize.x/2;
             if(event.object.position.x > 3.5 - objectSize.x/2) event.object.position.x = 3.5 - objectSize.x/2;
-            objectRange.position.set(event.object.position.x, event.object.position.y, prePosition[2] + rotationZ * (objectSize.z/2 + 0.299));
+            objectRange.position.set(event.object.position.x, event.object.position.y, event.object.position.z + rotationZ * (objectSize.z/2 + 0.099));
         }
 
         prePosition[1] = event.object.position.y;
         if(checkXY) {
-            prePosition[0] = event.object.position.x - rotationX * 0.1;
+            prePosition[0] = event.object.position.x;
             prePosition[2] = event.object.position.z;
         }
         else {
             prePosition[0] = event.object.position.x;
-            prePosition[2] = event.object.position.z - rotationZ * 0.1;
+            prePosition[2] = event.object.position.z;
         }
     } );
 }
@@ -345,9 +354,9 @@ function assignObjectWall( url ) {
 // 새롭게 배치를 위해 선택된 오브젝트 = 천장
 function assignObjectCeiling( url ) {
     selectRemove(); // 이전에 선택한 오브젝트 삭제
-    let rotationX = 1;
-    let rotationZ = 1;
-    let checkXZ = false;
+    rotationX = 1;
+    rotationZ = 1;
+    checkXZ = false;
 
     // 카메라가 바라보고 있는 방향
     let lookCamera = new THREE.Vector3();
@@ -366,7 +375,6 @@ function assignObjectCeiling( url ) {
 
     const gltfloader = new GLTFLoader();
     const dragObject = [];
-    let objectSize;
     
     gltfloader.load(
         url,
@@ -409,7 +417,10 @@ function assignObjectCeiling( url ) {
     renderer.render(scene, camera);
     requestAnimationFrame(setupModel);
 
-    // 드래그 앤 드롭으로 오브젝트 옮기기
+    assignDragCeiling( dragObject );
+}
+// 드래그 앤 드롭으로 오브젝트 옮기기 = 천장
+function assignDragCeiling( dragObject ) {
     const dragControls = new DragControls( dragObject, camera, divContainer);
     dragControls.transformGroup = true;
 
@@ -629,7 +640,7 @@ window.onload = () => {
         })
     }
 }
-// 오브젝트 좌방향 회전
+// 오브젝트 배치 중에 오브젝트 좌방향 회전
 objectLeftRotaionButton[0].addEventListener( 'click', () => {
     if(key) { // 선택된 오브젝트가 있을 때만 작동
         const allChildren = selectGroup.children;
@@ -637,11 +648,17 @@ objectLeftRotaionButton[0].addEventListener( 'click', () => {
         const objectRange = allChildren[allChildren.length - 1];
 
         preRotation = (preRotation + 1) % 4;
-        selectObject.rotation.y += Math.PI / 2;
-        objectRange.rotation.z += Math.PI / 2;
+        leftRotaion(selectObject, 'y');
+        leftRotaion(objectRange, 'z');
     }
 });
-// 오브젝트 우방향 회전
+// 좌방향 회전
+const leftRotaion = ( turnObject, line ) => {
+    if(line == 'x') turnObject.rotation.x += Math.PI / 2;
+    if(line == 'y') turnObject.rotation.y += Math.PI / 2;
+    if(line == 'z') turnObject.rotation.z += Math.PI / 2;
+}
+// 오브젝트 배치 중에 우방향 회전
 objectRightRotaionButton[0].addEventListener( 'click', () => {
     if(key) { // 선택된 오브젝트가 있을 때만 작동
         const allChildren = selectGroup.children;
@@ -649,10 +666,16 @@ objectRightRotaionButton[0].addEventListener( 'click', () => {
         const objectRange = allChildren[allChildren.length - 1];
 
         preRotation = (preRotation + 3) % 4;
-        selectObject.rotation.y -= Math.PI / 2;
-        objectRange.rotation.z -= Math.PI / 2;
+        rightRotaion(selectObject, 'y');
+        rightRotaion(objectRange, 'z');
     }
 });
+// 오브젝트 좌방향 회전
+const rightRotaion = ( turnObject, line ) => {
+    if(line == 'x') turnObject.rotation.x -= Math.PI / 2;
+    if(line == 'y') turnObject.rotation.y -= Math.PI / 2;
+    if(line == 'z') turnObject.rotation.z -= Math.PI / 2;
+}
 // 취소 버튼 => 오브젝트 추가하기 비활성화
 cancleButton[0].addEventListener( 'click', () => {
     selectRemove();
