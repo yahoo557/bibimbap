@@ -505,7 +505,11 @@ function setupCamera() {
         if(controls.isLocked && INTERSECTED) {
             console.log("object(배치) id: " + INTERSECTED.name);
             console.log("post(게시물) id: " + objectAssign[INTERSECTED.name]['post_id']);
-            menuArea[0].style.display = "block"; // 메뉴 사용 환경 활성화
+
+            if(editIcon[0].style.left == "0vh") // 편집 모드가 비활성화 되어있는 동안
+                menuArea[0].style.display = "block"; // 메뉴 사용 환경 활성화
+
+            document.getElementsByClassName("object-edit-buttons")[0].style.opacity = "100%"; // 편집모드 삭제, 이동, 변경 버튼 활성화
         }
     })
 
@@ -721,6 +725,7 @@ const addIcon = document.getElementsByClassName("bi-box"); // 오브젝트 추�
 const addView = document.getElementsByClassName("object-add"); // 오브젝트 추가 기능
 const menuArea = document.getElementsByClassName("menu-area"); // 메뉴 사용 환경
 const postWriteOrLink = document.getElementsByClassName("post-write-or-link"); // 게시물 작성 또는 연결 선택 페이지
+const editIcon = document.getElementsByClassName("bi-tools"); // 편집 모드 버튼
 
 let key; // 오브젝트 id
 let prePosition = []; // 배치 위치
