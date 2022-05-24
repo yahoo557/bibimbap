@@ -30,6 +30,18 @@ let moveBackward = false;
 let moveLeft = false;
 let moveRight = false;
 
+// 오브젝트 선택을 위한 부분
+let clickRaycaster;
+const clickPointer = new THREE.Vector2();
+let INTERSECTED;
+
+// 새로운 오브젝트 배치 & 드래그로 이동을 위한 변수들
+let rotationX;
+let rotationZ;
+let checkXY;
+let checkXZ;
+let objectSize;
+
 const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
 
@@ -44,10 +56,11 @@ const divContainer = document.querySelector("#webgl-container");
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 const canvas = renderer.domElement;
 //장치 픽셀 비율을 설정, 캔버스가 흐려지는 것을 방지
-renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setPixelRatio( window.devicePixelRatio );
+renderer.setSize( window.innerWidth, window.innerHeight );
 //renderer.domElement를 divContainer에 자식으로 추가
 //renderer.domElement : canvas 타입의 dom객체
-divContainer.appendChild(renderer.domElement);
+divContainer.appendChild( renderer.domElement );
 
 const scene = new THREE.Scene();
 
@@ -75,13 +88,16 @@ function setupModel() {
     const fillmaterial = new THREE.MeshPhongMaterial({color: 0xffffff, side: THREE.BackSide});
     const room = new THREE.Mesh(geometry, fillmaterial);
     objParentTransform.push(room);
+    room.name = "room";
 
     group.add(room);
     setObjectInBlog();
     scene.add(group);
+
+    clickRaycaster = new THREE.Raycaster();
 }
 
-// 배치된 오브젝트 불러와서 배치
+// object DB에서 배치된 오브젝트 불러와서 배치
 function setObjectInBlog() {
     const objectAssignLen = Object.keys(objectAssign).length; // 오브젝트 배치 개수
     const gltfloader = new GLTFLoader();
@@ -96,22 +112,22 @@ function setObjectInBlog() {
             url,
             ( gltf ) => {
                 const root = gltf.scene;
-                scene.add(root);
+                group.add(root);
                 objParentTransform.push( root );
     
                 root.position.set( objectPosi[0], objectPosi[1], objectPosi[2] ); //모델 위치
                 root.rotation.y = objectRota * Math.PI / 2; // 모델 방향
                 root.name = key; // 오브젝트 이름: 배치 id
+
+                const allChildren = root.children;
+                for(let i = 0; i < allChildren.length; i++) {
+                    allChildren[i].name = key;
+                }
             }
         );
     }
 }
 
-let rotationX;
-let rotationZ;
-let checkXY;
-let checkXZ;
-let objectSize;
 // 새롭게 배치를 위해 선택된 오브젝트 = 바닥
 function assignObjectFloor( url ) {
     selectRemove(); // 이전에 선택한 오브젝트 삭제
@@ -178,7 +194,7 @@ function assignObjectFloor( url ) {
     renderer.render(scene, camera);
     requestAnimationFrame(setupModel);
 
-    assignDragFloor( dragObject )
+    assignDragFloor( dragObject );
 }
 // 드래그 앤 드롭으로 오브젝트 옮기기 = 바닥
 function assignDragFloor( dragObject ) {
@@ -519,7 +535,7 @@ function boolToInt(b) {
     } return 0;
 }
 
-function animate () {
+function animate() {
     const time = performance.now();
     const delta = ( time - prevTime ) / 20000;
     cameraMovement(delta);
@@ -608,6 +624,36 @@ function resize () {
 
     //renderer의 크기를 설정
     renderer.setSize(width, height);
+}
+
+function render() {
+    // pointer lock 종료시 가운데 표시 숨김
+    if( !controls.isLocked ) {
+        const targetPointer = document.getElementsByClassName("target-pointer"); // 중심 나타내는 + 모양
+        targetPointer[0].style.display = "none";
+        targetPointer[0].style.left = divContainer.clientWidth / 2 + "px";
+        targetPointer[0].style.top = divContainer.clientHeight / 2 + "px";
+    }
+
+    // 카메라가 바라보고 있는 방향
+    let lookCamera = new THREE.Vector3();
+    camera.getWorldDirection(lookCamera);
+    
+    // 오브젝트 선택을 위한 중심 좌표 위치
+    clickPointer.x = 0;
+    clickPointer.y = 0;
+
+    //console.log(clickPointer);
+    
+    // 오브젝트 선택을 위한 부분
+    clickRaycaster.setFromCamera(clickPointer, camera);
+    const intersects = clickRaycaster.intersectObjects( scene.children );
+    if( intersects[0].object.name != "room")
+        intersects[0].object.material.emissive.setHex( 0xff0000 );
+
+    console.log(intersects[0].object.name);
+
+    renderer.render(scene, camera);
 }
 
 // 배치하고 싶은 오브젝트 선택 시
@@ -787,11 +833,4 @@ const saveBlob = (function() {
        a.download = fileName;
        a.click();
     };
-  }());
-
-function render() {
-    renderer.render(scene, camera);
-    if(!controls.isLocked) { // pointer lock 종료시 가운데 표시 숨김
-        document.getElementsByClassName("target-pointer")[0].style.display = "none";
-    }
-}
+}());
