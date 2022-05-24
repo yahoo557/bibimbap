@@ -15,11 +15,22 @@
             <div id="sidebarInner">
                 <div id="sidebarHeader" class="sidebarContainer">
                     <img class="btns" onclick="window.location.href='/'" width="180" src="/static/img/noldaga_logo.png">
-                    <div id="accMenu"><a href="/login">로그인</a> <span class="whiteText">|</span> <a href="/register">회원가입</a></div>
+                    <% if (isLogined == 'true'){ %>
+                    <div id="accMenu"><a href="/logout">로그아웃</a> <span class="whiteText">|</span> <a href="/register">회원가입</a></div>
+                    <% } else { %>
+                        <div id="accMenu"><a href="/login">로그인</a> <span class="whiteText">|</span> <a href="/register">회원가입</a></div>
+                    <% }%>
                 </div>
                 <button id="myBlogBtn">내 방으로</button>
                 <div id="sidebarMain" class="sidebarContainer">
-                    <div id="searchButton" class="btns">
+                    <div id="searchDiv">
+                        <div id="searchInput">
+                            <button onclick="closeSearchInput()">X</button>
+                            <input type="text" id="searchKeyword">
+                            <img src="/static/img/search_icon.png" class="btns" width="20" onclick="search()">
+                        </div>
+                    </div>
+                    <div id="searchButton" class="btns" onclick="clickSearchButton()">
                         <img width="90" src="/static/img/search_button.png">
                         <div class="whiteText"><span>검색</span><span class="smallText">Search</span></div>
                     </div>
@@ -31,8 +42,29 @@
             </div>
         </div>
         <div id="article">
-            <div id="blogList">
+            <div id="main">
+                <div id="blogList">
 
+                </div>
+                <div id="searchResult">
+                    <div id="headLine">를 검색한 결과입니다</div>
+                    <div>
+                        <a href="#blogSection" class="tabs">블로그</a>
+                        <a href="#postSection" class="tabs">게시물</a>
+                        <a href="#nicknameSection" class="tabs">닉네임</a>
+                    </div>
+                    <div id="contentsContainer">
+                        <section id="blogSection" class="searchContents">
+                            
+                        </section>
+                        <section id="postSection" class="searchContents">
+                            
+                        </section>
+                        <section id="nicknameSection" class="searchContents">
+                            nick
+                        </section>
+                    </div>
+                </div>
             </div>
             <div id="footer">
 
@@ -40,6 +72,6 @@
         </div>
     </div>
 
-    <!-- <script src="/static/js/main.js"></script> -->
+    <script src="/static/js/main.js"></script>
 </body>
 </html>

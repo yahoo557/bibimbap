@@ -3,6 +3,7 @@ import { GLTFLoader } from '../three.js-master/examples/jsm/loaders/GLTFLoader.j
 import { PointerLockControls } from "../three.js-master/examples/jsm/controls/PointerLockControls.js";
 import { DragControls } from "../three.js-master/examples/jsm/controls/DragControls.js";
 
+
 // 배치 정보 => 배치 id : { 'objectId': 오브젝트id,  'objectPosition': 오브젝트 위치,  'objectRotaion': 오브젝트 방향,  'postId': 게시물id}
 // object.name에 배치id 적을 것
 const objectAssign = {'as1': { 'objectId': 'ob1',  'objectPosition': [0, -2, 3],  'objectRotation': 0,  'postId': 'po2' },
@@ -14,6 +15,7 @@ const objectTemplete = {'ob1': {'objectUrl': '../../object_files/Old_Bicycle.glb
                     'ob3': {'objectUrl': '../../object_files/Stand_light.glb', 'ablePosition': 0}};
 // 오브젝트 썸네일 파일 => 오브젝트 id : 오브젝트 썸네일 이미지 경로
 const objectThumbnailUrl = {'ob1': '../../object_thumbnail/Old_Bicycle.png', 'ob2': '../../object_thumbnail/Plants_on_table.png', 'ob3': '../../object_thumbnail/Stand_light.png'};
+
 
 let camera;
 const group = new THREE.Group();
@@ -55,32 +57,62 @@ const scene = new THREE.Scene();
 //밑의 3개는 정의되어 있지 않음
 setupCamera(); //Camera객체를 구성하는 메소드 호출
 setupLight(); //Ligth 설정
-setupModel(); //3차원 Model 설정
+// setupModel(); //3차원 Model 설정
 resize();
 animate();
 
 
 // renderer랑 camera는 창 크기가 바뀔 때마다 그 크기에 맞게 재정의 되어야 함
 // resize이벤트에 resize메소드를 bind를 사용해서 지정 -> resize 안에서 this가 가리키는 객체가 이벤트객체가 아닌 이 앱 클래스의 객체가 되게 하기 위해
+
 // window.onresize = this.resize.bind(this);
 // resize이벤트와는 상관없이 한 번 실행 -> renderer나 camera의 속성을 창 크기에 맞게 설정
 
 // 3차원 그래픽 장면을 만들어주는 메소드
 // requestAnimationFrame(this.render.bind(this));
 
-function setupModel() {
+function setupRoom() {
     //정육면체 형상을 정의
     //인자(가로, 세로, 깊이)
-    const geometry = new THREE.BoxGeometry(7, 4, 10);
+    const position = {x: 0, y:0, z:0};
+    const scale = { x: 7, y: 4, z: 10}
+    const geometry = new THREE.BoxGeometry();
     
     const fillmaterial = new THREE.MeshPhongMaterial({color: 0xffffff, side: THREE.BackSide});
     const room = new THREE.Mesh(geometry, fillmaterial);
+
+    room.position.set(position.x, position.y, position.z);
+    room.scale.set(scale.x, scale.y, scale.z);
+
     objParentTransform.push(room);
 
     group.add(room);
     setObjectInBlog();
     scene.add(group);
+
+    // //오브젝트와 같은 사이즈의 물리 객체를 생성해야 함
+    // // Ammo.btTransform을 통해 위치와 회전값을 전해줌
+    // const transform = new Ammo.btTransform();
+    // const quaternion = { x: 0, y: 0, z: 0, w: 1 };
+    // transform.setIdentity();
+    // transform.setOrigin(new Ammo.btVector3(position.x, position.y, position.z));
+    // transform.setRotation(
+    //     new Ammo.btQuaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w));
+    // const motionState = new Ammo.btDefaultMotionState(transform);
+    // const colShape = new Ammo.btBoxShape(
+    //     new Ammo.btVector3(scale.x * 0.5, scale.y * 0.5, scale.z * 0.5)
+    // );
+    // // 질량이 0이면 물리적인 영향을 전혀 받지 않고 어떠한 변형도 없이 지정된 자리에 가만히 있음
+    // const mass = 0;
+    // // world에 추가
+    // colShape.calculateLocalInertia(mass);
+    // const rbInfo = new Ammo.btRigidBodyConstructionInfo(mass, motionState, colShape);
+    // const roomEngine = new Ammo.btRigidBody(rbInfo);
+    // physicsWorld.addRigidBody(roomEngine);   
+    
+    // createFpsBox();
 }
+
 
 // 배치된 오브젝트 불러와서 배치
 function setObjectInBlog() {
@@ -110,6 +142,7 @@ function setObjectInBlog() {
 
 // 새롭게 배치를 위해 선택된 오브젝트 = 바닥
 function assignObjectFloor( url ) {
+
     selectRemove(); // 이전에 선택한 오브젝트 삭제
     let rotaionX = 1;
     let rotaionZ = 1;
@@ -140,6 +173,9 @@ function assignObjectFloor( url ) {
             selectGroup.add(root);
             dragObject.push(root);
             objParentTransform.push( root );
+
+            root.position.set( 1, 0, -3 ); //모델 위치 지정
+
 
             // 오브젝트 배치할 때 아래에 위치 표시
             const boundingBox = new THREE.Box3().setFromObject( root ); // 모델의 바운딩 박스 생성
@@ -172,7 +208,7 @@ function assignObjectFloor( url ) {
     
     scene.add(selectGroup);
     renderer.render(scene, camera);
-    requestAnimationFrame(setupModel);
+    requestAnimationFrame(setupRoom);
 
     // 드래그 앤 드롭으로 오브젝트 옮기기
     const dragControls = new DragControls( dragObject, camera, divContainer);
@@ -208,6 +244,45 @@ function assignObjectFloor( url ) {
         prePosition[2] = event.object.position.z;
     } );
 }
+
+// function createFpsBox() {
+//     const scale = {x: 1, y: 1, z:1};
+//     const fpsBoxGeometry = new THREE.BoxGeometry(scale.x, scale.y, scale.z);
+//     const fpsBoxMaterial = new THREE.MeshPhongMaterial({
+//         color: 0x111111,
+//         opacity: 0.9
+//     });
+
+//     const fpsBox = new THREE.Mesh(fpsBoxGeometry, fpsBoxMaterial);
+//     fpsBox.position.set(0, -0.5, -1.2);
+//     camera.add(fpsBox);
+
+//     // Ammo.btTransform을 통해 위치와 회전값을 전해줌
+//     const mass = 0;
+
+//     //fpsBox의 현재 회전값을 가져옴
+//     const quaternion = {x:0, y:0, z:0, w:1};  
+    
+//     const transform = new Ammo.btTransform();
+//     transform.setIdentity();
+//     transform.setOrigin( new Ammo.btVector3(camera.position.x, camera.position.y, camera.position.z));
+//     transform.setRotation( new Ammo.btQuaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w));
+//     const motionState = new Ammo.btDefaultMotionState(transform);
+//     const colShape = new Ammo.btBoxShape(new Ammo.btVector3(scale.x * 0.5, scale.y * 0.5, scale.z * 0.5));    
+
+//     //관성의 법칙
+//     const localInertia = new Ammo.btVector3(0, 0, 0);
+//     colShape.calculateLocalInertia(mass, localInertia);
+
+//     const rbInfo = new Ammo.btRigidBodyConstructionInfo(mass, motionState, colShape);
+//     const body = new Ammo.btRigidBody( rbInfo );
+//     physicsWorld.addRigidBody(body);    
+
+//     //fpsBox와 물리엔진을 연결
+//     fpsBox.physicsWorld = body;
+// }
+
+
 
 function setupCamera() {
     camera = new THREE.PerspectiveCamera(75, 
@@ -286,12 +361,19 @@ function animate () {
     requestAnimationFrame(animate);      
 }
 
+
+function render() {
+    renderer.render(scene, camera);
+    // update();
+}
+
+
 function drawRay() {
     let camDir = new THREE.Vector3();
     camera.getWorldDirection(camDir);
     raycaster.set(camera.position, camDir);
 
-    const intersects = raycaster.intersectObjects( objParentTransform, false );
+    // const intersects = raycaster.intersectObjects( objParentTransform, false );
     
     // console.log(intersects.length);
 	// if(intersects.length > 0) {
@@ -521,3 +603,4 @@ const saveBlob = (function() {
 function render() {
     renderer.render(scene, camera);
 }
+

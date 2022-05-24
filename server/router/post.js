@@ -6,14 +6,20 @@ const client = require("../config/db.config"); // DB 연결
 const Query = require('pg').Query
 
 router.get("/", (req, res) => {
-    const token = req.headers;
-
-    console.log(token);
+    const parseCookie = str =>
+    str.split(';').map(v => v.split('=')).reduce((acc, v) => {
+      acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
+      return acc;
+    }, {});
+    // console.log(req.headers.cookie)
+    console.log(parseCookie(req.headers.cookie).accessToken)
     res.sendFile(path.join(__dirname, '../public', 'post.html'));
 });
 
 
 router.post('/', (req, res, next)=>{
+    
+    // console.log(token);
     //POST 로 넘긴 데이터를 body 변수로 받음
     const body = req.body;
     //잘못 넘겨서인지 key:value 가 아니라 "json":  으로 와서 key값 추출
