@@ -119,12 +119,19 @@ function setObjectInBlog() {
                 root.rotation.y = objectRota * Math.PI / 2; // 모델 방향
                 root.name = key; // 오브젝트 이름: 배치 id
 
-                const allChildren = root.children;
-                for(let i = 0; i < allChildren.length; i++) {
-                    allChildren[i].name = key;
-                }
+                setObjectName( root, key );
             }
         );
+    }
+}
+// 오브젝트 name을 배치 id(=object DB key값)로 설정
+function setObjectName( nameObjects, key ) {
+    const allChildren = nameObjects.children;
+    for(let i = 0; i < allChildren.length; i++) {
+        allChildren[i].name = key;
+        if(allChildren[i].children.length > 0) {
+            setObjectName( allChildren[i], key );
+        }
     }
 }
 
@@ -634,26 +641,61 @@ function render() {
         targetPointer[0].style.left = divContainer.clientWidth / 2 + "px";
         targetPointer[0].style.top = divContainer.clientHeight / 2 + "px";
     }
+    // pointer lock 실행 시 오브젝트 선택 가능
+    else {
+        // 카메라가 바라보고 있는 방향
+        let lookCamera = new THREE.Vector3();
+        camera.getWorldDirection(lookCamera);
+        
+        // 오브젝트 선택을 위한 중심 좌표 위치
+        clickPointer.x = 0;
+        clickPointer.y = 0;
 
-    // 카메라가 바라보고 있는 방향
-    let lookCamera = new THREE.Vector3();
-    camera.getWorldDirection(lookCamera);
-    
-    // 오브젝트 선택을 위한 중심 좌표 위치
-    clickPointer.x = 0;
-    clickPointer.y = 0;
+        //console.log(clickPointer);
+        
+        // 오브젝트 선택을 위한 부분
+        clickRaycaster.setFromCamera(clickPointer, camera);
 
-    //console.log(clickPointer);
-    
-    // 오브젝트 선택을 위한 부분
-    clickRaycaster.setFromCamera(clickPointer, camera);
-    const intersects = clickRaycaster.intersectObjects( scene.children );
-    if( intersects[0].object.name != "room")
-        intersects[0].object.material.emissive.setHex( 0xff0000 );
-
-    console.log(intersects[0].object.name);
-
+        const intersects = clickRaycaster.intersectObjects( scene.children );
+        if( intersects[0].object.name != "room") { // 가리키는 오브젝트가 방이 아닌 경우
+            if(INTERSECTED) {
+                INTERSECTED.material.emissive.setHex( 0x000000 );
+                unSelectObjectGroup( group, INTERSECTED.name);
+            }
+            INTERSECTED = intersects[0].object;
+            selectObjectGroup( group, INTERSECTED.name);
+        }
+        else if(INTERSECTED) {
+            INTERSECTED.material.emissive.setHex( 0x000000 );
+            unSelectObjectGroup( group, INTERSECTED.name);
+            INTERSECTED = null;
+        }
+    }
     renderer.render(scene, camera);
+}
+// 같은 그룹에 속한 object를 함께 표시
+function selectObjectGroup( selectObjects, key ) {
+    let allChildren = selectObjects.children;
+    for(let i = 0; i < allChildren.length; i++) {
+        if(allChildren[i].children.length > 0) {
+            selectObjectGroup( allChildren[i], key );
+        }
+        else if(allChildren[i].name == key) {
+            allChildren[i].material.emissive.set( 0xaaaaaa );
+        }
+    }
+}
+// 같은 그룹에 속한 object를 함께 리셋
+function unSelectObjectGroup( selectObjects, key ) {
+    let allChildren = selectObjects.children;
+    for(let i = 0; i < allChildren.length; i++) {
+        if(allChildren[i].children.length > 0) {
+            unSelectObjectGroup( allChildren[i], key );
+        }
+        else if(allChildren[i].name == key) {
+            allChildren[i].material.emissive.set( 0x000000 );
+        }
+    }
 }
 
 // 배치하고 싶은 오브젝트 선택 시

@@ -41,7 +41,8 @@ body {
     display: none;
     position: fixed;
     font-size: 4vh;
-    
+
+    margin-top: -2vh;
     margin-left: -2vh;
 }
 
