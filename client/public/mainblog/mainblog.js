@@ -1088,3 +1088,23 @@ const saveBlob = (function() {
     };
 }());
 
+const removeObjectButton = document.getElementsByClassName('object-delete');
+removeObjectButton[0].addEventListener('click', () => {
+    if(objectEditButtons[0].classList.item(1)) {
+        const removeObjectImage = document.getElementsByClassName("remove-object-image");
+        
+        const selectedObjectKey = objectEditButtons[0].classList.item(1);
+        const selectedObjectTempleteId = objectAssign[selectedObjectKey]['template_id'];
+        console.log(selectedObjectTempleteId);
+        const selectedObjectTumbnailUrl = objectTemplate[selectedObjectTempleteId]['thumbnail_path'];
+        removeObjectImage[0].src = selectedObjectTumbnailUrl;
+
+    }
+
+
+    const removeObject = document.getElementsByClassName("remove-object");
+
+
+    removeObject[0].style.display = "block";
+    menuArea[0].style.display = "block";
+});
