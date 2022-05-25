@@ -5,9 +5,9 @@ import { DragControls } from "../three.js-master/examples/jsm/controls/DragContr
 
 // 배치 정보 => 배치 id : { 'template_id': 오브젝트id,  'model_position': 오브젝트 위치,  'objectRotaion': 오브젝트 방향,  'post_id': 게시물id}
 // object.name에 배치id 적을 것
-const objectAssign = {'as1': { 'template_id': 'ob1',  'model_position': [0, -2, 3],  'object_rotation': 0,  'post_id': 'po2' },
-                    'as2': { 'template_id': 'ob4',  'model_position': [2, 1, 4.9],  'object_rotation': 2,  'post_id': null },
-                    'as3': { 'template_id': 'ob3',  'model_position': [-2, -1.1, 3],  'object_rotation': 2,  'post_id': 'po1' }};
+const objectAssign = {'as1': { 'template_id': 'ob1',  'model_position': [0, -2, 3],  'model_rotation': 0,  'post_id': 'po2' },
+                    'as2': { 'template_id': 'ob4',  'model_position': [2, 1, 4.9],  'model_rotation': 2,  'post_id': null },
+                    'as3': { 'template_id': 'ob3',  'model_position': [-2, -1.1, 3],  'model_rotation': 2,  'post_id': 'po1' }};
 
 // 오브젝트 템플릿 파일 => 오브젝트 id : { 'model_path': 오브젝트 파일 경로, 'thumbnail_path': 오브젝트 썸네일 파일 경로, 'placementLocation' : 배치 가능한 위치('floor': 바닥, wall: 벽, ceiling: 천장)}
 const objectTemplate = {'ob1': {'model_path': '../../object_files/Old_Bicycle.glb', 'thumbnail_path': '../../object_thumbnail/Old_Bicycle.png', 'placementLocation': 'floor'},
@@ -111,7 +111,7 @@ function setObjectInBlog() {
         const objectKey = objectAssign[key]['template_id']; // 오브젝트 id
         const url = objectTemplate[objectKey]['model_path']; // 오브젝트 url
         const objectPosi = objectAssign[key]['model_position']; // 오브젝트 위치
-        const objectRota = objectAssign[key]['object_rotation']; // 오브젝트 방향
+        const objectRota = objectAssign[key]['model_rotation']; // 오브젝트 방향
         gltfloader.load(
             url,
             ( gltf ) => {
@@ -596,6 +596,31 @@ function assignDragCeiling( dragObject ) {
     } );
 }
 
+// 편집 모드에서 오브젝트 변경을 위한 모델 로드
+const changeSelectGroup = new THREE.Group();;
+function loadChangeObject (key, url) {
+    changeSelectGroup.clear();
+    const gltfloader = new GLTFLoader();
+
+    gltfloader.load(
+        url,
+        ( gltf ) => {
+            const root = gltf.scene;
+            changeSelectGroup.add(root);
+            //objParentTransform.push( root );
+
+            root.position.set( prePosition[0], prePosition[1], prePosition[2] ); //모델 위치
+            root.rotation.y = preRotation * Math.PI / 2; // 모델 방향
+            root.name = key; // 오브젝트 이름: 배치 id
+
+            setObjectName( root, key );
+        }
+    );
+
+    scene.add(changeSelectGroup);
+    renderer.render(scene, camera);
+}
+
 function setupCamera() {
     camera = new THREE.PerspectiveCamera(75, 
         window.innerWidth / window.innerHeight, 0.1, 2000);
@@ -874,6 +899,7 @@ let preRotation = 0; // 배치 방향 - 0: 정면, 1: 좌측: 2: 뒤, 3: 우측
 // 오브젝트 썸네일 클릭
 window.onload = () => {
     for(let i = 0; i < 4; i++) { // 한 페이지에 오브젝트 썸네일 4개
+        // 오브젝트 추가하기 기능에서 썸네일 클릭
         selectObject[i].addEventListener( 'click', () => {
             if(!objectEditButtons[0].classList.item(1)) {
                 key = selectObject[i].classList.item(1); // 오브젝트 아이디
@@ -884,6 +910,14 @@ window.onload = () => {
                     if(objectTemplate[key]['placementLocation'] == 'ceiling') assignObjectCeiling( url ); // 바닥 배치
                 }
             }
+        })
+
+        // 편집 모드 기능의 오브젝트 변경에서 썸네일 클릭
+        objectChangeThumnail[i].addEventListener( 'click', () => {
+            key = objectChangeThumnail[i].classList.item(1); // object_template_id
+            const url = objectTemplate[key]['model_path']; // 오브젝트 url
+            group.remove(changeSelectObjects); // 원래 배치되어있던 오브젝트 삭제
+            loadChangeObject (key, url);
         })
     }
 }
@@ -1003,6 +1037,7 @@ const objectAndPostLink = () => {
 
 // 편집 모드
 const editIcon = document.getElementsByClassName("bi-tools"); // 편집 모드 버튼
+const editView = document.getElementsByClassName("edit-mode"); // 편집 모드 공간
 const objectEditButtons = document.getElementsByClassName("object-edit-buttons"); // 편집모드에서의 삭제, 이동, 변경 버튼
 const objectMoveButton = document.getElementsByClassName("bi-arrows-move"); // 편집 모드 - 오브젝트 이동 버튼
 const objectMoveComplete = document.getElementsByClassName("object-move-complete"); // 편집 모드 - 오브젝트 이동 완료 버튼
@@ -1011,6 +1046,7 @@ const objectChangeView = document.getElementsByClassName("object-change-view"); 
 const objectChangeleft = document.getElementsByClassName("change-list-left"); // 편집 모드 - 오브젝트 변경 리스트 이전 버튼
 const objectChangeRight = document.getElementsByClassName("change-list-right"); // 편집 모드 - 오브젝트 변경 리스트 이전 버튼
 const objectChangeThumnail = document.getElementsByClassName("object-change-thumbnail"); // 편집 모드 - 오브젝트 변경 리스트 썸네일
+const objectChangeComplete = document.getElementsByClassName("change-complete"); // 편집 모드 - 오브젝트 변경 완료 버튼
 
 // 오브젝트 이동 버튼 선택 시
 let moveObjectKey;
@@ -1069,25 +1105,27 @@ objectChangeButton[0].addEventListener('click', () => {
         changeObjectKey = objectEditButtons[0].classList.item(1); // 선택된 오브젝트의 object_id
         changeObjectTemplateKey = objectAssign[changeObjectKey]['template_id']; // 배치된 오브젝트의 template_id
         prePosition = objectAssign[changeObjectKey]['model_position'];
+        preRotation = objectAssign[changeObjectKey]['model_rotation'];
 
         objectEditButtons[0].style.display = "none"; // 오브젝트 삭제, 이동, 변경 버튼 숨기기
         thumbnailButton[0].style.display = "none"; // 썸네일 촬영 버튼 숨기기
         objectChangeView[0].style.display = "block"; // 오브젝트 변경을 위한 리스트
         objectChangeleft[0].style.opacity = "30%"; // 이전 버튼 비활성화
         if(Object.keys(objectTemplate).length <= maxObject) objectChangeRight[0].style.opacity = "30%"; // 다음 버튼 비활성화
+        notLocationCnt = 0;
         objectChangeList(); // 리스트에 썸네일 이미지 불러오기
 
         const allChildren = group.children;
         for(let i = 0; i < allChildren.length; i++) {
             if(allChildren[i].name == changeObjectKey) {
                 changeSelectObjects = allChildren[i];
-                //group.remove(changeSelectObjects);
             }
         }
     }
 });
 let page = 0; // 현재 페이지
 const maxObject = 4; // 한 페이지에 최대로 배치될 수 있는 썸네일 수
+let notLocationCnt = 0;
 // 이전 버튼
 objectChangeleft[0].addEventListener('click', () => {
     if(page > 0) {
@@ -1105,7 +1143,7 @@ objectChangeRight[0].addEventListener('click', () => {
         page += maxObject;
         objectChangeList();
         objectChangeleft[0].style.opacity = "100%";  // 이전 버튼 활성화
-        if((page + maxObject) > Object.keys(objectTemplate).length) {
+        if((page + maxObject + notLocationCnt) > Object.keys(objectTemplate).length) {
             objectChangeRight[0].style.opacity = "30%"; // 다음 버튼 비활성화
         }
     }
@@ -1113,9 +1151,12 @@ objectChangeRight[0].addEventListener('click', () => {
 // 오브젝트 리스트
 const objectChangeList = () => {
     for(let i = 0; i < maxObject; i++) {
-        const key = Object.keys(objectTemplate)[i + page];  // 오브젝트 id
+        const key = Object.keys(objectTemplate)[i + page + notLocationCnt];  // 오브젝트 id
         if(key) {
-            if(objectTemplate[key]['placementLocation'] = objectTemplate[changeObjectTemplateKey]['placementLocation']) {
+            // 배치되어있던 오브젝트랑 동일한 위치에 배치 가능한 오브젝트 목록만 불러오기
+            if(objectTemplate[key]['placementLocation'] != objectTemplate[changeObjectTemplateKey]['placementLocation']) {
+                i--;
+                notLocationCnt++;
                 continue;
             }
             objectChangeThumnail[i].classList.remove(objectChangeThumnail[i].classList.item(1)); // 이전에 추가된 object_template_id가 있다면 class 명에서 삭제
@@ -1127,7 +1168,20 @@ const objectChangeList = () => {
         }
     }
 }
+// 오브젝트 변경 완료 버튼 선택 시
+objectChangeComplete[0].addEventListener('click', () => {
+    alert("오브젝트가 변경되었습니다.");
+    console.log("변경 된 object_id: " + changeObjectKey);
+    console.log("변경할 object_template_id: " + key);
 
+    objectEditButtons[0].style.display = "inline-block;"; // 오브젝트 삭제, 이동, 변경 버튼 보이기
+    thumbnailButton[0].style.display = "grid"; // 썸네일 촬영 버튼 보이기
+    objectChangeView[0].style.display = "none"; // 오브젝트 변경을 위한 리스트 숨기기
+    editIcon[0].style.left = "0vh"; // 편집 모드 버튼 비활성화
+    editView[0].style.display = "none"; // 편집 모드 화면 숨기기
+});
+
+// 블로그 썸네일 촬영
 const thumbnailButton = document.getElementsByClassName('capture-button');
 thumbnailButton[0].addEventListener('click', () => {
     //thumbnail을 촬영하기 전엔 항상 rendering을 해주어야 함
