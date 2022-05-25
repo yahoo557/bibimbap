@@ -64,6 +64,9 @@ const objectMoveComplete = document.getElementsByClassName("object-move-complete
 // 썸네일 변경 확인창
 const changeThumbnailView = document.getElementsByClassName("change-thumbnail");
 
+//오브젝트 삭제 확인창
+const objectRemoveView = document.getElementsByClassName("remove-object");
+
 
 /* 게시물 리스트 */
 const listIcon = document.getElementsByClassName("bi-file-text");
@@ -267,6 +270,22 @@ const thumbnailChangeCancle = () => {
     changeThumbnailView[0].style.display = "none"; // 썸네일 변경 이미지 확인 창 비활성화
 }
 
+// 오브젝트 삭제 최종 확인
+const objectRemoveComplete = () => {
+    alert("오브젝트 삭제가 완료되었습니다.");
+    editIcon[0].style.left = "0vh"; // 편집 모드 버튼 비활성화
+    menuArea[0].style.display = "none"; // 메뉴 사용 환경(반투명 배경) 비활성화
+    objectRemoveView[0].style.display = "none"; // 썸네일 변경 이미지 확인 창 비활성화
+
+}
+// 오브젝트 삭제 취소
+const objectRemoveCancle = () => {
+    alert("오브젝트 삭제가 취소되었습니다.");
+    editView[0].style.display = "block"; // 썸네일을 다시 촬영할 수 있도록 다시 편집 모드 활성화
+    menuArea[0].style.display = "none"; // 메뉴 사용 환경(반투명 배경) 비활성화
+    objectRemoveView[0].style.display = "none"; // 썸네일 변경 이미지 확인 창 비활성화
+}
+
 // 게시물 리스트
 const postList = () => {
     if(listIcon[0].style.left == "0vh") {
@@ -316,3 +335,4 @@ const postListLoad = () =>{
         }
     }
 }
+

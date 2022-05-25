@@ -768,14 +768,14 @@ body {
     font-size: 3vh;
 }
 /* 썸네일 촬영 이미지 확인 페이지 */
-.change-thumbnail {
+.change-thumbnail, .remove-object {
     display: none;
     z-index: 12000;
 
     margin-left: 42vh; /* 메뉴 바 + 편집모드 버튼 공간만큼 */
 }
 /* 썸네일 변경 확인 제목 */
-.change-thumbnail-title {
+.change-thumbnail-title, .remove-object-title {
     display: inline-block;
     position: relative;
     z-index: 12000;
@@ -798,8 +798,19 @@ body {
     object-fit: cover;
     border-radius: 3vh;
 }
+.remove-object-image {
+    display: block;
+    position: relative;
+    z-index: 12000;
+    margin-top: 1vh;
+
+    width: 65vw;
+    height: 65vh;
+    object-fit: contain;
+    border-radius: 3vh;
+}
 /* 썸네일 변경 안내 문구 */
-.change-thumbnail-comment {
+.change-thumbnail-comment, .remove-object-comment {
     display: block;
     position: relative;
     z-index: 12000;
@@ -810,7 +821,7 @@ body {
     font-size: 4vh;
 }
 /* 썸네일 변경 확인 버튼 */
-.bi-check-lg, .bi-x-thumbnail {
+.bi-check-lg, .bi-x-thumbnail, .bi-x-object, .object-thumbnail-check {
     display: inline-block;
     position: relative;
     margin: 1vh;
@@ -820,7 +831,7 @@ body {
     cursor: pointer; /* 마우스 커서 모양 */
 }
 /* 변경 완료 */
-.bi-check-lg {
+.bi-check-lg, .object-thumbnail-check {
     float: right;
     padding: 1vh 2.2vh 1.5vh 2.2vh;
 
@@ -829,7 +840,7 @@ body {
     border-radius: 50%;
 }
 /* 변경 취소 */
-.bi-x-thumbnail {
+.bi-x-thumbnail, .bi-x-object {
     float: right;
     margin-right: 10vh;
     padding: 0 1.2vh 0.2vh 1.2vh;
