@@ -6,6 +6,10 @@ const menuBar = document.getElementsByClassName("menu-bar");
 // 메뉴 사용 환경
 const menuArea = document.getElementsByClassName("menu-area");
 
+// 오브젝트 선택 시 보이는 게시물 뷰
+const objectPostView = document.getElementsByClassName("object-post-view");
+const closePostButton = document.getElementsByClassName("close-post");
+
 // 블로그명, 블로그 주인 닉네임, 블로그 주인 아이디 정보
 const blogInfo = {'blogName': '블로그명', 'blogOwner': '블로거', 'ownerId': 'owner123'};
 const blogNameText = document.getElementsByClassName("blog-name");
@@ -30,11 +34,11 @@ const pre = document.getElementsByClassName("bi-caret-left-fill");
 const next = document.getElementsByClassName("bi-caret-right-fill");
 
 const objectThumnail = document.getElementsByClassName("object-thumbnail");
-// 오브젝트 id : 오브젝트 썸네일 이미지 경로
-const objectTemplate = {'ob1': {'thumbnail_path': '../../object_thumbnail/Old_Bicycle.png'}, 'ob2': {'thumbnail_path': '../../object_thumbnail/Plants_on_table.png'},
-                    'ob3': {'thumbnail_path': '../../object_thumbnail/Stand_light.png'}, 'ob4': {'thumbnail_path': '../../object_thumbnail/angle_clock.png'},
-                    'ob5': {'thumbnail_path': '../../object_thumbnail/Books_Magazines.png'},'ob6':  {'thumbnail_path': '../../object_thumbnail/mouse_doll.png'},
-                    'ob7': {'thumbnail_path': '../../object_thumbnail/air_jordan.png'}};
+// 오브젝트 id : {'thumbnail_path': 오브젝트 썸네일 파일 경로, 'placementLocation' : 배치 가능한 위치('floor': 바닥, wall: 벽, ceiling: 천장)}
+const objectTemplate = {'ob1': {'thumbnail_path': '../../object_thumbnail/Old_Bicycle.png', 'placementLocation': 'floor'}, 'ob2': {'thumbnail_path': '../../object_thumbnail/Plants_on_table.png', 'placementLocation': 'floor'},
+                    'ob3': {'thumbnail_path': '../../object_thumbnail/Evita_chandelier.png', 'placementLocation': 'ceiling'}, 'ob4': {'thumbnail_path': '../../object_thumbnail/angle_clock.png', 'placementLocation': 'wall'},
+                    'ob5': {'thumbnail_path': '../../object_thumbnail/Books_Magazines.png', 'placementLocation': 'floor'},'ob6':  {'thumbnail_path': '../../object_thumbnail/mouse_doll.png', 'placementLocation': 'floor'},
+                    'ob7': {'thumbnail_path': '../../object_thumbnail/air_jordan.png', 'placementLocation': 'floor'}};
 const blank = '../../object_thumbnail/blank.png';
 
 // 게시물 작성 또는 연결
@@ -53,6 +57,7 @@ const postInfo = { 'po1' : {'postTitle' : '테스트를 해봅시다 1', 'postDa
 /* 편집 모드 */
 const editIcon = document.getElementsByClassName("bi-tools");
 const editView = document.getElementsByClassName("edit-mode");
+const objectEditButtons = document.getElementsByClassName("object-edit-buttons")
 
 // 썸네일 변경 확인창
 const changeThumbnailView = document.getElementsByClassName("change-thumbnail");
@@ -62,6 +67,12 @@ const changeThumbnailView = document.getElementsByClassName("change-thumbnail");
 const listIcon = document.getElementsByClassName("bi-file-text");
 const postListView = document.getElementsByClassName("post-list");
 const postListField = document.getElementsByClassName("post-list-frame");
+
+// 오브젝트 선택 시 보이는 게시물 뷰 닫기
+const closePost = () => {
+    menuArea[0].style.display = "none"; // 메뉴 사용 환경(반투명 배경) 비활성화
+    objectPostView[0].style.display = "none"; // 게시물 뷰 숨기기
+}
 
 // 메뉴바 보이기
 const showMenu = () => { 
@@ -88,8 +99,11 @@ const closeMenu = () => {
     addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
 
     editIcon[0].style.left = "0vh"; // 편집 모드 버튼 비활성화
+    editView[0].style.display = "none"; // 편집 모드 화면 숨기기
 
     listIcon[0].style.left = "0vh"; // 게시물 리스트 버튼 비활성화
+    postListView[0].style.display = "none"; // 게시물 리스트 화면 비활성화
+    menuArea[0].style.display = "none"; // 메뉴 사용 환경(반투명 배경) 비활성화
 }
 
 let page = 0; // 현재 페이지
@@ -145,8 +159,8 @@ const objectList = () => {
     for(let i = 0; i < maxObject; i++) {
         const key = Object.keys(objectTemplate)[i + page];  // 오브젝트 id
         if(key) {
-            objectThumnail[i].classList.remove(objectThumnail[i].classList.item(1)); // 이전에 추가된 오브젝트 아이디가 있다면 class 명에서 삭제
-            objectThumnail[i].classList.add(key); // 오브젝트 아이디를 class 명으로 추가
+            objectThumnail[i].classList.remove(objectThumnail[i].classList.item(1)); // 이전에 추가된 object_template_id가 있다면 class 명에서 삭제
+            objectThumnail[i].classList.add(key); // object_template_id를 class 명으로 추가
             objectThumnail[i].src = objectTemplate[key]['thumbnail_path'];
         }
         else {/* 더이상 오브젝트가 없는 경우 */
@@ -221,6 +235,7 @@ const editMode = () => {
     if(editIcon[0].style.left == "0vh") {
         editIcon[0].style.left = "15vh"; // 편집 모드 버튼 활성화
         editView[0].style.display = "block"; // 편집 모드 화면 보이기
+        objectEditButtons[0].style.opacity = "50%"; // 편집모드 삭제, 이동, 변경 버튼 비활성화
 
         addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
         addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기

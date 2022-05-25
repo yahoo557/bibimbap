@@ -6,13 +6,13 @@ import { DragControls } from "../three.js-master/examples/jsm/controls/DragContr
 // 배치 정보 => 배치 id : { 'object_id': 오브젝트id,  'model_position': 오브젝트 위치,  'objectRotaion': 오브젝트 방향,  'post_id': 게시물id}
 // object.name에 배치id 적을 것
 const objectAssign = {'as1': { 'object_id': 'ob1',  'model_position': [0, -2, 3],  'object_rotation': 0,  'post_id': 'po2' },
-                    'as2': { 'object_id': 'ob3',  'model_position': [2, -2, 3],  'object_rotation': 1,  'post_id': null },
+                    'as2': { 'object_id': 'ob4',  'model_position': [2, 1, 4.9],  'object_rotation': 2,  'post_id': null },
                     'as3': { 'object_id': 'ob2',  'model_position': [-2, -2, 3],  'object_rotation': 2,  'post_id': 'po1' }};
 
-// 오브젝트 템플릿 파일 => 오브젝트 id : { 'model_path': 오브젝트 파일 경로, 'thumbnail_path': 오브젝트 썸네일 파일 경로, 'option': {'placementLocation' : 배치 가능한 위치('floor': 바닥, 1: 벽, 2: 천장)}}
+// 오브젝트 템플릿 파일 => 오브젝트 id : { 'model_path': 오브젝트 파일 경로, 'thumbnail_path': 오브젝트 썸네일 파일 경로, 'placementLocation' : 배치 가능한 위치('floor': 바닥, wall: 벽, ceiling: 천장)}
 const objectTemplate = {'ob1': {'model_path': '../../object_files/Old_Bicycle.glb', 'thumbnail_path': '../../object_thumbnail/Old_Bicycle.png', 'placementLocation': 'floor'},
                     'ob2': {'model_path': '../../object_files/Plants_on_table.gltf', 'thumbnail_path': '../../object_thumbnail/Plants_on_table.png', 'placementLocation': 'floor'},
-                    'ob3': {'model_path': '../../object_files/Stand_light.glb', 'thumbnail_path': '../../object_thumbnail/Stand_light.png', 'placementLocation': 'floor'},
+                    'ob3': {'model_path': '../../object_files/Evita_chandelier.gltf', 'thumbnail_path': '../../object_thumbnail/Evita_chandelier.png', 'placementLocation': 'ceiling'},
                     'ob4': {'model_path': '../../object_files/angle_clock.glb', 'thumbnail_path': '../../object_thumbnail/angle_clock.png', 'placementLocation': 'wall'}};
 let camera;
 const group = new THREE.Group();
@@ -30,9 +30,17 @@ let moveBackward = false;
 let moveLeft = false;
 let moveRight = false;
 
-let fpsBox;
+// 오브젝트 선택을 위한 부분
+let clickRaycaster;
+const clickPointer = new THREE.Vector2();
+let INTERSECTED;
 
-let onKeyDown, onKeyUp;
+// 새로운 오브젝트 배치 & 드래그로 이동을 위한 변수들
+let rotationX;
+let rotationZ;
+let checkXY;
+let checkXZ;
+let objectSize;
 
 const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
@@ -48,10 +56,11 @@ const divContainer = document.querySelector("#webgl-container");
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 const canvas = renderer.domElement;
 //장치 픽셀 비율을 설정, 캔버스가 흐려지는 것을 방지
-renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setPixelRatio( window.devicePixelRatio );
+renderer.setSize( window.innerWidth, window.innerHeight );
 //renderer.domElement를 divContainer에 자식으로 추가
 //renderer.domElement : canvas 타입의 dom객체
-divContainer.appendChild(renderer.domElement);
+divContainer.appendChild( renderer.domElement );
 
 const scene = new THREE.Scene();
 
@@ -79,13 +88,16 @@ function setupModel() {
     const fillmaterial = new THREE.MeshPhongMaterial({color: 0xffffff, side: THREE.BackSide});
     const room = new THREE.Mesh(geometry, fillmaterial);
     objParentTransform.push(room);
+    room.name = "room";
 
     group.add(room);
     setObjectInBlog();
     scene.add(group);
+
+    clickRaycaster = new THREE.Raycaster();
 }
 
-// 배치된 오브젝트 불러와서 배치
+// object DB에서 배치된 오브젝트 불러와서 배치
 function setObjectInBlog() {
     const objectAssignLen = Object.keys(objectAssign).length; // 오브젝트 배치 개수
     const gltfloader = new GLTFLoader();
@@ -100,33 +112,35 @@ function setObjectInBlog() {
             url,
             ( gltf ) => {
                 const root = gltf.scene;
-                scene.add(root);
+                group.add(root);
                 objParentTransform.push( root );
-
-                const boundingBox = new THREE.Box3().setFromObject( root ); // 모델의 바운딩 박스 생성
-                const objectSize = boundingBox.getSize(new THREE.Vector3()); // 바운딩 박스 사이즈 정보
-
-                const objectFbsBoxGeometry = new THREE.BoxGeometry(objectSize.x, objectSize.y, objectSize.z);
-                const objectFbsBoxMaterial = new THREE.MeshPhongMaterial({opacity: 0.1});
-                const objectFbsBox = new THREE.Mesh(objectFbsBoxGeometry, objectFbsBoxMaterial);
-                objParentTransform.push(objectFbsBox);
-                scene.add(objectFbsBox);                
     
                 root.position.set( objectPosi[0], objectPosi[1], objectPosi[2] ); //모델 위치
-                objectFbsBox.position.set( objectPosi[0], objectPosi[1], objectPosi[2] );
                 root.rotation.y = objectRota * Math.PI / 2; // 모델 방향
                 root.name = key; // 오브젝트 이름: 배치 id
+
+                setObjectName( root, key );
             }
         );
     }
-} 
+}
+// 오브젝트 name을 배치 id(=object DB key값)로 설정
+function setObjectName( nameObjects, key ) {
+    const allChildren = nameObjects.children;
+    for(let i = 0; i < allChildren.length; i++) {
+        allChildren[i].name = key;
+        if(allChildren[i].children.length > 0) {
+            setObjectName( allChildren[i], key );
+        }
+    }
+}
 
 // 새롭게 배치를 위해 선택된 오브젝트 = 바닥
 function assignObjectFloor( url ) {
     selectRemove(); // 이전에 선택한 오브젝트 삭제
-    let rotationX = 1;
-    let rotationZ = 1;
-    let checkXZ = false;
+    rotationX = 1;
+    rotationZ = 1;
+    checkXZ = false;
 
     // 카메라가 바라보고 있는 방향
     let lookCamera = new THREE.Vector3();
@@ -138,14 +152,13 @@ function assignObjectFloor( url ) {
 
 
     // 사용자가 보고 있는 방향을 기준으로 오브젝트가 생성되도록
-    prePosition[0] = camera.position.x + lookCamera.x * 2;
+    prePosition[0] = camera.position.x + lookCamera.x * 4;
     prePosition[1] = -2;
     prePosition[2] = camera.position.z + lookCamera.z * 4;
 
 
     const gltfloader = new GLTFLoader();
     const dragObject = [];
-    let objectSize;
     
     gltfloader.load(
         url,
@@ -153,14 +166,12 @@ function assignObjectFloor( url ) {
             const root = gltf.scene;
             selectGroup.add(root);
             dragObject.push(root);
-            // objParentTransform.push( root );
+            objParentTransform.push( root );
 
             // 오브젝트 배치할 때 아래에 위치 표시
             const boundingBox = new THREE.Box3().setFromObject( root ); // 모델의 바운딩 박스 생성
             objectSize = boundingBox.getSize(new THREE.Vector3()); // 바운딩 박스 사이즈 정보
             
-            
-
             const rangeGeometry = new THREE.PlaneGeometry(objectSize.x, objectSize.z);
             const rangeMaterial = new THREE.MeshBasicMaterial({ color: "#858585" });
             const objectRange = new THREE.Mesh( rangeGeometry, rangeMaterial );
@@ -190,7 +201,10 @@ function assignObjectFloor( url ) {
     renderer.render(scene, camera);
     requestAnimationFrame(setupModel);
 
-    // 드래그 앤 드롭으로 오브젝트 옮기기
+    assignDragFloor( dragObject );
+}
+// 드래그 앤 드롭으로 오브젝트 옮기기 = 바닥
+function assignDragFloor( dragObject ) {
     const dragControls = new DragControls( dragObject, camera, divContainer);
     dragControls.transformGroup = true;
 
@@ -227,14 +241,14 @@ function assignObjectFloor( url ) {
 // 새롭게 배치를 위해 선택된 오브젝트 = 벽
 function assignObjectWall( url ) {
     selectRemove(); // 이전에 선택한 오브젝트 삭제
-    let rotationX = 1;
-    let rotationZ = 1;
-    let checkXY = false;
+    rotationX = 1;
+    rotationZ = 1;
+    checkXY = false;
 
     // 카메라가 바라보고 있는 방향
     let lookCamera = new THREE.Vector3();
     camera.getWorldDirection(lookCamera);
-    console.log(lookCamera);
+    //console.log(lookCamera);
     if(lookCamera.x < 0) rotationX = -1;
     if(lookCamera.z < 0) rotationZ = -1;
     if(Math.abs(lookCamera.x) > Math.abs(lookCamera.y)) checkXY = true;
@@ -244,7 +258,6 @@ function assignObjectWall( url ) {
 
     const gltfloader = new GLTFLoader();
     const dragObject = [];
-    let objectSize;
     
     gltfloader.load(
         url,
@@ -289,12 +302,14 @@ function assignObjectWall( url ) {
                 if(rotationX == 1) {
                     root.rotation.y = - Math.PI/2;
                     objectRange.rotation.y = - Math.PI/2
+                    preRotation = (preRotation + 3) % 4;
                 }
                 else {
                     root.rotation.y = Math.PI/2;
                     objectRange.rotation.y = Math.PI/2
+                    preRotation = (preRotation + 1) % 4;
                 }
-                prePosition[0] = rotationX * (3.5 - objectSize.x/2);
+                prePosition[0] = rotationX * (3.5 - objectSize.z/2);
                 prePosition[2] = camera.position.z + lookCamera.z * 2;
                 root.position.set( prePosition[0] - rotationX * 0.1, prePosition[1], prePosition[2] ); //모델 위치 지정
                 objectRange.position.set( prePosition[0] + rotationX * (objectSize.z/2 - 0.001), prePosition[1], prePosition[2] ); // 그림자 위치 지정
@@ -303,6 +318,7 @@ function assignObjectWall( url ) {
                 if(rotationZ == 1) {
                     root.rotation.y = Math.PI;
                     objectRange.rotation.x = Math.PI;
+                    preRotation = (preRotation + 2) % 4;
                 }
                 prePosition[0] = camera.position.x + lookCamera.x * 2;
                 prePosition[2] = rotationZ * (5 - objectSize.z/2);
@@ -315,8 +331,11 @@ function assignObjectWall( url ) {
     scene.add(selectGroup);
     renderer.render(scene, camera);
     requestAnimationFrame(setupModel);
-
-    // 드래그 앤 드롭으로 오브젝트 옮기기
+    
+    assignDragWall( dragObject );
+}
+// 드래그 앤 드롭으로 오브젝트 옮기기 = 벽
+function assignDragWall( dragObject ) {
     const dragControls = new DragControls( dragObject, camera, divContainer);
     dragControls.transformGroup = true;
 
@@ -331,55 +350,131 @@ function assignObjectWall( url ) {
 
         // 카메라 방향에서 x, y축 방향이 바뀌었을 경우
         if(checkXY) { // z축이 벽 밖으로 나가지 않도록
-            event.object.position.x = rotationX * 3.4; // x축 고정
+            event.object.position.x = rotationX * (3.4 - objectSize.z/2); // x축 고정
             if(event.object.position.z < -5 + objectSize.x/2) event.object.position.z = -5 + objectSize.x/2;
             if(event.object.position.z > 5 - objectSize.x/2) event.object.position.z = 5 - objectSize.x/2;
-            objectRange.position.set(prePosition[0] + rotationX * 0.199, event.object.position.y, event.object.position.z);
+            objectRange.position.set(event.object.position.x + rotationX * (objectSize.z/2 + 0.099), event.object.position.y, event.object.position.z);
         }
         else { // x축이 벽 밖으로 나가지 않도록
             event.object.position.z = rotationZ * (4.9 - objectSize.z/2); // z축 고정
             if(event.object.position.x < -3.5 + objectSize.x/2) event.object.position.x = -3.5 + objectSize.x/2;
             if(event.object.position.x > 3.5 - objectSize.x/2) event.object.position.x = 3.5 - objectSize.x/2;
-            objectRange.position.set(event.object.position.x, event.object.position.y, prePosition[2] + rotationZ * (objectSize.z/2 + 0.199));
+            objectRange.position.set(event.object.position.x, event.object.position.y, event.object.position.z + rotationZ * (objectSize.z/2 + 0.099));
         }
 
         prePosition[1] = event.object.position.y;
         if(checkXY) {
-            prePosition[0] = event.object.position.x - rotationX * 0.1;
+            prePosition[0] = event.object.position.x;
             prePosition[2] = event.object.position.z;
         }
         else {
             prePosition[0] = event.object.position.x;
-            prePosition[2] = event.object.position.z - rotationZ * 0.1;
+            prePosition[2] = event.object.position.z;
         }
     } );
 }
-function createFpsBox() {
-    const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+
+// 새롭게 배치를 위해 선택된 오브젝트 = 천장
+function assignObjectCeiling( url ) {
+    selectRemove(); // 이전에 선택한 오브젝트 삭제
+    rotationX = 1;
+    rotationZ = 1;
+    checkXZ = false;
+
+    // 카메라가 바라보고 있는 방향
+    let lookCamera = new THREE.Vector3();
+    camera.getWorldDirection(lookCamera);
+    //console.log(lookCamera);
+    if(lookCamera.x < 0) rotationX = -1;
+    if(lookCamera.z < 0) rotationZ = -1;
+    if(Math.abs(lookCamera.x) > Math.abs(lookCamera.z)) checkXZ = true;
+
+
+    // 사용자가 보고 있는 방향을 기준으로 오브젝트가 생성되도록
+    prePosition[0] = camera.position.x + lookCamera.x * 4;
+    prePosition[1] = -1.1;
+    prePosition[2] = camera.position.z + lookCamera.z * 4;
+
+
+    const gltfloader = new GLTFLoader();
+    const dragObject = [];
     
-    const fillmaterial = new THREE.MeshPhongMaterial({color: 0x111111});
-    fpsBox = new THREE.Mesh(geometry, fillmaterial);
+    gltfloader.load(
+        url,
+        ( gltf ) => {
+            const root = gltf.scene;
+            selectGroup.add(root);
+            dragObject.push(root);
+            objParentTransform.push( root );
 
-    fpsBox.position.set(0, -0.5, -1.2);
+            // 오브젝트 배치할 때 아래에 위치 표시
+            const boundingBox = new THREE.Box3().setFromObject( root ); // 모델의 바운딩 박스 생성
+            objectSize = boundingBox.getSize(new THREE.Vector3()); // 바운딩 박스 사이즈 정보
+            
+            const rangeGeometry = new THREE.PlaneGeometry(objectSize.x, objectSize.z);
+            const rangeMaterial = new THREE.MeshBasicMaterial({ color: "#858585" });
+            const objectRange = new THREE.Mesh( rangeGeometry, rangeMaterial );
 
-    camera.add(fpsBox);
+            // 최초 배치 위치가 벽을 벗어나는 경우 방 안으로 배치되도록
+            if(prePosition[0] < -3.5 + objectSize.x/2) {
+                prePosition[0] = -3.5 + objectSize.x/2;
+            }
+            if(prePosition[0] > 3.5 - objectSize.x/2) {
+                prePosition[0] = 3.5 - objectSize.x/2;
+            }
+            if(prePosition[2] < -5 + objectSize.z/2) {
+                prePosition[2] = -5 + objectSize.z/2;
+            }
+            if(prePosition[2] > 5 - objectSize.z/2) {
+                prePosition[2] = 5 - objectSize.z/2;
+            }
+            root.position.set( prePosition[0], prePosition[1] + 0.1, prePosition[2] ); //모델 위치 지정
 
-    // for (var vertexIndex = 0; vertexIndex < MovingCube.geometry.vertices.length; vertexIndex++){        
-    //     // 큐브의 각 정점을 가져오기
-	// 	var localVertex = MovingCube.geometry.vertices[vertexIndex].clone();
-	// 	//큐브의 각 정점을 큐브의 행렬과 곱하고 원근법으로 나눔
-    //     var globalVertex = localVertex.applyMatrix4( MovingCube.matrix );
-	//     //globalVertex - MovingCube.position
-    //     var directionVector = globalVertex.sub( MovingCube.position );
-        
-	// 	//normalize : 정규화
-    //     var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
-    //     //개체와 광선 사이의 모든 교차를 확인
-	// 	//결과로는 교차 배열 반환
-	// 	var collisionResults = ray.intersectObjects( collidableMeshList );
-    //     if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() )
-    //         appendText(" Hit ");
-	//   }    
+            selectGroup.add(objectRange);
+            objectRange.position.set( prePosition[0], 1.999, prePosition[2] );
+            objectRange.rotation.x = + Math.PI / 2;
+        }
+    );
+    
+    scene.add(selectGroup);
+    renderer.render(scene, camera);
+    requestAnimationFrame(setupModel);
+
+    assignDragCeiling( dragObject );
+}
+// 드래그 앤 드롭으로 오브젝트 옮기기 = 천장
+function assignDragCeiling( dragObject ) {
+    const dragControls = new DragControls( dragObject, camera, divContainer);
+    dragControls.transformGroup = true;
+
+    dragControls.addEventListener( 'drag', function ( event ) {
+        // 카메라 방향에서 x, z축 방향이 바뀌었을 경우
+        if(checkXZ) {
+            event.object.position.x = prePosition[0] + rotationX * (prePosition[1] + 0.1 - event.object.position.y); // x축(앞뒤 거리) 이동
+        }
+        else {
+            // 위로는 못 움직이게 제한(바닥 오브젝트 기준) + 마우스 위아래 이동을 z축에 적용
+            event.object.position.z = prePosition[2] + rotationZ * (prePosition[1] + 0.1 - event.object.position.y); // z축(앞뒤 거리) 이동
+        }
+        event.object.position.y = -1.0; // y축(높이) 고정
+
+        // x축이 벽 밖으로 나가지 않도록
+        if(event.object.position.x < -3.5 + objectSize.x/2) event.object.position.x = -3.5 + objectSize.x/2;
+        if(event.object.position.x > 3.5 - objectSize.x/2) event.object.position.x = 3.5 - objectSize.x/2;
+
+        // z축이 벽 밖으로 나가지 않도록
+        if(event.object.position.z < -5 + objectSize.z/2) event.object.position.z = -5 + objectSize.z/2;
+        if(event.object.position.z > 5 - objectSize.z/2) event.object.position.z = 5 - objectSize.z/2;
+
+        // 아래 그림자도 같이 움직임
+        const allChildren = selectGroup.children;
+        const objectRange = allChildren[allChildren.length - 1];
+        objectRange.position.set(event.object.position.x, 1.999, event.object.position.z);
+
+        prePosition[0] = event.object.position.x;
+        prePosition[1] = event.object.position.y - 0.1;
+        prePosition[2] = event.object.position.z;
+    } );
 }
 
 function setupCamera() {
@@ -388,21 +483,49 @@ function setupCamera() {
     
     camera.position.set(0, -1, 0);
     camera.lookAt(0, -1, 1);
-
+    //생성된 camera 객체를 다른 메소드에서 사용할 수 있도록
     controls = new PointerLockControls(camera, divContainer);
     scene.add(controls.getObject());
-    
-    createFpsBox();
+
     raycaster = new THREE.Raycaster();
     
     divContainer.addEventListener( 'click', function() {
-        if(addView[0].style.display == "block") { // 오브젝트 배치 중일 때는 포인트 락 안 됨
+        // 오브젝트 배치 중일 때는 pointer lock 안 됨
+        if(addView[0].style.display == "block") {
             return;
         }
+
+        // pointer lock
         controls.lock();
+
+        // pointer lock 시 가운데 표시
+        targetPointer[0].style.display = "block";
+
+        // 이미 pointer lock인 상태에서 오브젝트를 선택해서 클릭
+        if(controls.isLocked && INTERSECTED) {
+            console.log("object(배치) id: " + INTERSECTED.name);
+            controls.unlock(); // pointer lock 비활성화
+
+            // 편집 모드가 비활성화 되어있는 동안 = 게시물 열람
+            if(editIcon[0].style.left != "15vh") {
+                console.log("post(게시물) id: " + objectAssign[INTERSECTED.name]['post_id']);
+                objectPostView[0].classList.remove(objectPostView[0].classList.item(1)); // 이전에 추가된 object_id가 있다면 class 명에서 삭제
+                objectPostView[0].classList.add(INTERSECTED.name); // object_id를 class 명으로 추가
+                
+                menuArea[0].style.display = "block"; // 메뉴 사용 환경 활성화
+                objectPostView[0].style.display = "block"; // 게시물 열람 화면 활성화
+                unSelectObjectGroup( group, INTERSECTED.name); // 오브젝트 선택 해제
+            }
+            // 편집 모드가 활성화 되어있는 동안 = 오브젝트 편집 기능
+            else {
+                objectEditButtons[0].style.opacity = "100%"; // 편집모드 삭제, 이동, 변경 버튼 활성화
+                objectEditButtons[0].classList.remove(objectEditButtons[0].classList.item(1)); // 이전에 추가된 object_id가 있다면 class 명에서 삭제
+                objectEditButtons[0].classList.add(INTERSECTED.name); // object_id를 class 명으로 추가
+            }
+        }
     })
 
-    onKeyDown = (event) => {
+    const onKeyDown = (event) => {
         switch(event.code) {
             case 'KeyW':
                 moveForward = true;
@@ -419,7 +542,7 @@ function setupCamera() {
         }
     };
 
-    onKeyUp = (event) => {
+    const onKeyUp = (event) => {
         switch(event.code) {
             case 'KeyW':
                 moveForward = false;
@@ -441,14 +564,13 @@ function setupCamera() {
     window.addEventListener('resize', resize);
 }
 
-
 function boolToInt(b) {
     if(b === true) {
         return 1;
     } return 0;
 }
 
-function animate () {
+function animate() {
     const time = performance.now();
     const delta = ( time - prevTime ) / 20000;
     cameraMovement(delta);
@@ -468,28 +590,16 @@ function drawRay() {
 
     const intersects = raycaster.intersectObjects( objParentTransform, false );
     
-    // // console.log(intersects.length);
+    // console.log(intersects.length);
 	// if(intersects.length > 0) {
-    //     fpsBox.visible = true;
-    //     fpsBox.position.copy(intersects[0].point);
-    //     if (intersects[0].point.z < 0.3){
-    //         moveForward = false;
-    //     }
-    //     // console.log(intersects[0].point);
+    //     rayMesh.visible = true;
+    //     rayMesh.position.copy(intersects[0].point);
+    //     //console.log(intersects[0].point);
     // } else {
-    //     fpsBox.visible = false;
+    //     rayMesh.visible = false;
     // }
-    for (var vertexIndex = 0; vertexIndex < fpsBox.geometry.vertices.length; vertexIndex++)
-    {        
-        var localVertex = fpsBox.geometry.vertices[vertexIndex].clone();
-        var globalVertex = localVertex.applyMatrix4( fpsBox.matrix );
-        var directionVector = globalVertex.sub( fpsBox.position );
-        
-        var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
-        var collisionResults = ray.intersectObjects( collidableMeshList );
-        if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() )
-            appendText(" Hit ");
-    }
+
+    //console.log(debug);
 }
 
 function cameraMovement(deltaTime) {
@@ -551,6 +661,79 @@ function resize () {
     renderer.setSize(width, height);
 }
 
+function render() {
+    // pointer lock 종료시 가운데 표시 숨김
+    if( !controls.isLocked ) {
+        const targetPointer = document.getElementsByClassName("target-pointer"); // 중심 나타내는 + 모양
+        targetPointer[0].style.display = "none";
+        targetPointer[0].style.left = divContainer.clientWidth / 2 + "px";
+        targetPointer[0].style.top = divContainer.clientHeight / 2 + "px";
+    }
+    // pointer lock 실행 시 오브젝트 선택 가능
+    else {
+        // 카메라가 바라보고 있는 방향
+        let lookCamera = new THREE.Vector3();
+        camera.getWorldDirection(lookCamera);
+        
+        // 오브젝트 선택을 위한 중심 좌표 위치
+        clickPointer.x = 0;
+        clickPointer.y = 0;
+
+        //console.log(clickPointer);
+        
+        // 오브젝트 선택을 위한 부분
+        clickRaycaster.setFromCamera(clickPointer, camera);
+
+        const intersects = clickRaycaster.intersectObjects( scene.children );
+        if( intersects[0].object.name != "room") { // 가리키는 오브젝트가 방이 아닌 경우
+            if(INTERSECTED) {
+                INTERSECTED.material.emissive.setHex( 0x000000 );
+                unSelectObjectGroup( group, INTERSECTED.name);
+            }
+            INTERSECTED = intersects[0].object;
+            selectObjectGroup( group, INTERSECTED.name);
+        }
+        else if(INTERSECTED) {
+            INTERSECTED.material.emissive.setHex( 0x000000 );
+            unSelectObjectGroup( group, INTERSECTED.name);
+            INTERSECTED = null;
+        }
+    }
+    renderer.render(scene, camera);
+}
+// 같은 그룹에 속한 object를 함께 표시
+function selectObjectGroup( selectObjects, key ) {
+    let allChildren = selectObjects.children;
+    for(let i = 0; i < allChildren.length; i++) {
+        if(allChildren[i].children.length > 0) {
+            selectObjectGroup( allChildren[i], key );
+        }
+        else if(allChildren[i].name == key) {
+            allChildren[i].material.emissive.set( 0xaaaaaa );
+        }
+    }
+}
+// 같은 그룹에 속한 object를 함께 리셋
+function unSelectObjectGroup( selectObjects, key ) {
+    let allChildren = selectObjects.children;
+    for(let i = 0; i < allChildren.length; i++) {
+        if(allChildren[i].children.length > 0) {
+            unSelectObjectGroup( allChildren[i], key );
+        }
+        else if(allChildren[i].name == key) {
+            allChildren[i].material.emissive.set( 0x000000 );
+        }
+    }
+}
+
+// 오브젝트 선택 + 게시물 열람
+const targetPointer = document.getElementsByClassName("target-pointer"); // pointer lock 가운데 표시
+const objectPostView = document.getElementsByClassName("object-post-view"); // 오브젝트 선택 시 보이는 게시물 열람 화면
+
+// 편집 모드
+const editIcon = document.getElementsByClassName("bi-tools"); // 편집 모드 버튼
+const objectEditButtons = document.getElementsByClassName("object-edit-buttons"); // 편집모드에서의 삭제, 이동, 변경 버튼
+
 // 배치하고 싶은 오브젝트 선택 시
 const selectObject = document.getElementsByClassName("object-thumbnail"); // 오브젝트 썸네일
 const menuBar = document.getElementsByClassName("menu-bar"); // 메뉴 버튼
@@ -576,11 +759,12 @@ window.onload = () => {
             if(objectTemplate[key]) {
                 if(objectTemplate[key]['placementLocation'] == 'floor') assignObjectFloor( url ); // 바닥 배치
                 if(objectTemplate[key]['placementLocation'] == 'wall') assignObjectWall( url ); // 벽 배치
+                if(objectTemplate[key]['placementLocation'] == 'ceiling') assignObjectCeiling( url ); // 바닥 배치
             }
         })
     }
 }
-// 오브젝트 좌방향 회전
+// 오브젝트 배치 중에 오브젝트 좌방향 회전
 objectLeftRotaionButton[0].addEventListener( 'click', () => {
     if(key) { // 선택된 오브젝트가 있을 때만 작동
         const allChildren = selectGroup.children;
@@ -588,11 +772,17 @@ objectLeftRotaionButton[0].addEventListener( 'click', () => {
         const objectRange = allChildren[allChildren.length - 1];
 
         preRotation = (preRotation + 1) % 4;
-        selectObject.rotation.y += Math.PI / 2;
-        objectRange.rotation.z += Math.PI / 2;
+        leftRotaion(selectObject, 'y');
+        leftRotaion(objectRange, 'z');
     }
 });
-// 오브젝트 우방향 회전
+// 좌방향 회전
+const leftRotaion = ( turnObject, line ) => {
+    if(line == 'x') turnObject.rotation.x += Math.PI / 2;
+    if(line == 'y') turnObject.rotation.y += Math.PI / 2;
+    if(line == 'z') turnObject.rotation.z += Math.PI / 2;
+}
+// 오브젝트 배치 중에 우방향 회전
 objectRightRotaionButton[0].addEventListener( 'click', () => {
     if(key) { // 선택된 오브젝트가 있을 때만 작동
         const allChildren = selectGroup.children;
@@ -600,15 +790,31 @@ objectRightRotaionButton[0].addEventListener( 'click', () => {
         const objectRange = allChildren[allChildren.length - 1];
 
         preRotation = (preRotation + 3) % 4;
-        selectObject.rotation.y -= Math.PI / 2;
-        objectRange.rotation.z -= Math.PI / 2;
+        rightRotaion(selectObject, 'y');
+        rightRotaion(objectRange, 'z');
     }
 });
+// 오브젝트 좌방향 회전
+const rightRotaion = ( turnObject, line ) => {
+    if(line == 'x') turnObject.rotation.x -= Math.PI / 2;
+    if(line == 'y') turnObject.rotation.y -= Math.PI / 2;
+    if(line == 'z') turnObject.rotation.z -= Math.PI / 2;
+}
 // 취소 버튼 => 오브젝트 추가하기 비활성화
 cancleButton[0].addEventListener( 'click', () => {
     selectRemove();
+    key = "";
     addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
     addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
+});
+// 오브젝트 배치 중에 메뉴바 선택 => 오브젝트 추가하기 비활성화
+menuBar[0].addEventListener( 'click', () => {
+    if(key) { // 선택된 오브젝트가 있을 때만 작동
+        selectRemove();
+        key = "";
+        addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
+        addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
+    }
 });
 // 이전에 선택한 오브젝트 제거
 const selectRemove = () => {
@@ -638,6 +844,7 @@ completeButton[0].addEventListener( 'click', () => {
         // 연결할 게시물 선택이 완료된 경우
         const postLinkCompleteButton = document.getElementsByClassName('post-link-complete-button');
         postLinkCompleteButton[0].onclick = objectAndPostLink;
+        key = "";
     }
 });
 const ObjectAssignNullPost = () => {
@@ -704,8 +911,4 @@ const saveBlob = (function() {
        a.download = fileName;
        a.click();
     };
-  }());
-
-function render() {
-    renderer.render(scene, camera);
-}
+}());

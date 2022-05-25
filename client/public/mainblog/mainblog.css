@@ -10,6 +10,9 @@
     --button-blue: #7DA2A9;
     --bright-green: #80FF80;
     --bright-red: #FF8080;
+    --edit-red: #E03030;
+    --edit-blue: #3030E0;
+    --edit-green: #30E030;
 }
 /* 폰트 */
 @font-face {
@@ -27,12 +30,23 @@ body {
     overflow: hidden;
 }
 
+/* three.js 사용 환경 */
 #webgl-container {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+}
+
+/* pointer lock 되었을 때 중심 표시 */
+.target-pointer {
+    display: none;
+    position: fixed;
+    font-size: 4vh;
+
+    margin-top: -2vh;
+    margin-left: -2vh;
 }
 
 /* 메뉴 사용 환경 */
@@ -49,6 +63,31 @@ body {
     background-color: white;
     opacity: 50%;
 }
+
+/* 오브젝트 선택 시 게시물 열람 창 */
+.object-post-view {
+    display: none;
+    z-index: 12000;
+
+    margin-left: 16vh; /* 메뉴 바 공간만큼 */
+}
+.close-post {
+    display: block;
+    position: relative;
+    z-index: 12000;
+
+    float: right;
+    padding: 1vh 2.3vh 1vh 2.3vh;
+    margin: 3vh;
+
+    background-color: var(--main-color);
+    border-radius: 2vh;
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 3vh;
+
+    cursor: pointer; /* 마우스 커서 모양 */
+}
+
 
 /* ------------------------------------------------------ 메뉴 바 --------------------------------------------------------*/
 /* 메뉴 바 버튼 */
@@ -580,7 +619,7 @@ body {
     width: 72vw;
 }
 
-/* ------------------------------------ 편집 모드 --------------------------------------------- */
+/* ----------------------------------------- 편집 모드 ------------------------------------------------- */
 .edit-mode {
     display: none;
     z-index: 10000;
@@ -590,6 +629,43 @@ body {
     align-items: center;
 
     cursor: pointer; /* 마우스 커서 모양 */
+}
+/* 오브젝트 편집 버튼 */
+.object-edit-buttons {
+    display: block;
+    position: relative;
+    float: left;
+    margin-left: 4vh;
+    top: 90vh;
+    
+    align-items: center;
+
+    font-size: 4vh;
+    opacity: 50%; /* 비활성화 상태 */
+}
+/* 오브젝트 삭제 버튼 */
+.object-delete {
+    display: inline-block;
+    padding: 0.8vh 1.3vh;
+
+    background-color: var(--edit-red);
+    border-radius: 50%;
+}
+/* 오브젝트 이동 버튼 */
+.bi-arrows-move {
+    display: inline-block;
+    padding: 0.8vh 1.3vh;
+
+    background-color: var(--edit-blue);
+    border-radius: 50%;
+}
+/* 오브젝트 변경 버튼 */
+.bi-arrow-left-right {
+    display: inline-block;
+    padding: 0.8vh 1.3vh;
+
+    background-color: var(--edit-green);
+    border-radius: 50%;
 }
 /* 썸네일 촬영 버튼 */
 .capture-button {
