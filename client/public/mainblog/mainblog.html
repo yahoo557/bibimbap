@@ -110,7 +110,7 @@
     <!-- 편집 모드 -->
     <section class="edit-mode">
         <div class="object-edit-buttons">
-            <i class="bi bi-x-lg object-delete"></i> <!-- 오브젝트 삭제 버튼 -->
+            <i class="bi bi-x-lg object-delete" onclick="removeObjectButton()"></i> <!-- 오브젝트 삭제 버튼 -->
             <i class="bi bi-arrows-move"></i> <!-- 오브젝트 이동 버튼 -->
             <i class="bi bi-arrow-left-right"></i> <!-- 오브젝트 변경 버튼 -->
         </div>
@@ -126,6 +126,13 @@
         <div class="change-thumbnail-comment">썸네일을 위 사진으로 변경할까요?</div>
         <i class="bi bi-x bi-x-thumbnail" onclick="thumbnailChangeCancle()"></i>
         <i class="bi bi-check-lg" onclick="thumbnailChangeComplete()"></i>
+    </section>
+    <section class="remove-object">
+        <div class="remove-object-title">물건 삭제하기</div>
+        <img class="remove-object-image" src="">
+        <div class="remove-object-comment">이 물건을 삭제할까요?</div>
+        <i class="bi bi-x bi-x-object" onclick=""></i>
+        <i class="bi bi-check-lgs" onclick=""></i>
     </section>
 
     <!-- 게시물 리스트 -->

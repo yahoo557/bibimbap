@@ -313,3 +313,9 @@ const postListLoad = () =>{
         }
     }
 }
+
+const removeObjectButton = () => {
+    document.getElementById("remove-object").style.display = block;
+    document.getElementById("change-thumbnail-image").src = '../../object_thumbnail/angle_clock.png';
+
+}
