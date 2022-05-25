@@ -15,10 +15,18 @@
             <div id="sidebarInner">
                 <div id="sidebarHeader" class="sidebarContainer">
                     <img class="btns" onclick="window.location.href='/'" width="180" src="/static/img/noldaga_logo.png">
-                    <% if (isLogined == 'true'){ %>
-                    <div id="accMenu"><a href="/logout">로그아웃</a> <span class="whiteText">|</span> <a href="/register">회원가입</a></div>
+                    <%if (isLogined){ %>
+                    <div id="accMenu"><span class="whiteText"><%=nickname%>님 반갑습니다</span><br/>
+                        <a href="/userInfo">정보수정</a>
+                        <span class="whiteText"> | </span>
+                        <a href="/logout">로그아웃</a>
+                    </div>
                     <% } else { %>
-                        <div id="accMenu"><a href="/login">로그인</a> <span class="whiteText">|</span> <a href="/register">회원가입</a></div>
+                        <div id="accMenu">
+                            <a href="/login">로그인</a> 
+                            <span class="whiteText"> | </span> 
+                            <a href="/register">회원가입</a>
+                        </div>
                     <% }%>
                 </div>
                 <button id="myBlogBtn">내 방으로</button>

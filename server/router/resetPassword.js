@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 
-
 const path = require('path');
 
 const client = require("../config/db.config"); // DB 연결
