@@ -6,13 +6,7 @@ const client = require("../config/db.config"); // DB 연결
 const Query = require('pg').Query
 
 router.get("/", (req, res) => {
-    const parseCookie = str =>
-    str.split(';').map(v => v.split('=')).reduce((acc, v) => {
-      acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
-      return acc;
-    }, {});
-    // console.log(req.headers.cookie)
-    console.log(parseCookie(req.headers.cookie).accessToken)
+    
     res.sendFile(path.join(__dirname, '../public', 'post.html'));
 });
 

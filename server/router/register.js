@@ -12,7 +12,6 @@ router.get("/", (req, res) => {
     
 });
 router.post('/', (req, res, next) => {
-    console.log(req.body);
     const text_insert = 'INSERT INTO users(username, password, nickname, passwordq, passworda, blogname) VALUES($1, $2, $3, $4, $5, $6) RETURNING *';
     const text_check_username = 'SELECT * FROM users WHERE username = $1';
     const text_check_nickname = 'SELECT * FROM users WHERE nickname = $1';
