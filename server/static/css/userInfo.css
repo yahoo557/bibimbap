@@ -80,19 +80,12 @@ table {
     text-align: start;
 }
 
-#changePwBtn {
-    background-color: #AACCFF;
-    width: 150px;
-    height: 25px;
-    border-radius: 20px;
-    font-size: 20px;
-}
-
 #applyBtn {
     background-color: #AACCFF;
     width: 150px;
     height: 30px;
     border-radius: 20px;
+
     font-size: 22px;
 }
 
@@ -122,9 +115,4 @@ table {
 
 .rightAlign {
     text-align: right;
-}
-
-.dotHr {
-    border: none;
-    border-top: 1px dashed black;
 }
