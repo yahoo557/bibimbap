@@ -1081,7 +1081,7 @@ objectMoveButton[0].addEventListener('click', () => {
 // 오브젝트 이동 완료 버튼 선택 시
 objectMoveComplete[0].addEventListener('click', () => {
     if(moveObjectKey) {
-        unSelectObjectGroup( moveSelectObjects, moveSelectObjects.name ); // 선택 해체
+        unSelectObjectGroup( moveSelectObjects, moveSelectObjects.name ); // 선택 해제
         selectRemove(); // 그림자 제거
         dragControls.enabled = false; // 드래그 비활성화
         objectMoveComplete[0].style.display = "none"; // 편집 모드 이동 완료 버튼 숨기기
@@ -1174,7 +1174,7 @@ objectChangeComplete[0].addEventListener('click', () => {
     console.log("변경 된 object_id: " + changeObjectKey);
     console.log("변경할 object_template_id: " + key);
 
-    objectEditButtons[0].style.display = "inline-block;"; // 오브젝트 삭제, 이동, 변경 버튼 보이기
+    objectEditButtons[0].style.display = "block"; // 오브젝트 삭제, 이동, 변경 버튼 보이기
     thumbnailButton[0].style.display = "grid"; // 썸네일 촬영 버튼 보이기
     objectChangeView[0].style.display = "none"; // 오브젝트 변경을 위한 리스트 숨기기
     editIcon[0].style.left = "0vh"; // 편집 모드 버튼 비활성화
@@ -1228,12 +1228,9 @@ removeObjectButton[0].addEventListener('click', () => {
         const selectedObjectTumbnailUrl = objectTemplate[selectedObjectTempleteId]['thumbnail_path'];
         removeObjectImage[0].src = selectedObjectTumbnailUrl;
 
+        const removeObject = document.getElementsByClassName("remove-object");
+
+        removeObject[0].style.display = "block";
+        menuArea[0].style.display = "block";
     }
-
-
-    const removeObject = document.getElementsByClassName("remove-object");
-
-
-    removeObject[0].style.display = "block";
-    menuArea[0].style.display = "block";
 });
