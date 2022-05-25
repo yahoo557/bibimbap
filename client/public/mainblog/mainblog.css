@@ -659,6 +659,7 @@ body {
     background-color: var(--edit-blue);
     border-radius: 50%;
 }
+
 /* 오브젝트 이동 완료 버튼 */
 .object-move-complete {
     display: none;
@@ -675,6 +676,7 @@ body {
     font-family: 'Cafe24SsurroundAir';
     font-size: 3vh;
 }
+
 /* 오브젝트 변경 버튼 */
 .bi-arrow-left-right {
     display: inline-block;

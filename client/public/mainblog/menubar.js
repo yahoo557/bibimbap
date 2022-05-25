@@ -60,6 +60,7 @@ const editView = document.getElementsByClassName("edit-mode");
 const objectEditButtons = document.getElementsByClassName("object-edit-buttons")
 const objectMoveComplete = document.getElementsByClassName("object-move-complete");
 
+
 // 썸네일 변경 확인창
 const changeThumbnailView = document.getElementsByClassName("change-thumbnail");
 

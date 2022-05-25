@@ -36,6 +36,7 @@ const clickPointer = new THREE.Vector2();
 let INTERSECTED;
 
 // 새로운 오브젝트 배치 & 드래그로 이동을 위한 변수들
+
 let dragControls;
 let rotationX;
 let rotationZ;
@@ -145,6 +146,7 @@ function assignObjectFloor( url ) {
     camera.getWorldDirection(lookCamera);
     assignSetFloor( lookCamera ); // 배치하기 전 설정해야 하는 내용
     
+
     // 사용자가 보고 있는 방향을 기준으로 오브젝트가 생성되도록
     prePosition[0] = camera.position.x + lookCamera.x * 4;
     prePosition[1] = -2;
@@ -195,6 +197,7 @@ function assignObjectFloor( url ) {
 
     assignDragFloor( dragObject );
 }
+
 // 편집 모드에서 이동 선택된 오브젝트 = 바닥
 function moveObjectFloor( moveObject ) {
     // 카메라가 바라보고 있는 방향
@@ -237,6 +240,7 @@ function assignSetFloor( lookCamera ) {
 // 드래그 앤 드롭으로 오브젝트 옮기기 = 바닥
 function assignDragFloor( dragObject ) {
     dragControls = new DragControls( dragObject, camera, divContainer);
+
     dragControls.transformGroup = true;
 
     dragControls.addEventListener( 'drag', function ( event ) {
@@ -461,6 +465,7 @@ function assignObjectCeiling( url ) {
     camera.getWorldDirection(lookCamera);
     assignSetCeiling( lookCamera ); // 배치하기 전 설정해야 하는 내용
 
+
     // 사용자가 보고 있는 방향을 기준으로 오브젝트가 생성되도록
     prePosition[0] = camera.position.x + lookCamera.x * 4;
     prePosition[1] = -1.1;
@@ -610,6 +615,7 @@ function setupCamera() {
             return;
         }
 
+
         // pointer lock
         controls.lock();
 
@@ -617,6 +623,7 @@ function setupCamera() {
         targetPointer[0].style.display = "block";
 
         objectEditButtons[0].style.opacity = "50%"; // 편집모드 삭제, 이동, 변경 버튼 비활성화
+
         // 이미 pointer lock인 상태에서 오브젝트를 선택해서 클릭
         if(controls.isLocked && INTERSECTED) {
             console.log("object(배치) id: " + INTERSECTED.name);
