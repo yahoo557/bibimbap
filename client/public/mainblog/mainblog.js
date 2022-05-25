@@ -14,6 +14,8 @@ const objectTemplate = {'ob1': {'model_path': '../../object_files/Old_Bicycle.gl
                     'ob2': {'model_path': '../../object_files/Plants_on_table.gltf', 'thumbnail_path': '../../object_thumbnail/Plants_on_table.png', 'placementLocation': 'floor'},
                     'ob3': {'model_path': '../../object_files/Evita_chandelier.gltf', 'thumbnail_path': '../../object_thumbnail/Evita_chandelier.png', 'placementLocation': 'ceiling'},
                     'ob4': {'model_path': '../../object_files/angle_clock.glb', 'thumbnail_path': '../../object_thumbnail/angle_clock.png', 'placementLocation': 'wall'}};
+const blank = '../../object_thumbnail/blank.png';
+
 let camera;
 const group = new THREE.Group();
 const selectGroup = new THREE.Group();
@@ -866,12 +868,14 @@ let preRotation = 0; // 배치 방향 - 0: 정면, 1: 좌측: 2: 뒤, 3: 우측
 window.onload = () => {
     for(let i = 0; i < 4; i++) { // 한 페이지에 오브젝트 썸네일 4개
         selectObject[i].addEventListener( 'click', () => {
-            key = selectObject[i].classList.item(1); // 오브젝트 아이디
-            const url = objectTemplate[key]['model_path']; // 오브젝트 url
-            if(objectTemplate[key]) {
-                if(objectTemplate[key]['placementLocation'] == 'floor') assignObjectFloor( url ); // 바닥 배치
-                if(objectTemplate[key]['placementLocation'] == 'wall') assignObjectWall( url ); // 벽 배치
-                if(objectTemplate[key]['placementLocation'] == 'ceiling') assignObjectCeiling( url ); // 바닥 배치
+            if(!objectEditButtons[0].classList.item(1)) {
+                key = selectObject[i].classList.item(1); // 오브젝트 아이디
+                const url = objectTemplate[key]['model_path']; // 오브젝트 url
+                if(objectTemplate[key]) {
+                    if(objectTemplate[key]['placementLocation'] == 'floor') assignObjectFloor( url ); // 바닥 배치
+                    if(objectTemplate[key]['placementLocation'] == 'wall') assignObjectWall( url ); // 벽 배치
+                    if(objectTemplate[key]['placementLocation'] == 'ceiling') assignObjectCeiling( url ); // 바닥 배치
+                }
             }
         })
     }
@@ -995,10 +999,15 @@ const editIcon = document.getElementsByClassName("bi-tools"); // 편집 모드 �
 const objectEditButtons = document.getElementsByClassName("object-edit-buttons"); // 편집모드에서의 삭제, 이동, 변경 버튼
 const objectMoveButton = document.getElementsByClassName("bi-arrows-move"); // 편집 모드 - 오브젝트 이동 버튼
 const objectMoveComplete = document.getElementsByClassName("object-move-complete"); // 편집 모드 - 오브젝트 이동 완료 버튼
+const objectChangeButton = document.getElementsByClassName("bi-arrow-left-right"); // 편집 모드 - 오브젝트 변경 버튼
+const objectChangeView = document.getElementsByClassName("object-change-view"); // 편집 모드 - 오브젝트 변경을 위한 오브젝트 리스트
+const objectChangeleft = document.getElementsByClassName("change-list-left"); // 편집 모드 - 오브젝트 변경 리스트 이전 버튼
+const objectChangeRight = document.getElementsByClassName("change-list-right"); // 편집 모드 - 오브젝트 변경 리스트 이전 버튼
+const objectChangeThumnail = document.getElementsByClassName("object-change-thumbnail"); // 편집 모드 - 오브젝트 변경 리스트 썸네일
 
+// 오브젝트 이동 버튼 선택 시
 let moveObjectKey;
 let moveSelectObjects;
-// 오브젝트 이동 버튼 선택 시
 objectMoveButton[0].addEventListener('click', () => {
     if(objectEditButtons[0].classList.item(1)) { // 오브젝트가 선택된 경우
         objectMoveComplete[0].style.display = "block";
@@ -1009,18 +1018,16 @@ objectMoveButton[0].addEventListener('click', () => {
         const allChildren = group.children;
         for(let i = 0; i < allChildren.length; i++) {
             if(allChildren[i].name == moveObjectKey) {
+                moveSelectObjects = allChildren[i];
                 if(objectTemplate[moveObjectTemplateKey]['placementLocation'] == 'floor') {
-                    moveSelectObjects = allChildren[i];
                     moveObjectFloor( moveSelectObjects );
                     break;
                 }
                 if(objectTemplate[moveObjectTemplateKey]['placementLocation'] == 'wall') {
-                    moveSelectObjects = allChildren[i];
                     moveObjectWall( moveSelectObjects );
                     break;
                 }
                 if(objectTemplate[moveObjectTemplateKey]['placementLocation'] == 'ceiling') {
-                    moveSelectObjects = allChildren[i];
                     moveObjectCeiling( moveSelectObjects );
                     break;
                 }
@@ -1035,6 +1042,7 @@ objectMoveComplete[0].addEventListener('click', () => {
         selectRemove(); // 그림자 제거
         dragControls.enabled = false; // 드래그 비활성화
         objectMoveComplete[0].style.display = "none"; // 편집 모드 이동 완료 버튼 숨기기
+        objectEditButtons[0].style.opacity = "50%"; // 편집모드 삭제, 이동, 변경 버튼 비활성화
 
         // 바닥, 벽, 천장이랑 거리 띄운 거 다시 원래대로
         moveSelectObjects.position.set(prePosition[0], prePosition[1], prePosition[2]);
@@ -1045,6 +1053,73 @@ objectMoveComplete[0].addEventListener('click', () => {
         moveObjectKey = "";
     }
 });
+// 오브젝트 변경 버튼 선택 시
+let changeObjectKey;
+let changeSelectObjects;
+let changeObjectTemplateKey;
+objectChangeButton[0].addEventListener('click', () => {
+    if(objectEditButtons[0].classList.item(1)) { // 오브젝트가 선택된 경우
+        changeObjectKey = objectEditButtons[0].classList.item(1); // 선택된 오브젝트의 object_id
+        changeObjectTemplateKey = objectAssign[changeObjectKey]['template_id']; // 배치된 오브젝트의 template_id
+        prePosition = objectAssign[changeObjectKey]['model_position'];
+
+        objectEditButtons[0].style.display = "none"; // 오브젝트 삭제, 이동, 변경 버튼 숨기기
+        thumbnailButton[0].style.display = "none"; // 썸네일 촬영 버튼 숨기기
+        objectChangeView[0].style.display = "block"; // 오브젝트 변경을 위한 리스트
+        objectChangeleft[0].style.opacity = "30%"; // 이전 버튼 비활성화
+        if(Object.keys(objectTemplate).length <= maxObject) objectChangeRight[0].style.opacity = "30%"; // 다음 버튼 비활성화
+        objectChangeList(); // 리스트에 썸네일 이미지 불러오기
+
+        const allChildren = group.children;
+        for(let i = 0; i < allChildren.length; i++) {
+            if(allChildren[i].name == changeObjectKey) {
+                changeSelectObjects = allChildren[i];
+                //group.remove(changeSelectObjects);
+            }
+        }
+    }
+});
+let page = 0; // 현재 페이지
+const maxObject = 4; // 한 페이지에 최대로 배치될 수 있는 썸네일 수
+// 이전 버튼
+objectChangeleft[0].addEventListener('click', () => {
+    if(page > 0) {
+        page -= maxObject;
+        objectChangeList();
+        if(page == 0) {
+            objectChangeleft[0].style.opacity = "30%";  // 이전 버튼 비활성화
+        }
+        objectChangeRight[0].style.opacity = "100%"; // 다음 버튼 활성화
+    }
+});
+// 다음 버튼
+objectChangeRight[0].addEventListener('click', () => {
+    if((page + maxObject) < Object.keys(objectTemplate).length) {
+        page += maxObject;
+        objectChangeList();
+        objectChangeleft[0].style.opacity = "100%";  // 이전 버튼 활성화
+        if((page + maxObject) > Object.keys(objectTemplate).length) {
+            objectChangeRight[0].style.opacity = "30%"; // 다음 버튼 비활성화
+        }
+    }
+});
+// 오브젝트 리스트
+const objectChangeList = () => {
+    for(let i = 0; i < maxObject; i++) {
+        const key = Object.keys(objectTemplate)[i + page];  // 오브젝트 id
+        if(key) {
+            if(objectTemplate[key]['placementLocation'] = objectTemplate[changeObjectTemplateKey]['placementLocation']) {
+                continue;
+            }
+            objectChangeThumnail[i].classList.remove(objectChangeThumnail[i].classList.item(1)); // 이전에 추가된 object_template_id가 있다면 class 명에서 삭제
+            objectChangeThumnail[i].classList.add(key); // object_template_id를 class 명으로 추가
+            objectChangeThumnail[i].src = objectTemplate[key]['thumbnail_path'];
+        }
+        else {/* 더이상 오브젝트가 없는 경우 */
+            objectChangeThumnail[i].src = blank;
+        }
+    }
+}
 
 const thumbnailButton = document.getElementsByClassName('capture-button');
 thumbnailButton[0].addEventListener('click', () => {
