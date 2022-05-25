@@ -1,0 +1,40 @@
+html, body {
+    height: 100%;
+    min-height: 400px;
+}
+
+body { 
+    margin: 0px;
+    background-color: #EFF6FF;
+}
+
+header {
+    height: 15%;
+    min-height: 100px;
+}
+
+footer {
+    background-color: black;
+    height: 5%;
+}
+
+article {
+    height: 80%;
+    min-height: 450px;
+    text-align: center;
+}
+
+#mainDiv {
+    width: 450px;
+    background-color: white;
+    border-radius: 15px;
+
+    display: inline-block;
+    text-align: center;
+
+    padding: 10px;
+}
+
+#mainText {
+    font-size: 18px;
+}

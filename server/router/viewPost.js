@@ -5,8 +5,6 @@ const client = require("../config/db.config"); // DB 연결
 const Query = require('pg').Query
 
 
-
-
 router.get("/", (req, res) => {
     // 게시글 표시 페이지 나타내는 변수
     // DB에서 포스팅의 데이터를 읽어올 쿼리문 이다.
@@ -68,8 +66,7 @@ router.post("/", (req, res) => {
     const param = [req.body.id];
     const sql = "SELECT * FROM posts WHERE id = $1";
     client.query(sql, param, (err, rows) => {
-        if(err) {
-            
+        if(err) {   
             return;
         }
         res.send(rows.rows[0].body.slice(1, -1));
