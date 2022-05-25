@@ -1,7 +1,5 @@
 const express = require("express"); // WAS 미들웨어
 const router = express.Router(); // 라우터 미들웨어
-const bodyparser = require("body-parser"); // HTTP body 파싱
-router.use(bodyparser.urlencoded({ extended: false }));
 const Query = require('pg').Query // DB 쿼리
 const bcrypt = require("bcrypt"); // 비밀번호 암호화
 const jwt = require("jsonwebtoken");
@@ -11,9 +9,9 @@ const path = require('path');
 
 
 router.get('/', (req, res ) => {
-  
   res.sendFile(path.join(__dirname, '../public', 'login.html'));
 });
+
 router.post('/', (req, res, next) => {
   const user_id_input = req.body.userID;
   const user_pw_input = req.body.userPassword;
@@ -26,6 +24,7 @@ router.post('/', (req, res, next) => {
         jwt.sign(
           {
             id: rows.rows[0].id,
+            username: rows.rows[0].username,
             nickname: rows.rows[0].nickname
           },
           secret_key.secret,
@@ -46,7 +45,8 @@ router.post('/', (req, res, next) => {
     }
     else {
       //에러 발생시 404 에러코드와 메세지 호출
-      return res.redirect('/login');
+      return res.send(`<script>alert('계정이 존재하지 않거나\\nID / 비밀번호가 일치하지 않습니다.')
+      window.location.href='/login'</script>`);
     }
   });
 
