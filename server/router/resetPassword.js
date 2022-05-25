@@ -13,13 +13,9 @@ router.get("/", (req, res) => {
 
 
 router.post('/', (req, res, next)=>{
-
     const getQAQuery = 'SELECT passwordq, passworda FROM users WHERE username = $1';
     
     const params = "";
-
-    
-
 });
 
 module.exports = router;
