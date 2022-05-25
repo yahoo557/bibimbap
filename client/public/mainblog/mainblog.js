@@ -139,6 +139,7 @@ function setObjectName( nameObjects, key ) {
     }
 }
 
+const dragSpeed = 0.7;
 // 새롭게 배치를 위해 선택된 오브젝트 = 바닥
 function assignObjectFloor( url ) {
     selectRemove(); // 이전에 선택한 오브젝트 삭제
@@ -199,7 +200,6 @@ function assignObjectFloor( url ) {
 
     assignDragFloor( dragObject );
 }
-
 // 편집 모드에서 이동 선택된 오브젝트 = 바닥
 function moveObjectFloor( moveObject ) {
     // 카메라가 바라보고 있는 방향
@@ -243,17 +243,18 @@ function assignSetFloor( lookCamera ) {
 function assignDragFloor( dragObject ) {
     dragControls = new DragControls( dragObject, camera, divContainer);
 
+    let pastPositionY = -2;
     dragControls.transformGroup = true;
-
     dragControls.addEventListener( 'drag', function ( event ) {
         // 카메라 방향에서 x, z축 방향이 바뀌었을 경우
         if(checkXZ) {
-            event.object.position.x = prePosition[0] - rotationX * (prePosition[1] + 0.1 - event.object.position.y); // x축(앞뒤 거리) 이동
+            event.object.position.x = prePosition[0] - rotationX * (pastPositionY + 0.1 - event.object.position.y); // x축(앞뒤 거리) 이동
         }
         else {
             // 위로는 못 움직이게 제한(바닥 오브젝트 기준) + 마우스 위아래 이동을 z축에 적용
-            event.object.position.z = prePosition[2] - rotationZ * (prePosition[1] + 0.1 - event.object.position.y); // z축(앞뒤 거리) 이동
+            event.object.position.z = prePosition[2] - rotationZ * (pastPositionY - event.object.position.y); // z축(앞뒤 거리) 이동
         }
+        pastPositionY = event.object.position.y; // y축 좌표 기억
         event.object.position.y = -1.9; // y축(높이) 고정
 
         // x축이 벽 밖으로 나가지 않도록
@@ -566,15 +567,17 @@ function assignDragCeiling( dragObject ) {
     dragControls = new DragControls( dragObject, camera, divContainer);
     dragControls.transformGroup = true;
 
+    let pastPositionY = -2;
     dragControls.addEventListener( 'drag', function ( event ) {
         // 카메라 방향에서 x, z축 방향이 바뀌었을 경우
         if(checkXZ) {
-            event.object.position.x = prePosition[0] + rotationX * (prePosition[1] + 0.1 - event.object.position.y); // x축(앞뒤 거리) 이동
+            event.object.position.x = prePosition[0] + rotationX * (pastPositionY - event.object.position.y); // x축(앞뒤 거리) 이동
         }
         else {
             // 위로는 못 움직이게 제한(바닥 오브젝트 기준) + 마우스 위아래 이동을 z축에 적용
-            event.object.position.z = prePosition[2] + rotationZ * (prePosition[1] + 0.1 - event.object.position.y); // z축(앞뒤 거리) 이동
+            event.object.position.z = prePosition[2] + rotationZ * (pastPositionY - event.object.position.y); // z축(앞뒤 거리) 이동
         }
+        pastPositionY = event.object.position.y;
         event.object.position.y = -1.0; // y축(높이) 고정
 
         // x축이 벽 밖으로 나가지 않도록
