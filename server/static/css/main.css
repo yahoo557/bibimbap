@@ -7,47 +7,13 @@ body {
     background-color: #EFF6FF;
 }
 
-section {
-    display: none;
-}
-
-a {
-    color : black;
-    text-decoration: none;
-}
-
-input {
-    border: none;
-}
-
-input[type="radio"] {
-    display: none;
-}
-
-button {
-    background-color: transparent;
-    border: none;
-}
-
 #container {
     display: flex;
 }
 
-#accMenu {
-    text-align: center;
-}
-
 #accMenu > a {
     color: white;
-    background-color: #5555FF;
     text-decoration: none;
-
-    border-radius: 8px;
-    padding: 2px;
-}
-
-#accMenu > * {
-    font-size: 16px;
 }
 
 .whiteText {
@@ -113,7 +79,6 @@ button {
 
 #footer {   
     background-color: #212221;
-    height: 8%;
 }
 
 #blogList {
@@ -123,18 +88,13 @@ button {
 }
 
 #article {
-    width: 100%;
-
+    margin: 10px;
     overflow: hidden;
-}
-
-#contentsContainer {
-    margin-top: 15px;
+    overflow-y: auto;
 }
 
 .blogItem {
     margin: 3px;
-    width: 30%;
 }
 
 .sidebarContainer {
@@ -146,70 +106,4 @@ button {
 
 .smallText {
     font-size: 12px;
-}
-
-.tabs {
-    font-size: 18px;
-    margin: 0px 5px 0px 5px;
-}
-
-.tabOn {
-    border-bottom: 1px solid black;
-}
-
-.searchContents {
-    flex-flow: row wrap;
-    justify-content: space-evenly;
-}
-
-#postSection {
-    background-color: white;
-    width: 100%;
-    height: 100%;
-
-    border-radius: 15px;
-}
-
-#main {
-    height: 92%;
-    
-    padding: 12px;
-}
-
-#searchResult {
-    display: none;
-}
-
-#searchDiv {
-    display: none;
-    min-height: 115px;
-
-    align-items: center;
-}
-
-#searchInput {
-    display: flex;
-    background-color: white;
-
-    padding: 3px 5px 3px 5px;
-    justify-content: center;
-
-    border-radius: 15px;
-
-    height: fit-content;
-}
-
-#headLine {
-    font-weight: bold;
-    font-size: 24px;
-    margin: 10px 0px 10px 0px;
-}
-
-@keyframes resize {
-    from {
-        transform: scale(1.0);
-    }
-    to {
-        transform: scale(0.3);
-    }
 }
