@@ -34,11 +34,11 @@ const pre = document.getElementsByClassName("bi-caret-left-fill");
 const next = document.getElementsByClassName("bi-caret-right-fill");
 
 const objectThumnail = document.getElementsByClassName("object-thumbnail");
-// 오브젝트 id : 오브젝트 썸네일 이미지 경로
-const objectTemplate = {'ob1': {'thumbnail_path': '../../object_thumbnail/Old_Bicycle.png'}, 'ob2': {'thumbnail_path': '../../object_thumbnail/Plants_on_table.png'},
-                    'ob3': {'thumbnail_path': '../../object_thumbnail/Evita_chandelier.png'}, 'ob4': {'thumbnail_path': '../../object_thumbnail/angle_clock.png'},
-                    'ob5': {'thumbnail_path': '../../object_thumbnail/Books_Magazines.png'},'ob6':  {'thumbnail_path': '../../object_thumbnail/mouse_doll.png'},
-                    'ob7': {'thumbnail_path': '../../object_thumbnail/air_jordan.png'}};
+// 오브젝트 id : {'thumbnail_path': 오브젝트 썸네일 파일 경로, 'placementLocation' : 배치 가능한 위치('floor': 바닥, wall: 벽, ceiling: 천장)}
+const objectTemplate = {'ob1': {'thumbnail_path': '../../object_thumbnail/Old_Bicycle.png', 'placementLocation': 'floor'}, 'ob2': {'thumbnail_path': '../../object_thumbnail/Plants_on_table.png', 'placementLocation': 'floor'},
+                    'ob3': {'thumbnail_path': '../../object_thumbnail/Evita_chandelier.png', 'placementLocation': 'ceiling'}, 'ob4': {'thumbnail_path': '../../object_thumbnail/angle_clock.png', 'placementLocation': 'wall'},
+                    'ob5': {'thumbnail_path': '../../object_thumbnail/Books_Magazines.png', 'placementLocation': 'floor'},'ob6':  {'thumbnail_path': '../../object_thumbnail/mouse_doll.png', 'placementLocation': 'floor'},
+                    'ob7': {'thumbnail_path': '../../object_thumbnail/air_jordan.png', 'placementLocation': 'floor'}};
 const blank = '../../object_thumbnail/blank.png';
 
 // 게시물 작성 또는 연결
@@ -159,8 +159,8 @@ const objectList = () => {
     for(let i = 0; i < maxObject; i++) {
         const key = Object.keys(objectTemplate)[i + page];  // 오브젝트 id
         if(key) {
-            objectThumnail[i].classList.remove(objectThumnail[i].classList.item(1)); // 이전에 추가된 오브젝트 아이디가 있다면 class 명에서 삭제
-            objectThumnail[i].classList.add(key); // 오브젝트 아이디를 class 명으로 추가
+            objectThumnail[i].classList.remove(objectThumnail[i].classList.item(1)); // 이전에 추가된 object_template_id가 있다면 class 명에서 삭제
+            objectThumnail[i].classList.add(key); // object_template_id를 class 명으로 추가
             objectThumnail[i].src = objectTemplate[key]['thumbnail_path'];
         }
         else {/* 더이상 오브젝트가 없는 경우 */
