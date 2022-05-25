@@ -567,7 +567,7 @@ function assignDragCeiling( dragObject ) {
     dragControls = new DragControls( dragObject, camera, divContainer);
     dragControls.transformGroup = true;
 
-    let pastPositionY = -2;
+    let pastPositionY = -1.1;
     dragControls.addEventListener( 'drag', function ( event ) {
         // 카메라 방향에서 x, z축 방향이 바뀌었을 경우
         if(checkXZ) {
