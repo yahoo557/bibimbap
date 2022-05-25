@@ -3,11 +3,11 @@ import { GLTFLoader } from '../three.js-master/examples/jsm/loaders/GLTFLoader.j
 import { PointerLockControls } from "../three.js-master/examples/jsm/controls/PointerLockControls.js";
 import { DragControls } from "../three.js-master/examples/jsm/controls/DragControls.js";
 
-// 배치 정보 => 배치 id : { 'object_id': 오브젝트id,  'model_position': 오브젝트 위치,  'objectRotaion': 오브젝트 방향,  'post_id': 게시물id}
+// 배치 정보 => 배치 id : { 'template_id': 오브젝트id,  'model_position': 오브젝트 위치,  'objectRotaion': 오브젝트 방향,  'post_id': 게시물id}
 // object.name에 배치id 적을 것
-const objectAssign = {'as1': { 'object_id': 'ob1',  'model_position': [0, -2, 3],  'object_rotation': 0,  'post_id': 'po2' },
-                    'as2': { 'object_id': 'ob4',  'model_position': [2, 1, 4.9],  'object_rotation': 2,  'post_id': null },
-                    'as3': { 'object_id': 'ob2',  'model_position': [-2, -2, 3],  'object_rotation': 2,  'post_id': 'po1' }};
+const objectAssign = {'as1': { 'template_id': 'ob1',  'model_position': [0, -2, 3],  'object_rotation': 0,  'post_id': 'po2' },
+                    'as2': { 'template_id': 'ob4',  'model_position': [2, 1, 4.9],  'object_rotation': 2,  'post_id': null },
+                    'as3': { 'template_id': 'ob3',  'model_position': [-2, -1.1, 3],  'object_rotation': 2,  'post_id': 'po1' }};
 
 // 오브젝트 템플릿 파일 => 오브젝트 id : { 'model_path': 오브젝트 파일 경로, 'thumbnail_path': 오브젝트 썸네일 파일 경로, 'placementLocation' : 배치 가능한 위치('floor': 바닥, wall: 벽, ceiling: 천장)}
 const objectTemplate = {'ob1': {'model_path': '../../object_files/Old_Bicycle.glb', 'thumbnail_path': '../../object_thumbnail/Old_Bicycle.png', 'placementLocation': 'floor'},
@@ -36,6 +36,8 @@ const clickPointer = new THREE.Vector2();
 let INTERSECTED;
 
 // 새로운 오브젝트 배치 & 드래그로 이동을 위한 변수들
+
+let dragControls;
 let rotationX;
 let rotationZ;
 let checkXY;
@@ -104,7 +106,7 @@ function setObjectInBlog() {
 
     for(let i = 0; i < objectAssignLen; i++) {
         const key = Object.keys(objectAssign)[i]; // 배치 아이디
-        const objectKey = objectAssign[key]['object_id']; // 오브젝트 id
+        const objectKey = objectAssign[key]['template_id']; // 오브젝트 id
         const url = objectTemplate[objectKey]['model_path']; // 오브젝트 url
         const objectPosi = objectAssign[key]['model_position']; // 오브젝트 위치
         const objectRota = objectAssign[key]['object_rotation']; // 오브젝트 방향
@@ -138,24 +140,17 @@ function setObjectName( nameObjects, key ) {
 // 새롭게 배치를 위해 선택된 오브젝트 = 바닥
 function assignObjectFloor( url ) {
     selectRemove(); // 이전에 선택한 오브젝트 삭제
-    rotationX = 1;
-    rotationZ = 1;
-    checkXZ = false;
 
     // 카메라가 바라보고 있는 방향
     let lookCamera = new THREE.Vector3();
     camera.getWorldDirection(lookCamera);
-    //console.log(lookCamera);
-    if(lookCamera.x < 0) rotationX = -1;
-    if(lookCamera.z < 0) rotationZ = -1;
-    if(Math.abs(lookCamera.x) > Math.abs(lookCamera.z)) checkXZ = true;
-
+    assignSetFloor( lookCamera ); // 배치하기 전 설정해야 하는 내용
+    
 
     // 사용자가 보고 있는 방향을 기준으로 오브젝트가 생성되도록
     prePosition[0] = camera.position.x + lookCamera.x * 4;
     prePosition[1] = -2;
     prePosition[2] = camera.position.z + lookCamera.z * 4;
-
 
     const gltfloader = new GLTFLoader();
     const dragObject = [];
@@ -166,7 +161,6 @@ function assignObjectFloor( url ) {
             const root = gltf.scene;
             selectGroup.add(root);
             dragObject.push(root);
-            objParentTransform.push( root );
 
             // 오브젝트 배치할 때 아래에 위치 표시
             const boundingBox = new THREE.Box3().setFromObject( root ); // 모델의 바운딩 박스 생성
@@ -203,9 +197,50 @@ function assignObjectFloor( url ) {
 
     assignDragFloor( dragObject );
 }
+
+// 편집 모드에서 이동 선택된 오브젝트 = 바닥
+function moveObjectFloor( moveObject ) {
+    // 카메라가 바라보고 있는 방향
+    let lookCamera = new THREE.Vector3();
+    camera.getWorldDirection(lookCamera);
+    assignSetFloor( lookCamera );
+
+    const dragObject = [];
+    dragObject.push(moveObject);
+
+    // 오브젝트 이동할 때 아래에 위치 표시
+    const boundingBox = new THREE.Box3().setFromObject( moveObject ); // 모델의 바운딩 박스 생성
+    objectSize = boundingBox.getSize(new THREE.Vector3()); // 바운딩 박스 사이즈 정보
+
+    const rangeGeometry = new THREE.PlaneGeometry(objectSize.x, objectSize.z);
+    const rangeMaterial = new THREE.MeshBasicMaterial({ color: "#858585" });
+    const objectRange = new THREE.Mesh( rangeGeometry, rangeMaterial );
+
+    moveObject.position.set( prePosition[0], prePosition[1] + 0.1, prePosition[2] ); //모델 위치 지정
+
+    selectGroup.add(objectRange);
+    objectRange.position.set( prePosition[0], prePosition[1] + 0.001, prePosition[2] );
+    objectRange.rotation.x = - Math.PI / 2;
+
+    scene.add(selectGroup);
+    renderer.render(scene, camera);
+
+    assignDragFloor( dragObject );
+}
+// 배치하기 전 설정해야 하는 내용 = 바닥
+function assignSetFloor( lookCamera ) {
+    rotationX = 1;
+    rotationZ = 1;
+    checkXZ = false;
+
+    if(lookCamera.x < 0) rotationX = -1;
+    if(lookCamera.z < 0) rotationZ = -1;
+    if(Math.abs(lookCamera.x) > Math.abs(lookCamera.z)) checkXZ = true;
+}
 // 드래그 앤 드롭으로 오브젝트 옮기기 = 바닥
 function assignDragFloor( dragObject ) {
-    const dragControls = new DragControls( dragObject, camera, divContainer);
+    dragControls = new DragControls( dragObject, camera, divContainer);
+
     dragControls.transformGroup = true;
 
     dragControls.addEventListener( 'drag', function ( event ) {
@@ -241,17 +276,11 @@ function assignDragFloor( dragObject ) {
 // 새롭게 배치를 위해 선택된 오브젝트 = 벽
 function assignObjectWall( url ) {
     selectRemove(); // 이전에 선택한 오브젝트 삭제
-    rotationX = 1;
-    rotationZ = 1;
-    checkXY = false;
 
     // 카메라가 바라보고 있는 방향
     let lookCamera = new THREE.Vector3();
     camera.getWorldDirection(lookCamera);
-    //console.log(lookCamera);
-    if(lookCamera.x < 0) rotationX = -1;
-    if(lookCamera.z < 0) rotationZ = -1;
-    if(Math.abs(lookCamera.x) > Math.abs(lookCamera.y)) checkXY = true;
+    assignSetWall( lookCamera ); // 배치하기 전 설정해야 하는 내용
 
     // 사용자가 보고 있는 방향을 기준으로 오브젝트가 생성되도록
     prePosition[1] = camera.position.y + lookCamera.y * 2 + 2;
@@ -265,9 +294,8 @@ function assignObjectWall( url ) {
             const root = gltf.scene;
             selectGroup.add(root);
             dragObject.push(root);
-            objParentTransform.push( root );
 
-            // 오브젝트 배치할 때 아래에 위치 표시
+            // 오브젝트 배치할 때 벽에 위치 표시
             const boundingBox = new THREE.Box3().setFromObject( root ); // 모델의 바운딩 박스 생성
             objectSize = boundingBox.getSize(new THREE.Vector3()); // 바운딩 박스 사이즈 정보
             
@@ -334,9 +362,63 @@ function assignObjectWall( url ) {
     
     assignDragWall( dragObject );
 }
+// 편집 모드에서 이동 선택된 오브젝트 = 벽
+function moveObjectWall( moveObject ) {
+    // 카메라가 바라보고 있는 방향
+    let lookCamera = new THREE.Vector3();
+    camera.getWorldDirection(lookCamera);
+    assignSetWall( lookCamera );
+
+    const dragObject = [];
+    dragObject.push(moveObject);
+
+    // 오브젝트 이동할 때 벽에 위치 표시
+    const boundingBox = new THREE.Box3().setFromObject( moveObject ); // 모델의 바운딩 박스 생성
+    objectSize = boundingBox.getSize(new THREE.Vector3()); // 바운딩 박스 사이즈 정보
+
+    const rangeGeometry = new THREE.PlaneGeometry(objectSize.x, objectSize.y);
+    const rangeMaterial = new THREE.MeshBasicMaterial({ color: "#858585" });
+    const objectRange = new THREE.Mesh( rangeGeometry, rangeMaterial );
+
+    selectGroup.add(objectRange);
+
+    if(checkXY) { // x, y축 방향이 바뀌었을 때
+        if(rotationX == 1) {
+            objectRange.rotation.y = - Math.PI/2
+        }
+        else {
+            objectRange.rotation.y = Math.PI/2
+        }
+        moveObject.position.set( prePosition[0] - rotationX * 0.1, prePosition[1], prePosition[2] ); //모델 위치 지정
+        objectRange.position.set( prePosition[0] + rotationX * (objectSize.z/2 - 0.001), prePosition[1], prePosition[2] ); // 그림자 위치 지정
+    }
+    else {
+        if(rotationZ == 1) {
+            objectRange.rotation.x = Math.PI;
+        }
+        moveObject.position.set( prePosition[0], prePosition[1], prePosition[2] - rotationZ * 0.1 ); //모델 위치 지정
+        objectRange.position.set( prePosition[0], prePosition[1], prePosition[2] + rotationZ * (objectSize.z/2 - 0.001) ); // 그림자 위치 지정
+    }
+
+    scene.add(selectGroup);
+    renderer.render(scene, camera);
+
+    assignDragWall( dragObject );
+
+}
+// 배치하기 전 설정해야 하는 내용 = 벽
+function assignSetWall( lookCamera ) {
+    rotationX = 1;
+    rotationZ = 1;
+    checkXY = false;
+
+    if(lookCamera.x < 0) rotationX = -1;
+    if(lookCamera.z < 0) rotationZ = -1;
+    if(Math.abs(lookCamera.x) > Math.abs(lookCamera.y)) checkXY = true;
+}
 // 드래그 앤 드롭으로 오브젝트 옮기기 = 벽
 function assignDragWall( dragObject ) {
-    const dragControls = new DragControls( dragObject, camera, divContainer);
+    dragControls = new DragControls( dragObject, camera, divContainer);
     dragControls.transformGroup = true;
 
     dragControls.addEventListener( 'drag', function ( event ) {
@@ -377,17 +459,11 @@ function assignDragWall( dragObject ) {
 // 새롭게 배치를 위해 선택된 오브젝트 = 천장
 function assignObjectCeiling( url ) {
     selectRemove(); // 이전에 선택한 오브젝트 삭제
-    rotationX = 1;
-    rotationZ = 1;
-    checkXZ = false;
 
     // 카메라가 바라보고 있는 방향
     let lookCamera = new THREE.Vector3();
     camera.getWorldDirection(lookCamera);
-    //console.log(lookCamera);
-    if(lookCamera.x < 0) rotationX = -1;
-    if(lookCamera.z < 0) rotationZ = -1;
-    if(Math.abs(lookCamera.x) > Math.abs(lookCamera.z)) checkXZ = true;
+    assignSetCeiling( lookCamera ); // 배치하기 전 설정해야 하는 내용
 
 
     // 사용자가 보고 있는 방향을 기준으로 오브젝트가 생성되도록
@@ -405,9 +481,8 @@ function assignObjectCeiling( url ) {
             const root = gltf.scene;
             selectGroup.add(root);
             dragObject.push(root);
-            objParentTransform.push( root );
 
-            // 오브젝트 배치할 때 아래에 위치 표시
+            // 오브젝트 배치할 때 위에 위치 표시
             const boundingBox = new THREE.Box3().setFromObject( root ); // 모델의 바운딩 박스 생성
             objectSize = boundingBox.getSize(new THREE.Vector3()); // 바운딩 박스 사이즈 정보
             
@@ -442,9 +517,51 @@ function assignObjectCeiling( url ) {
 
     assignDragCeiling( dragObject );
 }
+// 편집 모드에서 이동 선택된 오브젝트 = 천장
+function moveObjectCeiling( moveObject ) {
+    // 카메라가 바라보고 있는 방향
+    let lookCamera = new THREE.Vector3();
+    camera.getWorldDirection(lookCamera);
+    assignSetCeiling( lookCamera );
+
+    const dragObject = [];
+    dragObject.push(moveObject);
+
+    // 오브젝트 이동할 때 위에 위치 표시
+    const boundingBox = new THREE.Box3().setFromObject( moveObject ); // 모델의 바운딩 박스 생성
+    objectSize = boundingBox.getSize(new THREE.Vector3()); // 바운딩 박스 사이즈 정보
+
+    const rangeGeometry = new THREE.PlaneGeometry(objectSize.x, objectSize.z);
+    const rangeMaterial = new THREE.MeshBasicMaterial({ color: "#858585" });
+    const objectRange = new THREE.Mesh( rangeGeometry, rangeMaterial );
+
+    selectGroup.add(objectRange);
+
+    moveObject.position.set( prePosition[0], prePosition[1] + 0.1, prePosition[2] ); //모델 위치 지정
+
+    selectGroup.add(objectRange);
+    objectRange.position.set( prePosition[0], 1.999, prePosition[2] );
+    objectRange.rotation.x = + Math.PI / 2;
+
+    scene.add(selectGroup);
+    renderer.render(scene, camera);
+
+    assignDragCeiling( dragObject );
+
+}
+// 배치하기 전 설정해야 하는 내용 = 천장
+function assignSetCeiling( lookCamera ) {
+    rotationX = 1;
+    rotationZ = 1;
+    checkXZ = false;
+
+    if(lookCamera.x < 0) rotationX = -1;
+    if(lookCamera.z < 0) rotationZ = -1;
+    if(Math.abs(lookCamera.x) > Math.abs(lookCamera.z)) checkXZ = true;
+}
 // 드래그 앤 드롭으로 오브젝트 옮기기 = 천장
 function assignDragCeiling( dragObject ) {
-    const dragControls = new DragControls( dragObject, camera, divContainer);
+    dragControls = new DragControls( dragObject, camera, divContainer);
     dragControls.transformGroup = true;
 
     dragControls.addEventListener( 'drag', function ( event ) {
@@ -494,12 +611,18 @@ function setupCamera() {
         if(addView[0].style.display == "block") {
             return;
         }
+        if(moveObjectKey) {
+            return;
+        }
+
 
         // pointer lock
         controls.lock();
 
         // pointer lock 시 가운데 표시
         targetPointer[0].style.display = "block";
+
+        objectEditButtons[0].style.opacity = "50%"; // 편집모드 삭제, 이동, 변경 버튼 비활성화
 
         // 이미 pointer lock인 상태에서 오브젝트를 선택해서 클릭
         if(controls.isLocked && INTERSECTED) {
@@ -730,10 +853,6 @@ function unSelectObjectGroup( selectObjects, key ) {
 const targetPointer = document.getElementsByClassName("target-pointer"); // pointer lock 가운데 표시
 const objectPostView = document.getElementsByClassName("object-post-view"); // 오브젝트 선택 시 보이는 게시물 열람 화면
 
-// 편집 모드
-const editIcon = document.getElementsByClassName("bi-tools"); // 편집 모드 버튼
-const objectEditButtons = document.getElementsByClassName("object-edit-buttons"); // 편집모드에서의 삭제, 이동, 변경 버튼
-
 // 배치하고 싶은 오브젝트 선택 시
 const selectObject = document.getElementsByClassName("object-thumbnail"); // 오브젝트 썸네일
 const menuBar = document.getElementsByClassName("menu-bar"); // 메뉴 버튼
@@ -877,6 +996,62 @@ const objectAndPostLink = () => {
     console.log("연결할 게시물 id: " + post_id); // 게시물 id
     // 완료되면 object db에 해당 정보 저장하고 3d 공간 reload
 }
+
+// 편집 모드
+const editIcon = document.getElementsByClassName("bi-tools"); // 편집 모드 버튼
+const objectEditButtons = document.getElementsByClassName("object-edit-buttons"); // 편집모드에서의 삭제, 이동, 변경 버튼
+const objectMoveButton = document.getElementsByClassName("bi-arrows-move"); // 편집 모드 - 오브젝트 이동 버튼
+const objectMoveComplete = document.getElementsByClassName("object-move-complete"); // 편집 모드 - 오브젝트 이동 완료 버튼
+
+let moveObjectKey;
+let moveSelectObjects;
+// 오브젝트 이동 버튼 선택 시
+objectMoveButton[0].addEventListener('click', () => {
+    if(objectEditButtons[0].classList.item(1)) { // 오브젝트가 선택된 경우
+        objectMoveComplete[0].style.display = "block";
+        moveObjectKey = objectEditButtons[0].classList.item(1); // 선택된 오브젝트의 object_id
+        const moveObjectTemplateKey = objectAssign[moveObjectKey]['template_id']; // 배치된 오브젝트의 template_id
+        prePosition = objectAssign[moveObjectKey]['model_position'];
+
+        const allChildren = group.children;
+        for(let i = 0; i < allChildren.length; i++) {
+            if(allChildren[i].name == moveObjectKey) {
+                if(objectTemplate[moveObjectTemplateKey]['placementLocation'] == 'floor') {
+                    moveSelectObjects = allChildren[i];
+                    moveObjectFloor( moveSelectObjects );
+                    break;
+                }
+                if(objectTemplate[moveObjectTemplateKey]['placementLocation'] == 'wall') {
+                    moveSelectObjects = allChildren[i];
+                    moveObjectWall( moveSelectObjects );
+                    break;
+                }
+                if(objectTemplate[moveObjectTemplateKey]['placementLocation'] == 'ceiling') {
+                    moveSelectObjects = allChildren[i];
+                    moveObjectCeiling( moveSelectObjects );
+                    break;
+                }
+            }
+        }
+    }
+});
+// 오브젝트 이동 완료 버튼 선택 시
+objectMoveComplete[0].addEventListener('click', () => {
+    if(moveObjectKey) {
+        unSelectObjectGroup( moveSelectObjects, moveSelectObjects.name ); // 선택 해체
+        selectRemove(); // 그림자 제거
+        dragControls.enabled = false; // 드래그 비활성화
+        objectMoveComplete[0].style.display = "none"; // 편집 모드 이동 완료 버튼 숨기기
+
+        // 바닥, 벽, 천장이랑 거리 띄운 거 다시 원래대로
+        moveSelectObjects.position.set(prePosition[0], prePosition[1], prePosition[2]);
+
+        alert("오브젝트 이동이 완료되었습니다.");
+        console.log("object_id: " + moveObjectKey);
+        console.log("이동 좌표: " + prePosition);
+        moveObjectKey = "";
+    }
+});
 
 const thumbnailButton = document.getElementsByClassName('capture-button');
 thumbnailButton[0].addEventListener('click', () => {

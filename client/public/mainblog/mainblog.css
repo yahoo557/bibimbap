@@ -659,6 +659,24 @@ body {
     background-color: var(--edit-blue);
     border-radius: 50%;
 }
+
+/* 오브젝트 이동 완료 버튼 */
+.object-move-complete {
+    display: none;
+    position: relative;
+    float: left;
+    top: 88vh;
+    z-index: 12000;
+
+    padding: 1vh 2.3vh 1vh 2.3vh;
+    margin: 3vh;
+
+    background-color: var(--main-color);
+    border-radius: 2vh;
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 3vh;
+}
+
 /* 오브젝트 변경 버튼 */
 .bi-arrow-left-right {
     display: inline-block;
