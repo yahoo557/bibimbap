@@ -1275,7 +1275,7 @@ const saveBlob = (function() {
     document.body.appendChild(a);
     a.style.display = 'none';
     return function saveData(blob, fileName) {
-       const url = window.URL.createmodel_path(blob);
+       const url = window.URL.createObjectURL(blob);
        a.href = url;
        a.download = fileName;
        a.click();
