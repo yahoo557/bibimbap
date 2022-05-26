@@ -4,7 +4,7 @@
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>글 작성 - 놀다가</title>
+        <title>글 수정 - 놀다가</title>
 
         <link rel="stylesheet" href="/static/css/post.css" />
         <link rel="stylesheet" href="/static/css/noldaga.css">
@@ -15,8 +15,8 @@
     <body>
         <div id="container">
             <div id="buttonContainer">
-                <button class="btns" id="applyBtn" onclick="applyPost({edit: false})">
-                    업로드
+                <button class="btns" id="applyBtn" onclick="applyPost({edit: true, id: <%-post_id%>})">
+                    수정하기
                 </button>
                 <div id="toolbar" class="btns">
                     <select class="ql-size">
@@ -32,10 +32,14 @@
                     <button class="ql-image"></button>
                 </div>
             </div>
-            <input type="text" id="postTitle" placeholder="제목"></input>
+            <input type="text" id="postTitle" placeholder="제목" value="<%-title%>"/>
             <hr></hr>
             <div id="editor"></div>
         </div>
         <script src="/static/js/post.js"></script>
+        <script>
+            const userData = <%-contents%>;
+            qEditor.setContents(userData.ops);
+        </script>
     </body>
 </html>

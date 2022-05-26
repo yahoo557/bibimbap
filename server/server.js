@@ -19,6 +19,12 @@ const auth = require("./controller/auth.jwt.js");
 const { verify } = require("crypto");
 
 const dt = require('./controller/decode.jwt.js');
+const client = require("./config/db.config.js");
+
+const {createProxyMiddleware} = require('http-proxy-middleware');
+
+const redirectWithMsg = require('./controller/redirectWithMsg.js');
+const { create } = require("domain");
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -36,14 +42,21 @@ app.use("/viewPost", viewPost);
 app.use("/resetPassword", resetPassword);
 app.use("/userInfo", auth, userInfo);
 
+app.use("/client", createProxyMiddleware({target:'http://127.0.0.1:5502', changeOrigin: true}));
+
 app.get("/", (req, res) => {
+  const getBlogListQuery = "SELECT * FROM blog";
+
   dt.decodeToken(req, (e) => {
-    res.render(path.join(__dirname, '/public', 'main.ejs'), {isLogined : e.verify, nickname : (e.userData) ? e.userData.nickname : ''});
+    client.query(getBlogListQuery, [], (err, rows) => {
+      if(err) return redirectWithMsg({msg: "DB Error", redirect: "/"});
+      res.render(path.join(__dirname, '/public', 'main.ejs'), {isLogined : e.verify, nickname: (e.verify) ? e.cookie.user : "", blogData: JSON.stringify(rows.rows)});
+    });
   });
 });
 
 app.get("*", (req, res) => {
-  res.render(path.join(__dirname, 'public', 'pagenotfound.html'));
+  res.sendFile(path.join(__dirname, 'public', 'pagenotfound.html'));
 });
 
 app.use((err, req, res, next) => {

@@ -15,26 +15,16 @@
 </head>
 <body>
     <div id="container">
-        <div id="title"></div>
-        <div id="createdTime"></div>
+        <div id="title"><%=title%></div>
+        <div id="createdTime"><%=createdTime%></div>
         <hr></hr>
         <div id="viewer"></div>
     </div>
-    
-    
-    <%
-        var str = rows[0];
-        
-        const obj = JSON.parse(str);
-        const titleDiv = document.getElementById("title");
-        const createdTimeDiv = document.getElementById("createdTime");
-        titleDiv.innerText = obj.title;
-        createdTimeDiv.innerText = obj.createdTime;
-        qViewer.setContents(obj.contents);
 
-    %>
-    <script src="/static/js/viewPost.js">
-
+    <script src="/static/js/viewPost.js"></script>
+    <script>
+        const userData = <%-contents%>;
+        qViewer.setContents(userData.ops);
     </script>
 </body>
 </html>

@@ -9,6 +9,7 @@ router.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, '../public', 'register.html'));
     
 });
+
 router.post('/', (req, res, next) => {
     const text_insert = `INSERT INTO users(username, password, nickname, passwordq, passworda) VALUES($1, $2, $3, $4, $5) RETURNING *`;
     const text_insert_blog = `INSERT INTO blog(blogname, user_id) VALUES ($1, $2)`;
