@@ -6,10 +6,14 @@ function setBlogList(obj) {
         const tempDom = document.createElement("div");
         tempDom.setAttribute("class", "blogItem");
         tempDom.innerHTML = `<img width="200" height="200">
-        <div><span>${v.blogname}</span> <span class="smallText">${v.user_id}</span></div>`
-
+        <div><span>${v.blogname}</span> <span class="smallText">${v.nickname}</span></div>`
+        tempDom.setAttribute('onclick', `goBlog(${v.blog_id})`);
         listDiv.appendChild(tempDom);
     }
+}
+
+function goBlog(id) {
+    window.location.href = `/blog/${id}`;
 }
 
 function clickSearchButton() {
