@@ -54,16 +54,12 @@ app.get("/blog", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-
-  const getBlogListQuery = "SELECT a.*, b.nickname FROM blogs as a INNER JOIN users as b ON a.user_id = b.user_id";
-
+  const getBlogListQuery = "SELECT a.*, b.nickname FROM blog as a INNER JOIN users as b ON a.user_id = b.user_id";
   dt.decodeToken(req, (e) => {
     client.query(getBlogListQuery, [], (err, rows) => {
       if(err) return redirectWithMsg(res, 404, {msg: "DB Error", redirect: "/"});
-      console.log(rows.rows);
-      
+      res.render(path.join(__dirname, '/public', 'main.ejs'), {isLogined : e.verify, nickname: (e.verify) ? e.cookie.user : "", blogData: JSON.stringify(rows.rows)});  
     });
-    res.render(path.join(__dirname, '/public', 'main.ejs'), {isLogined : e.verify, nickname: (e.verify) ? e.cookie.user : "", blogData: JSON.stringify(rows.rows)});
   });
 });
 
@@ -71,10 +67,10 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'pagenotfound.html'));
 });
 
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.send(path.join(__dirname, '../public', 'showMsg.ejs'), err);
-});
+// app.use((err, req, res, next) => {
+//   console.error(err);
+//   res.send(path.join(__dirname, '../public', 'showMsg.ejs'), err);
+// });
 
 const port = 8000;
 app.listen(port, () => {

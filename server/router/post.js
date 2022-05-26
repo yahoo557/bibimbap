@@ -37,7 +37,7 @@ router.post('/', (req, res, next)=> {
             //const postData = JSON.parse(req.body);
             //parse 처리하니 잘나옴.
             console.log(req.body.contents);
-            const query_text = 'INSERT INTO posts(title, body, create_date, user_id) VALUES($1, $2, NOW(), $3) RETURNING *';
+            const query_text = 'INSERT INTO post(title, body, create_date, user_id) VALUES($1, $2, NOW(), $3) RETURNING *';
             const data_arr = [
                 req.body.title,
                 JSON.stringify(req.body.contents),

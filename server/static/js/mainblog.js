@@ -13,10 +13,10 @@ const objectAssign = {'as1': { 'object_id': 'ob1',  'model_position': [0, -2, 3]
                     'as3': { 'object_id': 'ob2',  'model_position': [-2, -2, 3],  'object_rotation': 2,  'post_id': 'po1' }};
 
 // 오브젝트 템플릿 파일 => 오브젝트 id : { 'model_path': 오브젝트 파일 경로, 'thumbnail_path': 오브젝트 썸네일 파일 경로, 'placementLocation' : 배치 가능한 위치('floor': 바닥, wall: 벽, ceiling: 천장)}
-const objectTemplate = {'ob1': {'model_path': '../../object_files/Old_Bicycle.glb', 'thumbnail_path': '../../object_thumbnail/Old_Bicycle.png', 'placementLocation': 'floor'},
-                    'ob2': {'model_path': '../../object_files/Plants_on_table.gltf', 'thumbnail_path': '../../object_thumbnail/Plants_on_table.png', 'placementLocation': 'floor'},
-                    'ob3': {'model_path': '../../object_files/Evita_chandelier.gltf', 'thumbnail_path': '../../object_thumbnail/Evita_chandelier.png', 'placementLocation': 'ceiling'},
-                    'ob4': {'model_path': '../../object_files/angle_clock.glb', 'thumbnail_path': '../../object_thumbnail/angle_clock.png', 'placementLocation': 'wall'}};
+const objectTemplate = {'ob1': {'model_path': '../object_files/Old_Bicycle.glb', 'thumbnail_path': '../../object_thumbnail/Old_Bicycle.png', 'placementLocation': 'floor'},
+                    'ob2': {'model_path': '../object_files/Plants_on_table.gltf', 'thumbnail_path': '../../object_thumbnail/Plants_on_table.png', 'placementLocation': 'floor'},
+                    'ob3': {'model_path': '../object_files/Evita_chandelier.gltf', 'thumbnail_path': '../../object_thumbnail/Evita_chandelier.png', 'placementLocation': 'ceiling'},
+                    'ob4': {'model_path': '../object_files/angle_clock.glb', 'thumbnail_path': '../../object_thumbnail/angle_clock.png', 'placementLocation': 'wall'}};
 let camera;
 const group = new THREE.Group();
 const selectGroup = new THREE.Group();
