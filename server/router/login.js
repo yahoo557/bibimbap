@@ -39,6 +39,7 @@ router.post('/', (req, res, next) => {
             expires.setHours(expires.getHours()+24);
             
             return res.status(200).cookie('accessToken' ,token ,{expires : expires}).cookie('user', rows.rows[0].nickname, {expires : expires}).redirect(redirectURL);
+
           });
       }
       else {
