@@ -57,12 +57,7 @@ app.use("/blog", blog);
 app.use("/client", createProxyMiddleware({target:'http://127.0.0.1:5502', changeOrigin: true}));
 
 app.get("/", (req, res) => {
-<<<<<<< HEAD
-  console.log(__dirname);
-=======
   const getBlogListQuery = "SELECT * FROM blog";
-
->>>>>>> b3151324074298f1d28940def0992c6bac0d5e5b
   dt.decodeToken(req, (e) => {
     client.query(getBlogListQuery, [], (err, rows) => {
       if(err) return redirectWithMsg({msg: "DB Error", redirect: "/"});
