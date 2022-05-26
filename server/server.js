@@ -55,7 +55,7 @@ app.get("/blog", (req, res) => {
 
 app.get("/", (req, res) => {
 
-  const getBlogListQuery = "SELECT a.*, b.nickname FROM blog as a INNER JOIN users as b ON a.user_id = b.user_id";
+  const getBlogListQuery = "SELECT a.*, b.nickname FROM blogs as a INNER JOIN users as b ON a.user_id = b.user_id";
 
   dt.decodeToken(req, (e) => {
     client.query(getBlogListQuery, [], (err, rows) => {

@@ -4,7 +4,7 @@
 -- https://tableplus.com/
 --
 -- Database: noldaga
--- Generation Time: 2022-05-26 17:24:15.8280
+-- Generation Time: 2022-05-26 20:14:44.1120
 -- -------------------------------------------------------------
 
 
@@ -18,10 +18,10 @@ CREATE TABLE "public"."reply" (
     "reply_id" int4 NOT NULL DEFAULT nextval('reply_reply_id_seq'::regclass),
     "body" varchar(255) NOT NULL,
     "create_time" timestamp DEFAULT CURRENT_TIMESTAMP,
-    "post" int4 NOT NULL,
-    "writer" int4 NOT NULL,
-    CONSTRAINT "fk_post" FOREIGN KEY ("writer") REFERENCES "public"."posts"("id") ON UPDATE CASCADE,
-    CONSTRAINT "fk_reply" FOREIGN KEY ("writer") REFERENCES "public"."users"("id") ON UPDATE CASCADE,
+    "post_id" int4 NOT NULL,
+    "user_id" int4 NOT NULL,
+    CONSTRAINT "fk_post" FOREIGN KEY ("user_id") REFERENCES "public"."post"("post_id") ON UPDATE CASCADE,
+    CONSTRAINT "fk_reply" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON UPDATE CASCADE,
     PRIMARY KEY ("reply_id")
 );
 
