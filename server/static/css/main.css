@@ -135,6 +135,8 @@ button {
 .blogItem {
     margin: 3px;
     width: 30%;
+
+    cursor: pointer;
 }
 
 .sidebarContainer {
