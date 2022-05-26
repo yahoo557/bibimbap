@@ -58,10 +58,11 @@ const postInfo = { 'po1' : {'postTitle' : '테스트를 해봅시다 1', 'postDa
 const editIcon = document.getElementsByClassName("bi-tools");
 const editView = document.getElementsByClassName("edit-mode");
 const objectEditButtons = document.getElementsByClassName("object-edit-buttons")
+const objectMoveComplete = document.getElementsByClassName("object-move-complete");
+
 
 // 썸네일 변경 확인창
 const changeThumbnailView = document.getElementsByClassName("change-thumbnail");
-
 
 /* 게시물 리스트 */
 const listIcon = document.getElementsByClassName("bi-file-text");
@@ -87,6 +88,8 @@ const showMenu = () => {
         addIcon[0].style.left = "-20vh"; // 추가하기 아이콘 숨기기
         editIcon[0].style.left = "-20vh"; // 편집모드 아이콘 숨기기
     }
+
+    // 로그인 상태 -> 로그아웃 버튼 / 로그아웃 상태 -> 로그인 버튼
 }
 
 // 메뉴바 숨기기
@@ -108,7 +111,6 @@ const closeMenu = () => {
 
 let page = 0; // 현재 페이지
 const maxObject = 4; // 한 페이지에 최대로 배치될 수 있는 썸네일 수
-
 // 오브젝트 추가
 const objectAdd = () => {
     if(addIcon[0].style.left == "0vh") {
@@ -235,7 +237,8 @@ const editMode = () => {
     if(editIcon[0].style.left == "0vh") {
         editIcon[0].style.left = "15vh"; // 편집 모드 버튼 활성화
         editView[0].style.display = "block"; // 편집 모드 화면 보이기
-        objectEditButtons[0].style.opacity = "50%"; // 편집모드 삭제, 이동, 변경 버튼 비활성화
+        objectEditButtons[0].style.opacity = "50%"; // 편집 모드 삭제, 이동, 변경 버튼 비활성화
+        objectMoveComplete[0].style.display = "none"; // 편집 모드 이동 완료 버튼 숨기기
 
         addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
         addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
@@ -313,3 +316,4 @@ const postListLoad = () =>{
         }
     }
 }
+

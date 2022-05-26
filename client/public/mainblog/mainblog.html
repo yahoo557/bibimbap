@@ -37,7 +37,8 @@
     <!-- 메뉴바 -->
     <nav class="menu-bar">
         <img class="logo-icon" src="../../images/logo.png">
-        <div class="logout-button">로그아웃</div>
+        <div class="login-button">로그인</div> <!-- 로그아웃 상태일 때 -->
+        <div class="logout-button">로그아웃</div> <!-- 로그인 상태일 때 -->
         <div class="blog-info">
             <div class="blog-name"></div>
             <div class="blog-owner"></div>
@@ -54,12 +55,12 @@
     <!-- 오브젝트 추가 -->
     <section class="object-add">
         <div class="object-list"> <!-- 오브젝트 선택 리스트 -->
-            <i class="bi bi-caret-left-fill" onclick="prePage()"></i> <!-- 이전 목록으로 -->
+            <i class="bi bi-caret-left-fill object-list-left" onclick="prePage()"></i> <!-- 이전 목록으로 -->
             <img class="object-thumbnail" src="">
             <img class="object-thumbnail" src="">
             <img class="object-thumbnail" src="">
             <img class="object-thumbnail" src="">
-            <i class="bi bi-caret-right-fill"  onclick="nextPage()"></i> <!-- 다음 목록으로 -->
+            <i class="bi bi-caret-right-fill object-list-right"  onclick="nextPage()"></i> <!-- 다음 목록으로 -->
         </div>
         <div class="select-complete">완료</div>
         <div class="select-cancle">취소</div>
@@ -114,18 +115,40 @@
             <i class="bi bi-arrows-move"></i> <!-- 오브젝트 이동 버튼 -->
             <i class="bi bi-arrow-left-right"></i> <!-- 오브젝트 변경 버튼 -->
         </div>
+        <div class="object-move-complete">이동 완료</div>
+
         <div class="capture-button"> <!-- 썸네일 촬영 버튼 -->
             <i class="bi bi-camera-fill"></i>
             <div class="capture-text">썸네일 촬영하기</div>
         </div>
     </section>
+    <!-- 오브젝트 삭제 확인 -->
+    <section class="remove-object">
+        <div class="remove-object-title">물건 삭제하기</div>
+        <img class="remove-object-image" src="">
+        <div class="remove-object-comment">이 물건을 삭제할까요?</div>
+        <i class="bi bi-x bi-x-object"></i>
+        <i class="bi bi-check-lg object-thumbnail-check"></i>
+    </section>
+    <!-- 오브젝트 변경을 위한 오브젝트 리스트 -->
+    <div class="object-change-view">
+        <div class="change-object-list"> <!-- 오브젝트 선택 리스트 -->
+            <i class="bi bi-caret-left-fill change-list-left" onclick="prePage()"></i> <!-- 이전 목록으로 -->
+            <img class="object-change-thumbnail" src="">
+            <img class="object-change-thumbnail" src="">
+            <img class="object-change-thumbnail" src="">
+            <img class="object-change-thumbnail" src="">
+            <i class="bi bi-caret-right-fill change-list-right"  onclick="nextPage()"></i> <!-- 다음 목록으로 -->
+        </div>
+        <div class="change-complete">완료</div>
+    </div>
     <!-- 썸네일 변경 확인창 -->
     <section class="change-thumbnail">
         <div class="change-thumbnail-title">썸네일 변경</div>
         <img class="change-thumbnail-image" src="">
         <div class="change-thumbnail-comment">썸네일을 위 사진으로 변경할까요?</div>
         <i class="bi bi-x bi-x-thumbnail" onclick="thumbnailChangeCancle()"></i>
-        <i class="bi bi-check-lg" onclick="thumbnailChangeComplete()"></i>
+        <i class="bi bi-check-lg thumbnail-change-check" onclick="thumbnailChangeComplete()"></i>
     </section>
 
     <!-- 게시물 리스트 -->
