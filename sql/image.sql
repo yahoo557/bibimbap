@@ -4,7 +4,7 @@
 -- https://tableplus.com/
 --
 -- Database: noldaga
--- Generation Time: 2022-05-26 17:23:02.2760
+-- Generation Time: 2022-05-26 20:14:20.0710
 -- -------------------------------------------------------------
 
 
@@ -19,7 +19,7 @@ CREATE TABLE "public"."image" (
     "img_path" varchar(255) NOT NULL,
     "img_size" int4,
     "post" int4,
-    CONSTRAINT "fk_post" FOREIGN KEY ("post") REFERENCES "public"."posts"("id") ON UPDATE CASCADE,
+    CONSTRAINT "fk_post" FOREIGN KEY ("post") REFERENCES "public"."post"("post_id") ON UPDATE CASCADE,
     PRIMARY KEY ("image_id")
 );
 

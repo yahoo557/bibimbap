@@ -4,7 +4,7 @@
 -- https://tableplus.com/
 --
 -- Database: noldaga
--- Generation Time: 2022-05-26 17:22:52.5240
+-- Generation Time: 2022-05-26 20:14:13.8710
 -- -------------------------------------------------------------
 
 
@@ -14,13 +14,13 @@
 CREATE SEQUENCE IF NOT EXISTS blogs_blog_id_seq;
 
 -- Table Definition
-CREATE TABLE "public"."blogs" (
+CREATE TABLE "public"."blog" (
     "blog_id" int4 NOT NULL DEFAULT nextval('blogs_blog_id_seq'::regclass),
     "blogname" varchar(255) NOT NULL,
     "object_list" _varchar,
-    "owner" int4 NOT NULL,
+    "user_id" int4 NOT NULL,
     "thums_path" varchar(255),
-    CONSTRAINT "fk_user" FOREIGN KEY ("owner") REFERENCES "public"."users"("id") ON UPDATE CASCADE,
+    CONSTRAINT "fk_user" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON UPDATE CASCADE,
     PRIMARY KEY ("blog_id")
 );
 
