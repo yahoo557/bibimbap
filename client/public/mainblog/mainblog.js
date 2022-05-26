@@ -609,7 +609,7 @@ function loadChangeObject (key, url) {
         url,
         ( gltf ) => {
             const root = gltf.scene;
-            changeSelectGroup.add(root);
+            group.add(root);
             //objParentTransform.push( root );
 
             root.position.set( prePosition[0], prePosition[1], prePosition[2] ); //모델 위치
@@ -620,7 +620,6 @@ function loadChangeObject (key, url) {
         }
     );
 
-    scene.add(changeSelectGroup);
     renderer.render(scene, camera);
 }
 
