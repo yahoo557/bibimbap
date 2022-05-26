@@ -12,7 +12,6 @@ router.get("/", (req, res) => {
 
 
 router.post('/', (req, res, next)=>{
-    
     // console.log(token);
     //POST 로 넘긴 데이터를 body 변수로 받음
     const body = req.body;
@@ -34,5 +33,10 @@ router.post('/', (req, res, next)=>{
             console.log(rows)
         }
     })
-})
+});
+
+
+
+
+
 module.exports = router;

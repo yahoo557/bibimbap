@@ -27,6 +27,15 @@ app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 app.use("/static", express.static("static"));
 
+app.use(
+  '/build/',
+  express.static(path.join(
+    __dirname,
+    'node_modules/three/build'
+  ))
+)
+
+
 app.use("/register", register);
 app.use("/login", login);
 app.use("/logout", logout);
@@ -34,9 +43,13 @@ app.use("/post", post);
 app.use("/postList", postList);
 app.use("/viewPost", viewPost);
 app.use("/resetPassword", resetPassword);
-app.use("/userInfo", auth, userInfo);
+app.use("/userInfo",  userInfo);
+app.use("/blog", blog);
+
+
 
 app.get("/", (req, res) => {
+  console.log(__dirname);
   dt.decodeToken(req, (e) => {
     res.render(path.join(__dirname, '/public', 'main.ejs'), {isLogined : e.verify, nickname : (e.userData) ? e.userData.nickname : ''});
   });

@@ -12,10 +12,10 @@ router.get("/", (req, res) => {
 router.post('/', (req, res, next) => {
 
     const text_insert = `INSERT INTO users(username, password, nickname, passwordq, passworda) VALUES($1, $2, $3, $4, $5) RETURNING *`;
-    const text_insert_blog = `INSERT INTO blog(blogname, user_id) VALUES ($1, $2)`;
+    const text_insert_blog = `INSERT INTO blog(blogname, owner) VALUES ($1, $2)`;
     const text_check_username = 'SELECT * FROM users WHERE username = $1';
     const text_check_nickname = 'SELECT * FROM users WHERE nickname = $1';
-    const text_check_blogname = 'SELECT * FROM blog WHERE blogname = $1';
+    const text_check_blogname = 'SELECT * FROM blogs WHERE blogname = $1';
     const list_check_empty = ['아이디, ', '비밀번호, ', '비밀번호 확인, ', '비밀번호 찾기 질문, ', '비밀번호 찾기 답변, ', '블로그 제목, ' ];
 
     let result = ""

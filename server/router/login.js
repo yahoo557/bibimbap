@@ -34,7 +34,6 @@ router.post('/', (req, res, next) => {
           (err, token) => {
             const expires = new Date();
             expires.setHours(expires.getHours()+24);
-            
             return res.status(200).cookie('accessToken' ,token ,{expires : expires}).cookie('user', rows.rows[0].nickname, {expires : expires}).redirect("/");
           });
       }
