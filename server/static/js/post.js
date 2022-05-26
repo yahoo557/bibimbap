@@ -9,27 +9,31 @@ let qEditor = new Quill('#editor', {
     theme: 'snow'
 });
 
-function applyPost() {
+function applyPost(e) {
     let contentsArray = {};
-    if(confirm('작성한 글을 등록하시겠습니까?')) {
+    const confirmMsg = (e.edit) ? "수정하시겠습니까?" : "작성한 글을 등록하시겠습니까?";
+    const targetURL = (e.edit) ? `/post/edit/${e.id}` : "/post";
+
+    if(confirm(confirmMsg)) {
         const currentDate = new Date(Date.now());
         contentsArray.title = document.getElementById("postTitle").value;
         contentsArray.createdTime = currentDate.toLocaleString('ja-JP');
         contentsArray.contents = qEditor.getContents();
-        console.log(JSON.stringify(contentsArray));
-        
 
         //quill에서 받아온 데이터를 HTTP POST로 서버에 넘기는 코드
         const xhr = new XMLHttpRequest();
         const method = "post";
-        const url = "/post";
-        xhr.open(method, url);
-        xhr.setRequestHeader("Accept", "application/json");
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.open(method, targetURL);
+        xhr.setRequestHeader("Content-Type", "application/json");
         const body = JSON.stringify(contentsArray)
+        
+        xhr.onreadystatechange = () => {
+            if(xhr.status == 200 && xhr.readyState == XMLHttpRequest.DONE) {
+                const res = JSON.parse(xhr.responseText);
+                alert(res.msg);
+                window.location.href = res.redirect;
+            }
+        }
         xhr.send(body);
-
-    } else {
-        console.log('canceled');
     }
 }

@@ -5,13 +5,15 @@ const config = require("../config/auth.config.js");
 
 //Callback
 decodeToken = (req, callback) => {
-    let token = ''
+    let token = '';
+    let cookie = '';
     if(req.headers.cookie) {
         const parseCookie = str => 
             str.split(';').map(v => v.split('=')).reduce((acc, v) => {
                 acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
                 return acc;
             }, {});
+        cookie = parseCookie(req.headers.cookie);
         token = parseCookie(req.headers.cookie).accessToken;
     }
 
@@ -22,7 +24,7 @@ decodeToken = (req, callback) => {
         if (err) {
             return callback({verify: false});
         }
-        callback({verify: true, userData: decoded});
+        callback({verify: true, userData: decoded, cookie: cookie});
     });
 };
 
@@ -37,14 +39,16 @@ decodeTokenPromise = (req) => {
                     return acc;
                 }, {});
             token = parseCookie(req.headers.cookie).accessToken;
+        } else { 
+            throw new Error("로그인 없음")
         }
 
         if (!token) {
-            return reject({verify: false});
+            throw new Error("로그인 없음");
         }
         jwt.verify(token, config.secret, (err, decoded) => {
             if (err) {
-                return reject({verify: false});
+                throw err;
             }
             return resolve({verify: true, userData: decoded});
         });
