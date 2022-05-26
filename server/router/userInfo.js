@@ -13,6 +13,7 @@ const { user } = require("pg/lib/defaults");
 const bcrypt = require('bcrypt');
 const { send } = require("process");
 const { append } = require("express/lib/response");
+const exp = require("constants");
 
 router.get("/", (req, res) => {
     const tokenDecode = dt.decodeTokenPromise(req);
@@ -24,20 +25,25 @@ router.get("/", (req, res) => {
 
         const reqQuery = 'SELECT user_id, nickname, passwordq, passworda FROM users WHERE username = $1';
         const blogQuery = 'SELECT * FROM blog WHERE user_id = $1';
-        try {
-            client.query(reqQuery, [decode.userData.username], (err, userRows) => {
-                if(err) throw 'DB ERROR';
-                if(userRows.rows.length < 1) throw '존재하지 않는 사용자';
-    
-                client.query(blogQuery, [userRows.rows[0].user_id], (err, blogRows) => {
-                    if(err) throw 'DB ERROR';
-                    const dataObject = Object.assign(userRows.rows[0], blogRows.rows[0]);
-                    res.render(path.join(__dirname, '../public', 'userInfo.ejs'), dataObject);
-                })
-            });
-        } catch (e) {
-            return res.send(err);
-        }
+        client.query(reqQuery, [decode.userData.username], (err, userRows) => {
+            if(err) {
+                return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
+                                                        {msg: "DB ERROR", redirect: '/userInfo'});
+            }
+            if(userRows.rows.length < 1) {
+                return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
+                                                        {msg: "잘못된 토큰입니다.", redirect: '/userInfo'});
+            }
+
+            client.query(blogQuery, [userRows.rows[0].user_id], (err, blogRows) => {
+                if(err) {
+                    return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
+                                                            {msg: "DB ERROR", redirect: '/userInfo'});
+                }
+                const dataObject = Object.assign(userRows.rows[0], blogRows.rows[0]);
+                return res.render(path.join(__dirname, '../public', 'userInfo.ejs'), dataObject);
+            })
+        });
     });
 });
 
@@ -63,12 +69,21 @@ router.post('/changePassword', (req, res, next) => {
         const updatePwQuery = 'UPDATE users SET password = $1 WHERE username = $2'
         try {
             client.query(getPwQuery, [decode.userData.username], (err, rows) => {
-                if(err) throw 'DB Error';
-                if(rows.rows.length < 1) throw 'Unknown user';
+                if(err) {
+                    return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
+                                                            {msg: "DB ERROR", redirect: '/userInfo'});
+                }
+                if(rows.rows.length < 1) {
+                    return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
+                                                            {msg: "잘못된 토큰입니다.", redirect: '/userInfo'});
+                }
                 if(bcrypt.compareSync(req.body.currentPassword, rows.rows[0].password)){
                     const hashedPw = bcrypt.hashSync(req.body.changePassword, 10)
                     client.query(updatePwQuery, [hashedPw, decode.userData.username], (err, rows) => {
-                        if(err) throw 'DB Error';
+                        if(err) {
+                            return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
+                                                                    {msg: "DB ERROR", redirect: '/userInfo'});
+                        }
                         return res.render(path.join(__dirname, '../public', 'showMsg.ejs'), 
                                             {msg: "비밀번호를 변경했습니다.", redirect: '/userInfo'});
                     })
@@ -106,24 +121,52 @@ router.post('/changeInfo', wrapAsync(async (req, res, next)=>{
 
 
         client.query(getIdQuery, [decode.userData.username], (err, idRows) => {
-            if(err) throw new Error({msg: "DB Error", redirect: '/userInfo'});
-            if(idRows.rows.length < 1) throw {msg: "Unknown user", redirect: '/'};;
+            if(err) {
+                return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
+                                                        {msg: "DB ERROR", redirect: '/userInfo'});
+            }
+
+            if(idRows.rows.length < 1) {
+                return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
+                                                        {msg: "잘못된 접근입니다.", redirect: '/userInfo'});
+            }
 
             client.query(checkNickQuery, [req.body.nickname, decode.userData.username], (err, nickRows) => {
-                if(err) throw new Error({msg: "DB Error", redirect: '/userInfo'});
-                if(nickRows.rows.length > 0) throw {msg: "이미 사용중인 닉네임입니다.", redirect: '/userInfo'};
+                if(err) {
+                    return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
+                                                            {msg: "DB ERROR", redirect: '/userInfo'});
+                }
+                if(nickRows.rows.length > 0) {
+                    return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
+                                                            {msg: "이미 사용중인 닉네임입니다.", redirect: '/userInfo'});
+                }
 
                 client.query(checkBlogQuery, [req.body.blogName, idRows.rows[0].user_id], (err, blogRows) => {
-                    if(err) throw new Error({msg: "DB Error", redirect: '/userInfo'});
-                    if(blogRows.rows.length > 0) throw {msg: "이미 사용중인 블로그 제목입니다.", redirect: '/userInfo'};
+                    if(err) {
+                        return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
+                                                                {msg: "DB ERROR", redirect: '/userInfo'});
+                    }
+                    if(blogRows.rows.length > 0) {
+                        return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
+                                                                {msg: "이미 사용중인 블로그 제목입니다.", redirect: '/userInfo'});
+                    }
 
                     //const hashPasswordA = bcrypt.hashSync(req.body.passworda, 10);
                     client.query(updateInfoQuery, [req.body.nickname, req.body.passwordq, req.body.passworda, decode.userData.username],
                         (err, ur1) => {
-                            if(err) throw new Error({msg: "DB Error", redirect: '/userInfo'});
+                            if(err) {
+                                return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
+                                                                        {msg: "DB ERROR", redirect: '/userInfo'});
+                            }
                             client.query(updateBlogQuery, [req.body.blogName, idRows.rows[0].user_id], (err, ur2) =>{
-                                if(err) throw new Error({msg: "DB Error", redirect: '/userInfo'});
-                                return res.render(path.join(__dirname, '../public', 'showMsg.ejs'), 
+                                if(err) {
+                                    return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
+                                                                            {msg: "DB ERROR", redirect: '/userInfo'});
+                                }
+                                const expires = new Date();
+                                expires.setHours(expires.getHours() + 24);
+                                return res.status(200).cookie('user', req.body.nickname, {expires: expires}).
+                                render(path.join(__dirname, '../public', 'showMsg.ejs'), 
                                 {msg: "정보를 수정했습니다.", redirect: '/userInfo'});
                             });
                     });

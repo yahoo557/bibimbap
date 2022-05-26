@@ -8,6 +8,7 @@ const client = require("../config/db.config"); // DB 연결
 const path = require('path');
 
 
+
 router.get('/', (req, res ) => {
   res.sendFile(path.join(__dirname, '../public', 'login.html'));
 });
@@ -16,6 +17,8 @@ router.post('/', (req, res, next) => {
   const user_id_input = req.body.userID;
   const user_pw_input = req.body.userPassword;
   const text = 'SELECT * FROM users WHERE username = $1';
+  const redirectURL = (req.query.redirect) ? decodeURIComponent(req.query.redirect) : "/";
+
   client.query(text, [user_id_input], (err, rows) => {
     if (rows.rows.length > 0) {
       const password_db = rows.rows[0].password;
@@ -34,7 +37,9 @@ router.post('/', (req, res, next) => {
           (err, token) => {
             const expires = new Date();
             expires.setHours(expires.getHours()+24);
-            return res.status(200).cookie('accessToken' ,token ,{expires : expires}).cookie('user', rows.rows[0].nickname, {expires : expires}).redirect("/");
+            
+            return res.status(200).cookie('accessToken' ,token ,{expires : expires}).cookie('user', rows.rows[0].nickname, {expires : expires}).redirect(redirectURL);
+
           });
       }
       else {

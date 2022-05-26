@@ -10,6 +10,7 @@ const dt = require('../controller/decode.jwt.js');
 
 
 
+
 // 내 블로그 
 router.get('/myblog', (req, res) => {
     dt.decodeToken(req, (e) => {
@@ -36,4 +37,10 @@ router.get('/:id', (req, res) => {
     })
 })
 // =================================
+
+router.get('/', (req, res ) => {
+  
+});
+
+
 module.exports = router;
