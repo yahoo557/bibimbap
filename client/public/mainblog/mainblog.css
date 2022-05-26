@@ -142,6 +142,21 @@ body {
 
     cursor: pointer; /* 마우스 커서 모양 */
 }
+/* 로그인 버튼 */
+.login-button {
+    display: none;
+    position: relative;
+    top: 15.5vh;
+
+    background-color: var(--logout-button);
+    padding: 0.7vh 1.8vh 0.7vh 1.8vh;
+    border-radius: 3vh;
+
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 2.2vh;
+
+    cursor: pointer; /* 마우스 커서 모양 */
+}
 /* 로그아웃 버튼 */
 .logout-button {
     display: inline-block;

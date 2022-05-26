@@ -88,6 +88,8 @@ const showMenu = () => {
         addIcon[0].style.left = "-20vh"; // 추가하기 아이콘 숨기기
         editIcon[0].style.left = "-20vh"; // 편집모드 아이콘 숨기기
     }
+
+    // 로그인 상태 -> 로그아웃 버튼 / 로그아웃 상태 -> 로그인 버튼
 }
 
 // 메뉴바 숨기기
@@ -109,7 +111,6 @@ const closeMenu = () => {
 
 let page = 0; // 현재 페이지
 const maxObject = 4; // 한 페이지에 최대로 배치될 수 있는 썸네일 수
-
 // 오브젝트 추가
 const objectAdd = () => {
     if(addIcon[0].style.left == "0vh") {
