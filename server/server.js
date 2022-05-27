@@ -45,20 +45,16 @@ app.use("/resetPassword", resetPassword);
 app.use("/userInfo",  userInfo);
 app.use("/blog", blog);
 
-
-
 app.use("/client", createProxyMiddleware({target:'http://127.0.0.1:5502', changeOrigin: true}));
 
-app.get("/blog", (req, res) => {
-    res.sendFile(path.join(__dirname, "../client/public/mainblog", "mainblog.html"));
-});
-
 app.get("/", (req, res) => {
+
   const getBlogListQuery = "SELECT a.*, b.nickname FROM blog as a INNER JOIN users as b ON a.user_id = b.user_id";
   dt.decodeToken(req, (e) => {
     client.query(getBlogListQuery, [], (err, rows) => {
       if(err) return redirectWithMsg(res, 404, {msg: "DB Error", redirect: "/"});
       res.render(path.join(__dirname, '/public', 'main.ejs'), {isLogined : e.verify, nickname: (e.verify) ? e.cookie.user : "", blogData: JSON.stringify(rows.rows)});  
+
     });
   });
 });
