@@ -2,32 +2,36 @@ const express = require("express");
 const router = express.Router();
 
 const path = require('path');
+const { isBuffer } = require("util");
 const client = require("../config/db.config"); // DB 연결
 const Query = require('pg').Query
 
-const dt = require('../controller/decode.jwt.js')
+const dt = require('../controller/decode.jwt.js');
+
+// const alertMessage = (msg) => {
+//     return `<script>alert(${msg})</script>`;
+// } 
 
 router.get("/", (req, res) => {
     dt.decodeTokenPromise((req)).then((decode) => {
         return res.sendFile(path.join(__dirname, '../public', 'post.html'));
     }).catch((e) => {
         console.log(e);
-        return res.status(202).render(path.join(__dirname, '../public', 'showMsg.ejs'), {msg: "로그인이 필요합니다", redirect: '/login'});
+        return res.status(202).render(path.join(__dirname, '../public', 'showMsg.ejs'), {msg: "로그인이 필요합니다", redirect: `/login?redirect=${encodeURIComponent('/post')}`});
     });
 });
 
-
+//AJAX 통신이므로 프론트에서 리스너로 alert, redirect 처리
 router.post('/', (req, res, next)=> {
     dt.decodeTokenPromise(req).then((decode) => {   
         const getIdQuery = "SELECT user_id FROM users WHERE username = $1";
-        const insertQuery = "INSERT INTO"
 
         client.query(getIdQuery, [decode.userData.username], (err, idRows) => {
             if(err) {
-                return res.status(202).render(path.join(__dirname, '../public', 'showMsg.ejs'), {msg: "DB ERROR", redirect: '/post'});
+                return res.status(404).send({msg: "데이터베이스 오류입니다. - Block 1"});
             }
             if(idRows.rows.length < 1) {
-                return res.status(202).render(path.join(__dirname, '../public', 'showMsg.ejs'), {msg: "잘못된 토큰입니다", redirect: '/post'});
+                return res.status(202).send({msg: "인증 오류입니다."});
             }
 
             // console.log(token);
@@ -37,7 +41,7 @@ router.post('/', (req, res, next)=> {
             //const postData = JSON.parse(req.body);
             //parse 처리하니 잘나옴.
             console.log(req.body.contents);
-            const query_text = 'INSERT INTO posts(title, body, create_date, user_id) VALUES($1, $2, NOW(), $3) RETURNING *';
+            const query_text = 'INSERT INTO post(title, body, timestamp, user_id) VALUES($1, $2, NOW(), $3) RETURNING *';
             const data_arr = [
                 req.body.title,
                 JSON.stringify(req.body.contents),
@@ -45,26 +49,32 @@ router.post('/', (req, res, next)=> {
             ];
 
             client.query(query_text, data_arr, (err, rows) => {
-                if(err) {
-                    return res.status(202).render(path.join(__dirname, '../public', 'showMsg.ejs'), {msg: "DB ERROR", redirect: '/post'});
-                }
-                return res.status(200).send({msg: "글이 업로드 되었습니다.", redirect: `/viewPost/${rows.rows[0].post_id}`})
+                if(err) return res.status(404).send({msg: "데이터베이스 오류입니다. - Block 2"});
+                return res.status(200).send({msg: "글이 업로드 되었습니다.", redirect: `/viewPost/${rows.rows[0].post_id}`});
             });
         })
     }).catch((e) => {
-        return res.status(202).render(path.join(__dirname, '../public', 'showMsg.ejs'), {msg: "로그인이 필요합니다", redirect: '/login'});
+        return res.status(202).send({msg: "로그인이 필요합니다", redirect: `/login?redirect=${encodeURIComponent('/post')}`});
     });
 });
 
 router.post('/edit/:id', (req, res) => {
-    const getIdQuery = "SELECT user_id FROM users WHERE username = $1";
-    const getPostOwnerIdQuery = "SELECT user_id FROM posts WHERE post_id = $1";
+    const checkId = "SELECT a.* FROM post AS a INNER JOIN users AS b ON a.user_id = b.user_id AND a.post_id = $1 AND b.username= $2";
+    const updateQuery = "UPDATE post SET title = $1, body = $2 WHERE post_id = $3";
+
     dt.decodeTokenPromise(req).then((decode) => {
-        client.query(getIdQuery, [decode.userData.username], (err, rows) => {
-            
+        client.query(checkId, [req.params.id, decode.userData.username], (err, rows) => {
+            if(err) return res.status(404).send({msg: "데이터베이스 오류 - Block 1"})
+            if(rows.rows.length < 1) return res.status(202).send({msg: "권한이 없습니다", redirect: `/viewPost/${req.params.id}`})
+            client.query(updateQuery, [req.body.title, req.body.contents, req.params.id], (err, r) => {
+               if(err) return res.status(404).send({msg: "데이터베이스 오류 - Block 2"})
+                return res.send({msg: "수정되었습니다.", redirect: `/viewPost/${req.params.id}`});
+            });
         });
+    }).catch((e) => {
+        return res.status(202).send({msg: "로그인이 필요합니다.", 
+                                    redirect: `/login?redirect=${encodeURIComponent(`/viewPost/${req.params.id}?edit=true`)}`})
     });
 });
-
 
 module.exports = router;

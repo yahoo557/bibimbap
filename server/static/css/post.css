@@ -30,3 +30,10 @@
 }
 
 
+#errHelper {
+    visibility: hidden;
+    border: 0px 0px 0px 1px;
+    padding: 0px;
+    width: 0px;
+    height: 0px;
+}

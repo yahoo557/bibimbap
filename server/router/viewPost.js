@@ -34,17 +34,18 @@ router.get("/", (req, res) => {
 });
 
 router.get("/:id", (req, res)=>{
-    const text = 'SELECT * FROM posts WHERE post_id = $1';
+    const text = 'SELECT * FROM post WHERE post_id = $1';
     const getUserIdQuery = 'SELECT * FROM users WHERE username = $1';
     const id = req.params.id;
     
     client.query(text, [id], (err, rows) => {  
+        if(err) return console.log(err);
         if(rows.rows.length > 0){
             const postData = {
                 post_id: rows.rows[0].post_id,
                 title: rows.rows[0].title,
                 contents: rows.rows[0].body,
-                createdTime: rows.rows[0].create_date
+                createdTime: rows.rows[0].timestamp.toLocaleString("ja-JP")
             }
             // 요청한 url이 localhost:8000/viewPost/:id?edit=true 이면 해당 게시글의 수정을 요청하는것으로 간주
             if(req.query.edit){
@@ -77,8 +78,8 @@ router.get("/:id", (req, res)=>{
 router.get("/delete/:id",(req, res)=>{
     const getUserIdQuery = 'SELECT user_id FROM users WHERE username = $1';
 
-    const text = 'SELECT * FROM posts WHERE post_id = $1';    
-    const delete_txt = 'DELETE from posts WHERE post_id = $1';
+    const text = 'SELECT * FROM post WHERE post_id = $1';    
+    const delete_txt = 'DELETE from post WHERE post_id = $1';
     const targetPostId = req.params.id;
 
     dt.decodeTokenPromise((req)).then((decode) => {
@@ -107,7 +108,7 @@ router.get("/delete/:id",(req, res)=>{
 
 router.post("/", (req, res) => {
     const param = [req.body.id];
-    const sql = "SELECT * FROM posts WHERE id = $1";
+    const sql = "SELECT * FROM post WHERE id = $1";
     client.query(sql, param, (err, rows) => {
         if(err) {   
             return;

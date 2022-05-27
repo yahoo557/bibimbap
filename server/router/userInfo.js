@@ -117,13 +117,13 @@ router.post('/changeInfo', wrapAsync(async (req, res, next)=>{
         const checkBlogQuery = 'SELECT blogname FROM blog WHERE blogname = $1 AND user_id != $2';
         
         const updateInfoQuery = 'UPDATE users SET nickname = $1, passwordq = $2, passworda = $3 WHERE username = $4';
-        const updateBlogQuery = 'UPDATE blog SET blogname = $1 WHERE user_id = $2';
+        const updateBlogQuery = 'WITH b AS (UPDATE users SET blogname = $1 WHERE user_id = $2 RETURNING *) UPDATE blog a SET blogname = b.blogname FROM b WHERE a.user_id = b.user_id';
 
 
         client.query(getIdQuery, [decode.userData.username], (err, idRows) => {
             if(err) {
                 return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
-                                                        {msg: "DB ERROR", redirect: '/userInfo'});
+                                                        {msg: "DB ERROR - 1", redirect: '/userInfo'});
             }
 
             if(idRows.rows.length < 1) {
@@ -134,7 +134,7 @@ router.post('/changeInfo', wrapAsync(async (req, res, next)=>{
             client.query(checkNickQuery, [req.body.nickname, decode.userData.username], (err, nickRows) => {
                 if(err) {
                     return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
-                                                            {msg: "DB ERROR", redirect: '/userInfo'});
+                                                            {msg: "DB ERROR - 2", redirect: '/userInfo'});
                 }
                 if(nickRows.rows.length > 0) {
                     return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
@@ -144,7 +144,7 @@ router.post('/changeInfo', wrapAsync(async (req, res, next)=>{
                 client.query(checkBlogQuery, [req.body.blogName, idRows.rows[0].user_id], (err, blogRows) => {
                     if(err) {
                         return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
-                                                                {msg: "DB ERROR", redirect: '/userInfo'});
+                                                                {msg: "DB ERROR - 3", redirect: '/userInfo'});
                     }
                     if(blogRows.rows.length > 0) {
                         return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
@@ -156,12 +156,12 @@ router.post('/changeInfo', wrapAsync(async (req, res, next)=>{
                         (err, ur1) => {
                             if(err) {
                                 return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
-                                                                        {msg: "DB ERROR", redirect: '/userInfo'});
+                                                                        {msg: "DB ERROR - 4", redirect: '/userInfo'});
                             }
                             client.query(updateBlogQuery, [req.body.blogName, idRows.rows[0].user_id], (err, ur2) =>{
                                 if(err) {
                                     return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
-                                                                            {msg: "DB ERROR", redirect: '/userInfo'});
+                                                                            {msg: "DB ERROR - 5", redirect: '/userInfo'});
                                 }
                                 const expires = new Date();
                                 expires.setHours(expires.getHours() + 24);
