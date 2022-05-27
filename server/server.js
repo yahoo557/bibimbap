@@ -32,8 +32,8 @@ app.use(express.urlencoded({extended: true}));
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 app.use("/static", express.static("static"));
-
 app.use("/static/v2", express.static("../client"));
+
 
 app.use("/register", register);
 app.use("/login", login);
@@ -42,7 +42,10 @@ app.use("/post", post);
 app.use("/postList", postList);
 app.use("/viewPost", viewPost);
 app.use("/resetPassword", resetPassword);
-app.use("/userInfo", auth, userInfo);
+app.use("/userInfo",  userInfo);
+app.use("/blog", blog);
+
+
 
 app.use("/client", createProxyMiddleware({target:'http://127.0.0.1:5502', changeOrigin: true}));
 
@@ -51,14 +54,16 @@ app.get("/blog", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  const getBlogListQuery = "SELECT a.*, b.nickname FROM blog as a INNER JOIN users as b ON a.user_id = b.user_id";
+
+  const getBlogListQuery = "SELECT a.*, b.nickname FROM blogs as a INNER JOIN users as b ON a.user_id = b.user_id";
 
   dt.decodeToken(req, (e) => {
     client.query(getBlogListQuery, [], (err, rows) => {
       if(err) return redirectWithMsg(res, 404, {msg: "DB Error", redirect: "/"});
       console.log(rows.rows);
-      res.render(path.join(__dirname, '/public', 'main.ejs'), {isLogined : e.verify, nickname: (e.verify) ? e.cookie.user : "", blogData: JSON.stringify(rows.rows)});
+      
     });
+    res.render(path.join(__dirname, '/public', 'main.ejs'), {isLogined : e.verify, nickname: (e.verify) ? e.cookie.user : "", blogData: JSON.stringify(rows.rows)});
   });
 });
 
