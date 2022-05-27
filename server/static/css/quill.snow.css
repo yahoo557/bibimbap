@@ -791,7 +791,7 @@
   font-size: 0.67em;
 }
 .ql-snow .ql-picker.ql-font {
-  width: 108px;
+  width: 200px;
 }
 .ql-snow .ql-picker.ql-font .ql-picker-label::before,
 .ql-snow .ql-picker.ql-font .ql-picker-item::before {

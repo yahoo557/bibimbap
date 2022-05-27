@@ -14,7 +14,13 @@ const dt = require('../controller/decode.jwt.js');
 
 router.get("/", (req, res) => {
     dt.decodeTokenPromise((req)).then((decode) => {
-        return res.sendFile(path.join(__dirname, '../public', 'post.html'));
+        const obj = {
+            isEdit: false,
+            post_id: -1,
+            title: "",
+            contents: ""
+        }
+        return res.render(path.join(__dirname, '../public', 'post.ejs'), obj);
     }).catch((e) => {
         console.log(e);
         return res.status(202).render(path.join(__dirname, '../public', 'showMsg.ejs'), {msg: "로그인이 필요합니다", redirect: `/login?redirect=${encodeURIComponent('/post')}`});

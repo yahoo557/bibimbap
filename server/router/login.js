@@ -7,8 +7,6 @@ const secret_key = require("../config/auth.config");
 const client = require("../config/db.config"); // DB 연결
 const path = require('path');
 
-
-
 router.get('/', (req, res ) => {
   res.sendFile(path.join(__dirname, '../public', 'login.html'));
 });

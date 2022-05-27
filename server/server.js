@@ -11,6 +11,7 @@ const resetPassword = require("./router/resetPassword.js");
 const userInfo = require("./router/userInfo.js");
 const postList = require("./router/postList.js");
 const blog = require("./router/blog.js");
+const image = require("./router/image.js");
 
 const jwt = require("jsonwebtoken");
 const config = require("./config/auth.config.js");
@@ -44,6 +45,7 @@ app.use("/viewPost", viewPost);
 app.use("/resetPassword", resetPassword);
 app.use("/userInfo",  userInfo);
 app.use("/blog", blog);
+app.use("/image", image);
 
 app.use("/client", createProxyMiddleware({target:'http://127.0.0.1:5502', changeOrigin: true}));
 

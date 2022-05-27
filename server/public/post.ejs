@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>
+            <% if(isEdit) { %>
+            글 수정 - 놀다가
+            <%} else { %>
+            글 작성 - 놀다가
+            <%}%>
+        </title>
+
+        <link rel="stylesheet" href="/static/css/post.css" />
+        <link rel="stylesheet" href="/static/css/noldaga.css">
+        <link rel="stylesheet" href="/static/css/quill.bubble.css"/>
+        <link rel="stylesheet" href="/static/css/quill.snow.css"/>
+
+        <link rel="stylesheet" href="/static/css/fonts.css"/>
+
+        <script src="/static/js/quill.min.js"></script>
+        <script src="/static/js/image-resize.js"></script>
+    </head>
+    <body>
+        <div id="container">
+            <div id="buttonContainer">
+                <button class="btns" id="applyBtn" onclick="applyPost({edit: <%-isEdit%>, id: <%-post_id%>})">
+                    <%- (isEdit) ? "수정하기" : "업로드" %>
+                </button>
+                <div id="toolbar" class="btns">
+                    <select class="ql-font">
+                        <option value="Cafe24SsurroundAir" selected></option>
+                        <option value="nanum-gothic"></option>
+                    </select>
+                    <select class="ql-size">
+                        
+                    </select>
+                    <button class="ql-bold"></button>
+                    <button class="ql-italic"></button>
+                    <button class="ql-underline"></button>
+                    <button class="ql-strike"></button>
+                    <button class="ql-image"></button>
+                </div>
+            </div>
+            <input type="text" id="postTitle" placeholder="제목" value="<%-title%>"/>
+            <hr></hr>
+            <div id="editor"></div>
+        </div>
+        <script src="/static/js/post.js"></script>
+        <input type="text" id="errHelper"/>
+        
+        <% if(isEdit) {%>
+        <script>
+            const userData = <%-contents%>;
+            qEditor.setContents(userData.ops);
+        </script>
+        <%}%>
+    </body>
+</html>
