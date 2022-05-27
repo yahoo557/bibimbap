@@ -60,7 +60,9 @@ router.post('/edit/:id', (req, res) => {
     const getIdQuery = "SELECT user_id FROM users WHERE username = $1";
     const getPostOwnerIdQuery = "SELECT user_id FROM posts WHERE post_id = $1";
     dt.decodeTokenPromise(req).then((decode) => {
-        
+        client.query(getIdQuery, [decode.userData.username], (err, rows) => {
+            
+        });
     });
 });
 

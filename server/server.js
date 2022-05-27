@@ -55,7 +55,7 @@ app.get("/", (req, res) => {
 
   dt.decodeToken(req, (e) => {
     client.query(getBlogListQuery, [], (err, rows) => {
-      if(err) return redirectWithMsg({msg: "DB Error", redirect: "/"});
+      if(err) return redirectWithMsg(res, 404, {msg: "DB Error", redirect: "/"});
       console.log(rows.rows);
       res.render(path.join(__dirname, '/public', 'main.ejs'), {isLogined : e.verify, nickname: (e.verify) ? e.cookie.user : "", blogData: JSON.stringify(rows.rows)});
     });
