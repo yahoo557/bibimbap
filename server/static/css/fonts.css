@@ -1,0 +1,47 @@
+/* Set droplist names - -item is the currently selected font, -label is the font's appearance in the droplist*/
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='Cafe24SsurroundAir']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='Cafe24SsurroundAir']::before
+{
+  content: '카페24 써라운드에어';
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='times-new-roman']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='times-new-roman']::before
+{
+  content: 'Times New Roman';
+  font-family: 'Times New Roman';
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='arial']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='arial']::before
+{
+  content: 'Arial';
+  font-family: 'Arial';
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='nanum-gothic']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='nanum-gothic']::before
+{
+  content: '나눔고딕';
+  font-family: '나눔고딕';
+}
+
+/****************************************************
+Set the font-family content used for the HTML content.
+*****************************************************/
+.ql-font-arial {
+  font-family: 'Arial';
+}
+
+.ql-font-times-new-roman {
+  font-family: 'Times New Roman';
+}
+
+.ql-font-Cafe24SsurroundAir {
+    font-family: 'Cafe24SsurroundAir';
+}
+
+.ql-font-nanum-gothic {
+    font-family: 'nanum-gothic';
+}
+  

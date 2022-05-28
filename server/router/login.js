@@ -7,10 +7,15 @@ const secret_key = require("../config/auth.config");
 const client = require("../config/db.config"); // DB 연결
 const path = require('path');
 
-
+const dt = require("../controller/decode.jwt.js");
+const redirectWithMsg = require("../controller/redirectWithMsg.js");
 
 router.get('/', (req, res ) => {
-  res.sendFile(path.join(__dirname, '../public', 'login.html'));
+    dt.decodeTokenPromise(req).then((decode) => {
+        return redirectWithMsg(res, 418, {msg: "이미 로그인되어 있습니다.", redirect: "/"});
+    }).catch((e) => {
+        return res.sendFile(path.join(__dirname, '../public', 'login.html'));
+    })
 });
 
 router.post('/', (req, res, next) => {
@@ -44,13 +49,12 @@ router.post('/', (req, res, next) => {
       }
       else {
         //에러 발생시 404 에러코드와 메세지 호출
-        return res.send({msg : "ID / PW 오류"});
+        return redirectWithMsg(res, 401, {msg : "등록되지 않은 아이디이거나, 비밀번호가 잘못되었습니다.", redirect: "/login"});
       }
     }
     else {
       //에러 발생시 404 에러코드와 메세지 호출
-      return res.send(`<script>alert('계정이 존재하지 않거나\\nID / 비밀번호가 일치하지 않습니다.')
-      window.location.href='/login'</script>`);
+      return redirectWithMsg(res, 401, {msg : "등록되지 않은 아이디이거나, 비밀번호가 잘못되었습니다.", redirect: "/login"});
     }
   });
 
