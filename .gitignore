@@ -26,4 +26,4 @@ package-lock.json
 package.json
 
 # prevent upload image
-/image/*.*
+/server/image/*.*
