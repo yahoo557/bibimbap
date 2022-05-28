@@ -668,8 +668,9 @@ function setupCamera() {
                 objectPostView[0].classList.remove(objectPostView[0].classList.item(1)); // 이전에 추가된 object_id가 있다면 class 명에서 삭제
                 objectPostView[0].classList.add(INTERSECTED.name); // object_id를 class 명으로 추가
                 menuArea[0].style.display = "block"; // 메뉴 사용 환경 활성화
+                console.log(objectPostView)
                 objectPostView[0].style.display = "block"; // 게시물 열람 화면 활성화
-                objectPostView[1].style.display = "block"; // iframe 활성화
+                objectPostView[0].children.style.display = "block"; // iframe 활성화
                 const id = 1 // 클릭한 오브젝트의 아이디
                 fetch('http://localhost:8000/getPostByObjetc/'+id)
                     .then((response) => response.json({object_id : id}))
