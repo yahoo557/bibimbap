@@ -671,9 +671,9 @@ function setupCamera() {
                 objectPostView[0].style.display = "block"; // 게시물 열람 화면 활성화
                 objectPostView[1].style.display = "block"; // iframe 활성화
                 const id = 1 // 클릭한 오브젝트의 아이디
-                fetch('http://localhost:8000/getPostByObjetc')
+                fetch('http://localhost:8000/getPostByObjetc/'+id)
                     .then((response) => response.json({object_id : id}))
-                    .then((data) => objectPostView[1].src = "http://localhost:8000/viewpost/1"+data.post_id);
+                    .then((data) => objectPostView[1].src = "http://localhost:8000/viewpost/"+data.post_id);
                 unSelectObjectGroup( group, INTERSECTED.name); // 오브젝트 선택 해제
             }
             // 편집 모드가 활성화 되어있는 동안 = 오브젝트 편집 기능

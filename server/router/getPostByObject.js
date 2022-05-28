@@ -8,8 +8,8 @@ const three = require('three');
 const dt = require('../controller/decode.jwt.js');
 
 
-router.get('/', (req, res) => {
-    const object_id = req.id;
+router.get('/:id', (req, res) => {
+    const object_id = req.params.id;
     const text_check_object = 'SELECT * FROM object WHERE object_id = $1';
     const text_get_post = 'SELECT * FROM object WHERE object_id = $1';
         client.query(text_check_object, [object_id], (err, rows)=>{
