@@ -3,9 +3,11 @@ const router = express.Router(); // 라우터 미들웨어
 
 const Query = require('pg').Query // DB 쿼리
 const client = require("../config/db.config"); // DB 연결
+const store = require('store'); // local storage
 const path = require('path');
 //const three = require('three');
 const dt = require('../controller/decode.jwt.js');
+
 
 const redirectWithMsg = require('../controller/redirectWithMsg.js');
 
@@ -58,7 +60,10 @@ router.get('/:id', (req, res) => {
             if(err){
                 return res.send({msg:err})
             }
-            return res.status(200).send({rows: rows.rows[0] , redirect: `/blog/`})
+            const object_list = rows.rows[0].object_list;
+            const expires = new Date();
+            expires.setHours(expires.getHours()+24);
+            return res.status(200).cookie('object_list',object_list,{expires : expires}).redirect('http://localhost:8000/client/public/mainblog/mainblog.html');
     })
 })
 

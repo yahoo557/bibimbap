@@ -970,4 +970,7 @@ body {
     height: 80%;
     width: 80%;
     display: none;
+    position:absolute;
+    background-color: white;
+    z-index: 999;
 }

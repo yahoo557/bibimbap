@@ -7,8 +7,21 @@ import { DragControls } from "../three.js-master/examples/jsm/controls/DragContr
 
 // 배치 정보 => 배치 id : { 'template_id': 오브젝트id,  'model_position': 오브젝트 위치,  'objectRotaion': 오브젝트 방향,  'post_id': 게시물id}
 // object.name에 배치id 적을 것
-// const __dirname = path.resolve();
 
+const parseCookie = str => 
+            str.split(';').map(v => v.split('=')).reduce((acc, v) => {
+                acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
+                return acc;
+            }, {});
+var cookie = document.cookie;
+var object_list = parseCookie(cookie).object_list.split(":")[1].slice(1,-1).replace(/\"/g, "").split(",");
+
+
+// console.log(parseCookie(cookie));
+
+    
+        
+   
 const objectAssign = {'as1': { 'template_id': 'ob1',  'model_position': [0, -2, 3],  'model_rotation': 0,  'post_id': 'po2' },
                     'as2': { 'template_id': 'ob4',  'model_position': [2, 1, 4.9],  'model_rotation': 2,  'post_id': null },
                     'as3': { 'template_id': 'ob3',  'model_position': [-2, -1.1, 3],  'model_rotation': 2,  'post_id': 'po1' }};
@@ -119,7 +132,7 @@ function setObjectInBlog() {
         gltfloader.load(
             url,
             ( gltf ) => {
-                const root = gltf.scene;
+                const root = gltf.scene; 
                 group.add(root);
                 objParentTransform.push( root );
     
@@ -671,8 +684,8 @@ function setupCamera() {
                 menuArea[0].style.display = "block"; // 메뉴 사용 환경 활성화
                 objectPostView[0].style.display = "block"; // 게시물 열람 화면 활성화
                 objectPostView[0].children[1].style.display = "block"; // iframe 활성화
-                // const id = INTERSECTED.name.slice(-1); // 클릭한 오브젝트의 db 아이디
-                const id = 1 // 클릭한 오브젝트의 아이디
+                const id = INTERSECTED.name.slice(-1); // 클릭한 오브젝트의 db 아이디
+                // const id = 1 // 클릭한 오브젝트의 아이디
                 getPost(id);
                 unSelectObjectGroup( group, INTERSECTED.name); // 오브젝트 선택 해제
             }
@@ -1313,4 +1326,19 @@ const getPost = (function(id) {
     xhr.send();
     
 });
-    
+
+const getObject = (function(){
+    const xhr = new XMLHttpRequest();
+    const method = "get";
+    const targetURL = "http://localhost:8000/getObjectList";
+    xhr.open(method, targetURL)
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = () =>{
+
+    }
+})
+
+
+            
+
+
