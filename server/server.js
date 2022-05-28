@@ -63,10 +63,10 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'pagenotfound.html'));
 });
 
-// app.use((err, req, res, next) => {
-//   console.error(err);
-//   res.send(path.join(__dirname, '../public', 'showMsg.ejs'), err);
-// });
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.send(path.join(__dirname, '../public', 'showMsg.ejs'), err);
+});
 
 const port = 8000;
 app.listen(port, () => {

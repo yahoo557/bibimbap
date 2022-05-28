@@ -15,8 +15,8 @@ const objectAssign = {'as1': { 'template_id': 'ob1',  'model_position': [0, -2, 
 
 // 오브젝트 템플릿 파일 => 오브젝트 id : { 'model_path': 오브젝트 파일 경로, 'thumbnail_path': 오브젝트 썸네일 파일 경로, 'placementLocation' : 배치 가능한 위치('floor': 바닥, wall: 벽, ceiling: 천장)}
 const objectTemplate = {'ob1': {'model_path': '../../object_files/Old_Bicycle.glb', 'thumbnail_path': '../../object_thumbnail/Old_Bicycle.png', 'placementLocation': 'floor'},
-                    'ob2': {'model_path': '../../object_files/Plants_on_table.gltf', 'thumbnail_path': '../../object_thumbnail/Plants_on_table.png', 'placementLocation': 'floor'},
-                    'ob3': {'model_path': '../../object_files/Evita_chandelier.gltf', 'thumbnail_path': '../../object_thumbnail/Evita_chandelier.png', 'placementLocation': 'ceiling'},
+                    'ob2': {'model_path': '../../object_files/Old_Bicycle.glb', 'thumbnail_path': '../../object_thumbnail/Plants_on_table.png', 'placementLocation': 'floor'},
+                    'ob3': {'model_path': '../../object_files/Old_Bicycle.glb', 'thumbnail_path': '../../object_thumbnail/Evita_chandelier.png', 'placementLocation': 'ceiling'},
                     'ob4': {'model_path': '../../object_files/angle_clock.glb', 'thumbnail_path': '../../object_thumbnail/angle_clock.png', 'placementLocation': 'wall'}};
 const blank = '../../object_thumbnail/blank.png';
 
@@ -667,9 +667,9 @@ function setupCamera() {
                 console.log("post(게시물) id: " + objectAssign[INTERSECTED.name]['post_id']);
                 objectPostView[0].classList.remove(objectPostView[0].classList.item(1)); // 이전에 추가된 object_id가 있다면 class 명에서 삭제
                 objectPostView[0].classList.add(INTERSECTED.name); // object_id를 class 명으로 추가
+                
                 menuArea[0].style.display = "block"; // 메뉴 사용 환경 활성화
                 objectPostView[0].style.display = "block"; // 게시물 열람 화면 활성화
-                
                 unSelectObjectGroup( group, INTERSECTED.name); // 오브젝트 선택 해제
             }
             // 편집 모드가 활성화 되어있는 동안 = 오브젝트 편집 기능
@@ -933,7 +933,7 @@ objectLeftRotaionButton[0].addEventListener( 'click', () => {
         const allChildren = selectGroup.children;
         const selectObject = allChildren[allChildren.length - 2];
         const objectRange = allChildren[allChildren.length - 1];
-       
+
         preRotation = (preRotation + 1) % 4;
         leftRotaion(selectObject, 'y');
         leftRotaion(objectRange, 'z');
@@ -1285,7 +1285,6 @@ const saveBlob = (function() {
     };
 }());
 
-// 모델 db에 저장
 const XMLrequest = (function() {
     const xhr = new XMLHttpRequest();
     const method = "post";
@@ -1295,8 +1294,3 @@ const XMLrequest = (function() {
     xhr.setRequestHeader("Content-Type", "application/json");
 
 })
-
-// 클릭시 게시글 가져오기
-
-
-// 

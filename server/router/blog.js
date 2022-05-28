@@ -22,6 +22,7 @@ router.get('/myblog', (req, res) => {
 
 
 router.get('/test', (req, res) => {
+    
     return res.sendFile(path.join(__dirname,'../../client/public/mainblog', 'mainblog.html'));
 });
 
