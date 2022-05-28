@@ -6,8 +6,9 @@ function setBlogList(obj) {
         const tempDom = document.createElement("div");
         tempDom.setAttribute("class", "blogItem");
         tempDom.innerHTML = `<img width="200" height="200">
-        <div><span>${v.blogname}</span> <span class="smallText">${v.nickname}</span></div>`
-        tempDom.setAttribute('onclick', `goBlog(${v.blog_id})`);
+        <div class='blogText'><span>${v.blogname}</span> <span class="smallText">${v.nickname}</span></div>`
+        tempDom.querySelector("img").setAttribute('onclick', `goBlog(${v.blog_id})`);
+        tempDom.querySelector("img").setAttribute('class', `btns`);
         listDiv.appendChild(tempDom);
     }
 }

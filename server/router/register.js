@@ -11,8 +11,6 @@ router.get("/", (req, res) => {
 });
 
 router.post('/', (req, res, next) => {
-
-
     const text_insert = `INSERT INTO users(username, password, nickname, passwordq, passworda, blogname) VALUES($1, $2, $3, $4, $5, $6) RETURNING *`;
     const text_insert_blog = `INSERT INTO blog(blogname, user_id) VALUES ($1, $2)`;
 
@@ -31,8 +29,6 @@ router.post('/', (req, res, next) => {
         req.body.findPasswordAnswer,
         req.body.blogName
     ];
-    
-    console.log(values);
 
     // 공백 검출 코드
     var msg = ''
@@ -71,7 +67,7 @@ router.post('/', (req, res, next) => {
                         console.log(err)
                         return res.status(202).send({msg : err});
                     }
-                    client.query(text_insert_blog, [req.body.blogName, 999], (err, rows) => {
+                    client.query(text_insert_blog, [req.body.blogName, rows.rows[0].user_id], (err, rows) => {
                         if(err) {
                             return res.status(202).send({msg: err});
                         }
