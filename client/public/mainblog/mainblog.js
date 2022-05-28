@@ -18,7 +18,7 @@ var cookie = document.cookie;
 
 // 해당 블로그의 오브젝트 리스트, 이것을 반복문 돌려서 각 오브젝트들을 렌더
 var object_list = parseCookie(cookie).object_list.split(":")[1].slice(1,-1).replace(/\"/g, "").split(",");
-
+const gltfloader = new GLTFLoader();
 const getObject = (function(id){
     const xhr = new XMLHttpRequest();
     const method = "get";
@@ -27,7 +27,7 @@ const getObject = (function(id){
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () =>{
         console.log()
-        const gltfloader = new GLTFLoader();
+        
         gltfloader.load(
             JSON.parse(xhr.response).data.model_path,
             ( gltf ) => {
