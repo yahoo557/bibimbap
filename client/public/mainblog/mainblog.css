@@ -967,7 +967,7 @@ body {
 }
 
 .iframe-post{
-    height: 80vh;
-    width: 80vw;
+    height: 80%;
+    width: 80%;
     display: none;
 }
