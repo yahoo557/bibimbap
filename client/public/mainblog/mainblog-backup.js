@@ -1285,6 +1285,7 @@ const saveBlob = (function() {
     };
 }());
 
+// 저장된 모델, 
 const XMLrequest = (function() {
     const xhr = new XMLHttpRequest();
     const method = "post";
