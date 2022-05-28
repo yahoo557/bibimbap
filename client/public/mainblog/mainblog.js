@@ -671,7 +671,7 @@ function setupCamera() {
                 objectPostView[0].style.display = "block"; // 게시물 열람 화면 활성화
                 objectPostView[0].children[1].style.display = "block"; // iframe 활성화
                 const id = 1 // 클릭한 오브젝트의 아이디
-                objectPostView[0].children[1].src = getPost(id);
+                getPost(id);
 
 
                 console.log('getPost(id) : ',getPost(id));
@@ -1312,7 +1312,7 @@ const getPost = (function(id) {
     xhr.open(method, targetURL)
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () =>{
-        const src = `http://localhost:8000/viewpost/${JSON.parse(xhr.response).post_id}`;
+        objectPostView[0].children[1].src = `http://localhost:8000/viewpost/${JSON.parse(xhr.response).post_id}`;
     };
     xhr.send();
     
