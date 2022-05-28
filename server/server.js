@@ -12,7 +12,8 @@ const userInfo = require("./router/userInfo.js");
 const postList = require("./router/postList.js");
 const blog = require("./router/blog.js");
 const image = require("./router/image.js");
-const getPostByObjetc = require("./router/getPostByObject.js");
+const getPostByObject = require("./router/getPostByObject.js");
+const duplicateCheck = require("./router/duplicateCheck.js");
 
 const jwt = require("jsonwebtoken");
 const config = require("./config/auth.config.js");
@@ -46,7 +47,8 @@ app.use("/resetPassword", resetPassword);
 app.use("/userInfo",  userInfo);
 app.use("/blog", blog);
 app.use("/image", image);
-app.use("/getPostByObject", getPostByObjetc);
+app.use("/getPostByObject", getPostByObject);
+app.use("/duplicateCheck", duplicateCheck);
 
 app.use("/client", createProxyMiddleware({target:'http://127.0.0.1:5502', changeOrigin: true}));
 
