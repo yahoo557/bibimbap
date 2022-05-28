@@ -26,10 +26,10 @@ const getObject = (function(id){
     xhr.open(method, targetURL);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () =>{
-        console.log(JSON.parse(xhr.response).data.model_position);
+        console.log()
         const gltfloader = new GLTFLoader();
         gltfloader.load(
-            JSON.parse(xhr.response).model_path,
+            JSON.parse(xhr.response).data.model_path,
             ( gltf ) => {
                 const root = gltf.scene; 
                 group.add(root);
@@ -47,7 +47,7 @@ const getObject = (function(id){
     xhr.send();
 });
 object_list.forEach(element => {
-    console.log(element);
+    
     getObject(element);
 });
     
@@ -184,15 +184,15 @@ function setupModel() {
 //     }
 // }
 // // 오브젝트 name을 배치 id(=object DB key값)로 설정
-// function setObjectName( nameObjects, key ) {
-//     const allChildren = nameObjects.children;
-//     for(let i = 0; i < allChildren.length; i++) {
-//         allChildren[i].name = key;
-//         if(allChildren[i].children.length > 0) {
-//             setObjectName( allChildren[i], key );
-//         }
-//     }
-// }
+function setObjectName( nameObjects, key ) {
+    const allChildren = nameObjects.children;
+    for(let i = 0; i < allChildren.length; i++) {
+        allChildren[i].name = key;
+        if(allChildren[i].children.length > 0) {
+            setObjectName( allChildren[i], key );
+        }
+    }
+}
 
 const dragSpeed = 0.7;
 // 새롭게 배치를 위해 선택된 오브젝트 = 바닥
