@@ -3,8 +3,12 @@ import { GLTFLoader } from '../three.js-master/examples/jsm/loaders/GLTFLoader.j
 import { PointerLockControls } from "../three.js-master/examples/jsm/controls/PointerLockControls.js";
 import { DragControls } from "../three.js-master/examples/jsm/controls/DragControls.js";
 
+// import path from 'path';
+
 // 배치 정보 => 배치 id : { 'template_id': 오브젝트id,  'model_position': 오브젝트 위치,  'objectRotaion': 오브젝트 방향,  'post_id': 게시물id}
 // object.name에 배치id 적을 것
+// const __dirname = path.resolve();
+
 const objectAssign = {'as1': { 'template_id': 'ob1',  'model_position': [0, -2, 3],  'model_rotation': 0,  'post_id': 'po2' },
                     'as2': { 'template_id': 'ob4',  'model_position': [2, 1, 4.9],  'model_rotation': 2,  'post_id': null },
                     'as3': { 'template_id': 'ob3',  'model_position': [-2, -1.1, 3],  'model_rotation': 2,  'post_id': 'po1' }};
@@ -663,9 +667,13 @@ function setupCamera() {
                 console.log("post(게시물) id: " + objectAssign[INTERSECTED.name]['post_id']);
                 objectPostView[0].classList.remove(objectPostView[0].classList.item(1)); // 이전에 추가된 object_id가 있다면 class 명에서 삭제
                 objectPostView[0].classList.add(INTERSECTED.name); // object_id를 class 명으로 추가
-                
                 menuArea[0].style.display = "block"; // 메뉴 사용 환경 활성화
                 objectPostView[0].style.display = "block"; // 게시물 열람 화면 활성화
+                objectPostView[1].style.display = "block"; // iframe 활성화
+                const id = 1 // 클릭한 오브젝트의 아이디
+                fetch('http://localhost:8000/getPostByObjetc/'+id)
+                    .then((response) => response.json({object_id : id}))
+                    .then((data) => objectPostView[1].src = "http://localhost:8000/viewpost/"+data.post_id);
                 unSelectObjectGroup( group, INTERSECTED.name); // 오브젝트 선택 해제
             }
             // 편집 모드가 활성화 되어있는 동안 = 오브젝트 편집 기능
@@ -929,7 +937,7 @@ objectLeftRotaionButton[0].addEventListener( 'click', () => {
         const allChildren = selectGroup.children;
         const selectObject = allChildren[allChildren.length - 2];
         const objectRange = allChildren[allChildren.length - 1];
-
+       
         preRotation = (preRotation + 1) % 4;
         leftRotaion(selectObject, 'y');
         leftRotaion(objectRange, 'z');
@@ -1280,3 +1288,19 @@ const saveBlob = (function() {
        a.click();
     };
 }());
+
+// 모델 db에 저장
+const XMLrequest = (function() {
+    const xhr = new XMLHttpRequest();
+    const method = "post";
+    const targetURL = "http://localhost:8000/getPost";
+    xhr.open(method, targetURL);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    const res = XMLHttpRequest.response
+
+})
+
+// 클릭시 게시글 가져오기
+
+
+// 

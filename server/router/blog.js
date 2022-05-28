@@ -15,12 +15,14 @@ router.get('/myblog', (req, res) => {
         const myblog_id = e.userData.id;
         const text = 'SELECT * FROM blog WHERE user_id = $1';
         client.query(text, [myblog_id], (err, rows) => {
-            return res.send({row : rows.rows})
+            return res.status(200).send({rows: rows.rows[0] , redirect: `/blog/`})
         })
     });
 });
 
+
 router.get('/test', (req, res) => {
+    
     return res.sendFile(path.join(__dirname,'../../client/public/mainblog', 'mainblog.html'));
 });
 
@@ -46,18 +48,23 @@ router.get('/random', (req, res) => {
     })
 });
 
+
 //타인 블로그
 router.get('/:id', (req, res) => {  
     const blog_id = req.params.id;
-        const text = 'SELECT * FROM blog WHERE user_id = $1';
+        const text = 'SELECT * FROM blog WHERE blog_id = $1';
+
         client.query(text, [blog_id], (err, rows) => {
-            return res.send({msg:blog_id})
+            if(err){
+                return res.send({msg:err})
+            }
+            return res.status(200).send({rows: rows.rows[0] , redirect: `/blog/`})
     })
 })
 
-router.get('/', (req, res ) => {
+// router.get('/', (req, res ) => {
   
-});
+// });
 
 
 module.exports = router;

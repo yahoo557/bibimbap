@@ -12,14 +12,14 @@ router.get("/", (req, res) => {
 
 router.post('/', (req, res, next) => {
 
+
     const text_insert = `INSERT INTO users(username, password, nickname, passwordq, passworda, blogname) VALUES($1, $2, $3, $4, $5, $6) RETURNING *`;
     const text_insert_blog = `INSERT INTO blog(blogname, user_id) VALUES ($1, $2)`;
+
     const text_check_username = 'SELECT * FROM users WHERE username = $1';
     const text_check_nickname = 'SELECT * FROM users WHERE nickname = $1';
     const text_check_blogname = 'SELECT * FROM blog WHERE blogname = $1';
     const list_check_empty = ['아이디, ', '비밀번호, ', '비밀번호 확인, ', '비밀번호 찾기 질문, ', '비밀번호 찾기 답변, ', '블로그 제목, ' ];
-
-    let result = ""
     const isrobot = new Boolean(true);
     const password = bcrypt.hashSync(req.body.userPassword, 10);
     //const passwordAns = bcrypt.hashSync(req.body.findPasswordAnswer, 10);
@@ -66,11 +66,12 @@ router.post('/', (req, res, next) => {
                     return res.status(202).send({msg : "이미 사용중인 블로그제목 입니다."});
                 }
                 client.query(text_insert, values, (err, rows) => {
+                    
                     if(err){
                         console.log(err)
                         return res.status(202).send({msg : err});
                     }
-                    client.query(text_insert_blog, [req.body.blogName, rows.rows[0].user_id], (err, rows) => {
+                    client.query(text_insert_blog, [req.body.blogName, 999], (err, rows) => {
                         if(err) {
                             return res.status(202).send({msg: err});
                         }

@@ -4,7 +4,7 @@
 -- https://tableplus.com/
 --
 -- Database: noldaga
--- Generation Time: 2022-05-26 20:14:31.6890
+-- Generation Time: 2022-05-28 16:50:17.6580
 -- -------------------------------------------------------------
 
 
@@ -22,3 +22,5 @@ CREATE TABLE "public"."object_template" (
     PRIMARY KEY ("template_id")
 );
 
+INSERT INTO "public"."object_template" ("template_id", "model_path", "thumbnail_path", "placement_location") VALUES
+(1, 'object_files/Old_Bicycle.glb', 'object_thumbnail/Old_Bicycle.png', 'floor');
