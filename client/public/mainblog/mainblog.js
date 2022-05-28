@@ -668,13 +668,16 @@ function setupCamera() {
                 objectPostView[0].classList.remove(objectPostView[0].classList.item(1)); // 이전에 추가된 object_id가 있다면 class 명에서 삭제
                 objectPostView[0].classList.add(INTERSECTED.name); // object_id를 class 명으로 추가
                 menuArea[0].style.display = "block"; // 메뉴 사용 환경 활성화
-                console.log(objectPostView)
                 objectPostView[0].style.display = "block"; // 게시물 열람 화면 활성화
-                objectPostView[0].children.style.display = "block"; // iframe 활성화
+                objectPostView[0].children[1].style.display = "block"; // iframe 활성화
                 const id = 1 // 클릭한 오브젝트의 아이디
-                fetch('http://localhost:8000/getPostByObjetc/'+id)
-                    .then((response) => response.json({object_id : id}))
-                    .then((data) => objectPostView[1].src = "http://localhost:8000/viewpost/"+data.post_id);
+                objectPostView[0].children[1].src = getPost(id);
+
+
+                console.log('getPost(id) : ',getPost(id));
+                // fetch('http://localhost:8000/getPostByObjetc/'+id)
+                //     .then((response) => response.json({object_id : id}))
+                //     .then((data) => objectPostView[1].src = "http://localhost:8000/viewpost/"+data.post_id);
                 unSelectObjectGroup( group, INTERSECTED.name); // 오브젝트 선택 해제
             }
             // 편집 모드가 활성화 되어있는 동안 = 오브젝트 편집 기능
@@ -1298,10 +1301,20 @@ const XMLrequest = (function() {
     xhr.open(method, targetURL);
     xhr.setRequestHeader("Content-Type", "application/json");
     const res = XMLHttpRequest.response
-
+    return res;
 })
 
 // 클릭시 게시글 가져오기
-
-
-// 
+const getPost = (function(id) {
+    const xhr = new XMLHttpRequest();
+    const method = "get";
+    const targetURL = "http://localhost:8000/getPostByObject/"+id;
+    xhr.open(method, targetURL)
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = () =>{
+        const src = `http://localhost:8000/viewpost/${JSON.parse(xhr.response).post_id}`;
+    };
+    xhr.send();
+    
+});
+    
