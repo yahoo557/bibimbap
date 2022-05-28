@@ -965,3 +965,9 @@ body {
     margin-left: 4vh;
     width: 77vw;
 }
+
+.iframe-post{
+    height: 80vh;
+    width: 80vw;
+    display: none;
+}
