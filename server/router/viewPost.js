@@ -42,6 +42,7 @@ router.get("/:id", (req, res)=>{
         if(err) return console.log(err);
         if(rows.rows.length > 0){
             const postData = {
+                isEdit: true,
                 post_id: rows.rows[0].post_id,
                 title: rows.rows[0].title,
                 contents: rows.rows[0].body,
@@ -58,7 +59,7 @@ router.get("/:id", (req, res)=>{
                             return redirectWithMsg(res, 202, {msg: "권한이 없습니다.", redirect: `/viewPost/${id}`});
                         }
 
-                        return res.status(200).render(path.join(__dirname, '../public', 'editPost.ejs'),
+                        return res.status(200).render(path.join(__dirname, '../public', 'post.ejs'),
                                                         postData);
                     });
                 }).catch((e) =>{

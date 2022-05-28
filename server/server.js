@@ -11,6 +11,7 @@ const resetPassword = require("./router/resetPassword.js");
 const userInfo = require("./router/userInfo.js");
 const postList = require("./router/postList.js");
 const blog = require("./router/blog.js");
+const image = require("./router/image.js");
 
 const jwt = require("jsonwebtoken");
 const config = require("./config/auth.config.js");
@@ -34,22 +35,22 @@ app.set('view engine', 'ejs');
 app.use("/static", express.static("static"));
 app.use("/static/v2", express.static("../client"));
 
-
 app.use("/register", register);
 app.use("/login", login);
-app.use("/logout", logout);
+app.use("/logout", auth, logout);
 app.use("/post", post);
 app.use("/postList", postList);
 app.use("/viewPost", viewPost);
 app.use("/resetPassword", resetPassword);
 app.use("/userInfo",  userInfo);
 app.use("/blog", blog);
+app.use("/image", image);
 
 app.use("/client", createProxyMiddleware({target:'http://127.0.0.1:5502', changeOrigin: true}));
 
 app.get("/", (req, res) => {
 
-  const getBlogListQuery = "SELECT a.*, b.nickname FROM blog as a INNER JOIN users as b ON a.user_id = b.user_id";
+  const getBlogListQuery = "SELECT a.*, b.nickname FROM blog as a INNER JOIN users as b ON a.user_id = b.user_id ORDER BY RANDOM()";
 
   dt.decodeToken(req, (e) => {
     client.query(getBlogListQuery, [], (err, rows) => {

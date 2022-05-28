@@ -7,7 +7,7 @@ const path = require('path');
 //const three = require('three');
 const dt = require('../controller/decode.jwt.js');
 
-const redirectWithMsg = require('../controller/redirectWithMsg.js')
+const redirectWithMsg = require('../controller/redirectWithMsg.js');
 
 // 내 블로그 
 router.get('/myblog', (req, res) => {
