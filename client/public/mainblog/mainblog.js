@@ -671,12 +671,9 @@ function setupCamera() {
                 menuArea[0].style.display = "block"; // 메뉴 사용 환경 활성화
                 objectPostView[0].style.display = "block"; // 게시물 열람 화면 활성화
                 objectPostView[0].children[1].style.display = "block"; // iframe 활성화
-                // const id = INTERSECTED.name.slice(-1);
+                // const id = INTERSECTED.name.slice(-1); // 클릭한 오브젝트의 db 아이디
                 const id = 1 // 클릭한 오브젝트의 아이디
                 getPost(id);
-                // fetch('http://localhost:8000/getPostByObjetc/'+id)
-                //     .then((response) => response.json({object_id : id}))
-                //     .then((data) => objectPostView[1].src = "http://localhost:8000/viewpost/"+data.post_id);
                 unSelectObjectGroup( group, INTERSECTED.name); // 오브젝트 선택 해제
             }
             // 편집 모드가 활성화 되어있는 동안 = 오브젝트 편집 기능
