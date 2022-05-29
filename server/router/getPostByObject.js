@@ -11,7 +11,6 @@ const dt = require('../controller/decode.jwt.js');
 router.get('/:id', (req, res) => {
     const object_id = req.params.id;
     const text_check_object = 'SELECT * FROM object WHERE object_id = $1';
-    const text_get_post = 'SELECT * FROM object WHERE object_id = $1';
         client.query(text_check_object, [object_id], (err, rows)=>{
             if(rows.rows.length>0){
                 res.status(200).send({post_id : rows.rows[0].post_id})                
