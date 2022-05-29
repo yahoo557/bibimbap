@@ -19,7 +19,6 @@ router.get('/', (req, res ) => {
 });
 
 router.post('/', (req, res, next) => {
-  console.log(req);
   const user_id_input = req.body.userID;
   const user_pw_input = req.body.userPassword;
   const text = 'SELECT * FROM users WHERE username = $1';

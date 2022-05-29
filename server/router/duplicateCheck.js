@@ -16,7 +16,7 @@ router.post("/username", (req, res) => {
 
 router.post("/nickname", (req, res) => {
     const selQuery = "SELECT nickname FROM users WHERE nickname = $1";
-    const selQueryLogined = "SELECT nickname FROM users WHERE nickname = $1 ANDD username <> $2";
+    const selQueryLogined = "SELECT nickname FROM users WHERE nickname = $1 AND username <> $2";
 
     dt.decodeTokenPromise(req).then((decode) => {
         client.query(selQueryLogined, [req.body.nickname, decode.userData.username], (err, rows) =>{

@@ -55,8 +55,6 @@ app.use("/withdraw", withdraw);
 app.use("/client", createProxyMiddleware({target:'http://127.0.0.1:5502', changeOrigin: true}));
 
 app.get("/", (req, res) => {
-
-
   const getBlogListQuery = "SELECT a.*, b.nickname FROM blog as a INNER JOIN users as b ON a.user_id = b.user_id ORDER BY RANDOM()";
 
   dt.decodeToken(req, (e) => {
