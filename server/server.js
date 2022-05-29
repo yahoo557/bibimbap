@@ -15,6 +15,7 @@ const image = require("./router/image.js");
 const getPostByObject = require("./router/getPostByObject.js");
 const duplicateCheck = require("./router/duplicateCheck.js");
 const getObjectById = require("./router/getObjectById.js");
+const withdraw = require("./router/withdraw.js");
 const jwt = require("jsonwebtoken");
 const config = require("./config/auth.config.js");
 
@@ -50,6 +51,7 @@ app.use("/image", image);
 app.use("/getPostByObject", getPostByObject);
 app.use("/duplicateCheck", duplicateCheck);
 app.use("/getObjectById", getObjectById);
+app.use("/withdraw", withdraw);
 app.use("/client", createProxyMiddleware({target:'http://127.0.0.1:5502', changeOrigin: true}));
 
 app.get("/", (req, res) => {

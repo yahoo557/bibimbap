@@ -13,12 +13,15 @@ const redirectWithMsg = require('../controller/redirectWithMsg.js');
 
 // 내 블로그 
 router.get('/myblog', (req, res) => {
-    dt.decodeToken(req, (e) => {
-        const myblog_id = e.userData.id;
-        const text = 'SELECT * FROM blog WHERE user_id = $1';
-        client.query(text, [myblog_id], (err, rows) => {
-            return res.status(200).send({rows: rows.rows[0] , redirect: `/blog/`})
+    dt.decodeTokenPromise(req).then((e) => {
+        const text = 'SELECT * FROM blog AS a INNER JOIN users AS b ON a.user_id = b.user_id AND b.username = $1';
+        client.query(text, [e.userData.username], (err, rows) => {
+            if(err) return res.status(404).send({msg: "error"});
+            if(rows.rows.length < 1) return res.status(404).send("잘못된 사용자");
+            return res.status(200).redirect(`/blog/${rows.rows[0].blog_id}`);
         })
+    }).catch(e => {
+        return redirectWithMsg(res, 401, {msg: "로그인이 필요합니다.", redirect: `/login?redirect=${encodeURIComponent("/blog/myblog")}`})
     });
 });
 

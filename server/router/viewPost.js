@@ -30,7 +30,6 @@ router.get("/", (req, res) => {
             console.log("게시글이 존재하지 않습니다.");
         }
     });
-    
 });
 
 router.get("/:id", (req, res)=>{

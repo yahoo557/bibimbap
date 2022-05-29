@@ -1,6 +1,12 @@
 let searchKeyword = "";
 const listDiv = document.getElementById("blogList");
 
+const myBlogButton = document.getElementById("myBlogBtn");
+
+myBlogButton.addEventListener('click', (e) => {
+    window.location.href="/blog/myblog";
+})
+
 function setBlogList(obj) {
     for(let v of obj) {
         const tempDom = document.createElement("div");
