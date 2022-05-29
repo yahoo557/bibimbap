@@ -92,6 +92,10 @@ table {
     width: 55%;
 }
 
+#mainText {
+    font-size: 18px;
+}
+
 .solidLine {
     border-top: 2px black solid;
 }
@@ -119,3 +123,6 @@ table {
     text-align: left;
 }
 
+.redText {
+    color: red;
+}

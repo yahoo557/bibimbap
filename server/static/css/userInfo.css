@@ -70,10 +70,7 @@ table {
 
     display: inline-block;
     text-align: center;
-}
-
-#container {
-    margin: 20px
+    padding: 20px;
 }
 
 #expText {

@@ -22,7 +22,7 @@ CREATE TABLE "public"."blog" (
     "object_list" _varchar,
     "user_id" int4 NOT NULL,
     "thums_path" varchar(255),
-    CONSTRAINT "fk_user" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON UPDATE CASCADE,
+    CONSTRAINT "fk_user" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE CASCADE,
     PRIMARY KEY ("blog_id")
 );
 
@@ -34,7 +34,7 @@ CREATE TABLE "public"."post" (
     "body" varchar(9999) NOT NULL,
     "user_id" int4 NOT NULL,
     "timestamp" timestamp DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT "fk_post" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON UPDATE CASCADE,
+    CONSTRAINT "fk_post" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE CASCADE,
     PRIMARY KEY ("post_id")
 );
 
@@ -58,7 +58,7 @@ CREATE TABLE "public"."image" (
     "img_path" varchar(255) NOT NULL,
     "img_size" int4,
     "user_id" int4,
-    CONSTRAINT "fk_users" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON UPDATE CASCADE,
+    CONSTRAINT "fk_users" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE CASCADE,
     PRIMARY KEY ("image_id")
 );
 

@@ -19,6 +19,7 @@ router.get('/', (req, res ) => {
 });
 
 router.post('/', (req, res, next) => {
+  console.log(req);
   const user_id_input = req.body.userID;
   const user_pw_input = req.body.userPassword;
   const text = 'SELECT * FROM users WHERE username = $1';
@@ -49,12 +50,12 @@ router.post('/', (req, res, next) => {
       }
       else {
         //에러 발생시 404 에러코드와 메세지 호출
-        return redirectWithMsg(res, 401, {msg : "등록되지 않은 아이디이거나, 비밀번호가 잘못되었습니다.", redirect: "/login"});
+        return redirectWithMsg(res, 401, {msg : "등록되지 않은 아이디이거나, 비밀번호가 잘못되었습니다.", redirect: req.originalUrl});
       }
     }
     else {
       //에러 발생시 404 에러코드와 메세지 호출
-      return redirectWithMsg(res, 401, {msg : "등록되지 않은 아이디이거나, 비밀번호가 잘못되었습니다.", redirect: "/login"});
+      return redirectWithMsg(res, 401, {msg : "등록되지 않은 아이디이거나, 비밀번호가 잘못되었습니다.", redirect: req.originalUrl});
     }
   });
 
