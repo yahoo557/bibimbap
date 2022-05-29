@@ -26,8 +26,6 @@ const getObject = (function(id){
     xhr.open(method, targetURL);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () =>{
-        console.log()
-        
         gltfloader.load(
             JSON.parse(xhr.response).data.model_path,
             ( gltf ) => {
@@ -47,7 +45,6 @@ const getObject = (function(id){
     xhr.send();
 });
 object_list.forEach(element => {
-    
     getObject(element);
 });
     
@@ -715,15 +712,15 @@ function setupCamera() {
 
             // 편집 모드가 비활성화 되어있는 동안 = 게시물 열람
             if(editIcon[0].style.left != "15vh") {
-                console.log("post(게시물) id: " + objectAssign[INTERSECTED.name]['post_id']);
 
                 objectPostView[0].classList.remove(objectPostView[0].classList.item(1)); // 이전에 추가된 object_id가 있다면 class 명에서 삭제
                 objectPostView[0].classList.add(INTERSECTED.name); // object_id를 class 명으로 추가
                 menuArea[0].style.display = "block"; // 메뉴 사용 환경 활성화
                 objectPostView[0].style.display = "block"; // 게시물 열람 화면 활성화
                 objectPostView[0].children[1].style.display = "block"; // iframe 활성화
-                const id = INTERSECTED.name.slice(-1); // 클릭한 오브젝트의 db 아이디
-                // const id = 1 // 클릭한 오브젝트의 아이디
+                // console.log(INTERSECTED.name);
+                const id = INTERSECTED.name; // 클릭한 오브젝트의 db 아이디
+                // // const id = 1 // 클릭한 오브젝트의 아이디
                 getPost(id);
                 unSelectObjectGroup( group, INTERSECTED.name); // 오브젝트 선택 해제
             }

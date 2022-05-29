@@ -13,7 +13,7 @@ router.get('/:id', (req, res) => {
     const text_check_object = 'SELECT * FROM object WHERE object_id = $1';
         client.query(text_check_object, [object_id], (err, rows)=>{
             if(rows.rows.length>0){
-                console.log(rows.rows[0]);
+
                 res.status(200).send({data : rows.rows[0]})                
             }
             else {
