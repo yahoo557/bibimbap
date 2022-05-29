@@ -26,8 +26,9 @@ const getObject = (function(id){
     xhr.open(method, targetURL);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () =>{
+        // console.log(JSON.parse(xhr.response).path);
         gltfloader.load(
-            JSON.parse(xhr.response).data.model_path,
+            JSON.parse(xhr.response).path,
             ( gltf ) => {
                 const root = gltf.scene; 
                 group.add(root);
