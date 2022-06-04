@@ -1,64 +1,22 @@
-import * as THREE from '../three.js-master/build/three.module.js';
-import { GLTFLoader } from '../three.js-master/examples/jsm/loaders/GLTFLoader.js';
-import { PointerLockControls } from "../three.js-master/examples/jsm/controls/PointerLockControls.js";
-import { DragControls } from "../three.js-master/examples/jsm/controls/DragControls.js";
+import * as THREE from '../../public/three.js-master/build/three.module.js';
+import { GLTFLoader } from '../../public/three.js-master/examples/jsm/loaders/GLTFLoader.js';
+import { PointerLockControls } from "../../public/three.js-master/examples/jsm/controls/PointerLockControls.js";
+import { DragControls } from "../../public/three.js-master/examples/jsm/controls/DragControls.js";
 
 // import path from 'path';
 
 // 배치 정보 => 배치 id : { 'template_id': 오브젝트id,  'model_position': 오브젝트 위치,  'objectRotaion': 오브젝트 방향,  'post_id': 게시물id}
 // object.name에 배치id 적을 것
+// const __dirname = path.resolve();
 
-// 블로그로 이동하면 cookie에 블로그 오브젝트 리스트를 저장하고 main.html을 로드함
-const parseCookie = str => 
-            str.split(';').map(v => v.split('=')).reduce((acc, v) => {
-                acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
-                return acc;
-            }, {});
-var cookie = document.cookie;
-
-// 해당 블로그의 오브젝트 리스트, 이것을 반복문 돌려서 각 오브젝트들을 렌더
-var object_list = parseCookie(cookie).object_list.split(":")[1].slice(1,-1).replace(/\"/g, "").split(",");
-const gltfloader = new GLTFLoader();
-const getObject = (function(id){
-    const xhr = new XMLHttpRequest();
-    const method = "get";
-    const targetURL = "http://localhost:8000/getObjectByid/"+id;
-    xhr.open(method, targetURL);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onload = () =>{
-        // console.log(JSON.parse(xhr.response).path);
-        gltfloader.load(
-            JSON.parse(xhr.response).path,
-            ( gltf ) => {
-                const root = gltf.scene; 
-                group.add(root);
-                objParentTransform.push( root );
-                var objectPosi = JSON.parse(xhr.response).data.model_position;
-                var objectRota = JSON.parse(xhr.response).data.model_rotation;
-                root.position.set( objectPosi[0], objectPosi[1], objectPosi[2] ); //모델 위치
-                root.rotation.y = objectRota * Math.PI / 2; // 모델 방향
-                root.name = id; // 오브젝트 이름: 배치 id
-                setObjectName( root, id );
-            }
-        );
-        
-    }
-    xhr.send();
-});
-object_list.forEach(element => {
-    getObject(element);
-});
-    
-        
-   
-// const objectAssign = {'as1': { 'template_id': 'ob1',  'model_position': [0, -2, 3],  'model_rotation': 0,  'post_id': 'po2' },
-//                     'as2': { 'template_id': 'ob4',  'model_position': [2, 1, 4.9],  'model_rotation': 2,  'post_id': null },
-//                     'as3': { 'template_id': 'ob3',  'model_position': [-2, -1.1, 3],  'model_rotation': 2,  'post_id': 'po1' }};
+const objectAssign = {'as1': { 'template_id': 'ob1',  'model_position': [0, -2, 3],  'model_rotation': 0,  'post_id': 'po2' },
+                    'as2': { 'template_id': 'ob4',  'model_position': [2, 1, 4.9],  'model_rotation': 2,  'post_id': null },
+                    'as3': { 'template_id': 'ob3',  'model_position': [-2, -1.1, 3],  'model_rotation': 2,  'post_id': 'po1' }};
 
 // 오브젝트 템플릿 파일 => 오브젝트 id : { 'model_path': 오브젝트 파일 경로, 'thumbnail_path': 오브젝트 썸네일 파일 경로, 'placementLocation' : 배치 가능한 위치('floor': 바닥, wall: 벽, ceiling: 천장)}
 const objectTemplate = {'ob1': {'model_path': '../../object_files/Old_Bicycle.glb', 'thumbnail_path': '../../object_thumbnail/Old_Bicycle.png', 'placementLocation': 'floor'},
-                    'ob2': {'model_path': '../../object_files/Plants_on_table.gltf', 'thumbnail_path': '../../object_thumbnail/Plants_on_table.png', 'placementLocation': 'floor'},
-                    'ob3': {'model_path': '../../object_files/Evita_chandelier.gltf', 'thumbnail_path': '../../object_thumbnail/Evita_chandelier.png', 'placementLocation': 'ceiling'},
+                    'ob2': {'model_path': '../../object_files/Old_Bicycle.glb', 'thumbnail_path': '../../object_thumbnail/Plants_on_table.png', 'placementLocation': 'floor'},
+                    'ob3': {'model_path': '../../object_files/Old_Bicycle.glb', 'thumbnail_path': '../../object_thumbnail/Evita_chandelier.png', 'placementLocation': 'ceiling'},
                     'ob4': {'model_path': '../../object_files/angle_clock.glb', 'thumbnail_path': '../../object_thumbnail/angle_clock.png', 'placementLocation': 'wall'}};
 const blank = '../../object_thumbnail/blank.png';
 
@@ -130,8 +88,6 @@ animate();
 // 3차원 그래픽 장면을 만들어주는 메소드
 // requestAnimationFrame(this.render.bind(this));
 
-
-
 function setupModel() {
     //정육면체 형상을 정의
     //인자(가로, 세로, 깊이)
@@ -143,45 +99,40 @@ function setupModel() {
     room.name = "room";
 
     group.add(room);
-
-    // setObjectInBlog();
-    object_list.forEach(element => {
-        getObject(element);
-    });
-    
+    setObjectInBlog();
     scene.add(group);
 
     clickRaycaster = new THREE.Raycaster();
 }
 
 // object DB에서 배치된 오브젝트 불러와서 배치
-// function setObjectInBlog() {
-//     const objectAssignLen = Object.keys(objectAssign).length; // 오브젝트 배치 개수
-//     const gltfloader = new GLTFLoader();
+function setObjectInBlog() {
+    const objectAssignLen = Object.keys(objectAssign).length; // 오브젝트 배치 개수
+    const gltfloader = new GLTFLoader();
 
-//     for(let i = 0; i < objectAssignLen; i++) {
-//         const key = Object.keys(objectAssign)[i]; // 배치 아이디
-//         const objectKey = objectAssign[key]['template_id']; // 오브젝트 id
-//         const url = objectTemplate[objectKey]['model_path']; // 오브젝트 url
-//         const objectPosi = objectAssign[key]['model_position']; // 오브젝트 위치
-//         const objectRota = objectAssign[key]['model_rotation']; // 오브젝트 방향
-//         gltfloader.load(
-//             url,
-//             ( gltf ) => {
-//                 const root = gltf.scene; 
-//                 group.add(root);
-//                 objParentTransform.push( root );
+    for(let i = 0; i < objectAssignLen; i++) {
+        const key = Object.keys(objectAssign)[i]; // 배치 아이디
+        const objectKey = objectAssign[key]['template_id']; // 오브젝트 id
+        const url = objectTemplate[objectKey]['model_path']; // 오브젝트 url
+        const objectPosi = objectAssign[key]['model_position']; // 오브젝트 위치
+        const objectRota = objectAssign[key]['model_rotation']; // 오브젝트 방향
+        gltfloader.load(
+            url,
+            ( gltf ) => {
+                const root = gltf.scene;
+                group.add(root);
+                objParentTransform.push( root );
     
-//                 root.position.set( objectPosi[0], objectPosi[1], objectPosi[2] ); //모델 위치
-//                 root.rotation.y = objectRota * Math.PI / 2; // 모델 방향
-//                 root.name = key; // 오브젝트 이름: 배치 id
+                root.position.set( objectPosi[0], objectPosi[1], objectPosi[2] ); //모델 위치
+                root.rotation.y = objectRota * Math.PI / 2; // 모델 방향
+                root.name = key; // 오브젝트 이름: 배치 id
 
-//                 setObjectName( root, key );
-//             }
-//         );
-//     }
-// }
-// // 오브젝트 name을 배치 id(=object DB key값)로 설정
+                setObjectName( root, key );
+            }
+        );
+    }
+}
+// 오브젝트 name을 배치 id(=object DB key값)로 설정
 function setObjectName( nameObjects, key ) {
     const allChildren = nameObjects.children;
     for(let i = 0; i < allChildren.length; i++) {
@@ -713,16 +664,12 @@ function setupCamera() {
 
             // 편집 모드가 비활성화 되어있는 동안 = 게시물 열람
             if(editIcon[0].style.left != "15vh") {
-
+                console.log("post(게시물) id: " + objectAssign[INTERSECTED.name]['post_id']);
                 objectPostView[0].classList.remove(objectPostView[0].classList.item(1)); // 이전에 추가된 object_id가 있다면 class 명에서 삭제
                 objectPostView[0].classList.add(INTERSECTED.name); // object_id를 class 명으로 추가
+                
                 menuArea[0].style.display = "block"; // 메뉴 사용 환경 활성화
                 objectPostView[0].style.display = "block"; // 게시물 열람 화면 활성화
-                objectPostView[0].children[1].style.display = "block"; // iframe 활성화
-                // console.log(INTERSECTED.name);
-                const id = INTERSECTED.name; // 클릭한 오브젝트의 db 아이디
-                // // const id = 1 // 클릭한 오브젝트의 아이디
-                getPost(id);
                 unSelectObjectGroup( group, INTERSECTED.name); // 오브젝트 선택 해제
             }
             // 편집 모드가 활성화 되어있는 동안 = 오브젝트 편집 기능
@@ -986,7 +933,7 @@ objectLeftRotaionButton[0].addEventListener( 'click', () => {
         const allChildren = selectGroup.children;
         const selectObject = allChildren[allChildren.length - 2];
         const objectRange = allChildren[allChildren.length - 1];
-       
+
         preRotation = (preRotation + 1) % 4;
         leftRotaion(selectObject, 'y');
         leftRotaion(objectRange, 'z');
@@ -1338,34 +1285,13 @@ const saveBlob = (function() {
     };
 }());
 
-// 모델 db에 저장
+// 저장된 모델, 
 const XMLrequest = (function() {
     const xhr = new XMLHttpRequest();
     const method = "post";
-    const targetURL = "http://localhost:8000/getPost";
+    const targetURL = "http://localhost:8000/editBlog";
+
     xhr.open(method, targetURL);
     xhr.setRequestHeader("Content-Type", "application/json");
-    const res = XMLHttpRequest.response
-    return res;
+
 })
-
-// 클릭시 게시글 가져오기
-const getPost = (function(id) {
-    const xhr = new XMLHttpRequest();
-    const method = "get";
-    const targetURL = "http://localhost:8000/getPostByObject/"+id;
-    xhr.open(method, targetURL)
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onload = () =>{
-        objectPostView[0].children[1].src = `http://localhost:8000/viewpost/${JSON.parse(xhr.response).post_id}`;
-    };
-    xhr.send();
-    
-});
-
-
-
-
-            
-
-

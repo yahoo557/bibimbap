@@ -15,35 +15,32 @@ const { send } = require("process");
 const { append } = require("express/lib/response");
 const exp = require("constants");
 
-router.get("/", (req, res) => {
-    const tokenDecode = dt.decodeTokenPromise(req);
-    tokenDecode.then((decode) => {
-        if(!decode.verify) {
-            res.status(401).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
-                                        {msg: "인증 오류입니다.", redirect: '/'})
+const auth = require('../controller/auth.jwt.js')
+
+router.get("/", auth, (req, res) => {
+    const decode = res.locals.decode;
+    console.log(decode);
+    const reqQuery = 'SELECT user_id, nickname, passwordq, passworda FROM users WHERE username = $1';
+    const blogQuery = 'SELECT * FROM blog WHERE user_id = $1';
+
+    client.query(reqQuery, [decode.username], (err, userRows) => {
+        if(err) {
+            return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
+                                                    {msg: "DB ERROR", redirect: '/userInfo'});
+        }
+        if(userRows.rows.length < 1) {
+            return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
+                                                    {msg: "잘못된 토큰입니다.", redirect: '/userInfo'});
         }
 
-        const reqQuery = 'SELECT user_id, nickname, passwordq, passworda FROM users WHERE username = $1';
-        const blogQuery = 'SELECT * FROM blog WHERE user_id = $1';
-        client.query(reqQuery, [decode.userData.username], (err, userRows) => {
+        client.query(blogQuery, [userRows.rows[0].user_id], (err, blogRows) => {
             if(err) {
                 return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
                                                         {msg: "DB ERROR", redirect: '/userInfo'});
             }
-            if(userRows.rows.length < 1) {
-                return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
-                                                        {msg: "잘못된 토큰입니다.", redirect: '/userInfo'});
-            }
-
-            client.query(blogQuery, [userRows.rows[0].user_id], (err, blogRows) => {
-                if(err) {
-                    return res.status(201).render(path.join(__dirname, '../public', 'showMsg.ejs'), 
-                                                            {msg: "DB ERROR", redirect: '/userInfo'});
-                }
-                const dataObject = Object.assign(userRows.rows[0], blogRows.rows[0]);
-                return res.render(path.join(__dirname, '../public', 'userInfo.ejs'), dataObject);
-            })
-        });
+            const dataObject = Object.assign(userRows.rows[0], blogRows.rows[0]);
+            return res.render(path.join(__dirname, '../public', 'userInfo.ejs'), dataObject);
+        })
     });
 });
 

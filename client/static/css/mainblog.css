@@ -144,7 +144,7 @@ body {
 }
 /* 로그인 버튼 */
 .login-button {
-    display: none;
+    display: inline-block;
     position: relative;
     top: 15.5vh;
 

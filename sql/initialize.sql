@@ -89,3 +89,15 @@ CREATE TABLE "public"."object" (
     CONSTRAINT "object_template_id_fkey" FOREIGN KEY ("template_id") REFERENCES "public"."object_template"("template_id"),
     PRIMARY KEY ("object_id")
 );
+
+INSERT INTO object_template(model_path, thumbnail_path, placement_location)
+VALUES ('/blog/static/object_files/Old_Bicycle.glb', '/blog/static/object_thumbnail/Old_Bicycle.png', 'floor');
+
+INSERT INTO object_template(model_path, thumbnail_path, placement_location)
+VALUES ('/blog/static/object_files/Plants_on_table.gltf', '/blog/static/object_thumbnail/Plants_on_table.png', 'floor');
+
+INSERT INTO object_template(model_path, thumbnail_path, placement_location)
+VALUES ('/blog/static/object_files/Evita_chandelier.glb', '/blog/static/object_thumbnail/Evita_chandelier.png', 'ceiling');
+
+INSERT INTO object_template(model_path, thumbnail_path, placement_location)
+VALUES ('/blog/static/object_files/angle_clock.glb', '/blog/static/object_thumbnail/angle_clock.png', 'wall');

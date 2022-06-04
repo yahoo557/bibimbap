@@ -19,7 +19,7 @@ CREATE TABLE "public"."image" (
     "img_path" varchar(255) NOT NULL,
     "img_size" int4,
     "post" int4,
-    CONSTRAINT "fk_post" FOREIGN KEY ("post") REFERENCES "public"."post"("post_id") ON UPDATE CASCADE,
+    CONSTRAINT "fk_post" FOREIGN KEY ("post") REFERENCES "public"."post"("post_id") ON DELETE CASCADE,
     PRIMARY KEY ("image_id")
 );
 
