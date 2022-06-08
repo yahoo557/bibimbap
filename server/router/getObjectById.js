@@ -14,6 +14,7 @@ router.get('/:id', (req, res) => {
     const text_get_object_info = 'SELECT * FROM object_template WHERE template_id = $1'
     
         client.query(text_check_object, [object_id], (err, rows)=>{
+            if(err) return;
             if(rows.rows.length>0){
                 var object_ifo = rows.rows[0]
                 client.query(text_get_object_info, [rows.rows[0].template_id], (err, rows)=>{

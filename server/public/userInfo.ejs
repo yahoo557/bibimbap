@@ -27,7 +27,7 @@
                     <span>USERINFO UPDATE</span>
                 </div>
                 <hr class="solidLine" />
-                <form method="post" action="/userInfo/changePassword" onsubmit="return confirm('비밀번호를 변경하시겠습니까?')">
+                <form method="post" action="/userInfo/changePassword" onsubmit="return applyPwChange()">
                     <table>
                         <colgroup>
                             <col width="30%"/>
@@ -63,7 +63,7 @@
                         </tr>
                         <tr>
                             <td></td>
-                            <td class="leftAlign"><div class="alertMsg">text</div></td>
+                            <td colspan="2" class="leftAlign"><div class="alertMsg">text</div></td>
                         </tr>
                         <tr>
                             <td class="rightAlign"><label for="confirmPassword">비밀번호 확인</label></td>
@@ -86,7 +86,7 @@
                     <button id="changePwBtn">비밀번호 변경</button>
                 </form>
                 <hr class="dotHr">
-                <form method="post" action="/userInfo/changeInfo" onsubmit="return confirm('수정하시겠습니까?')">
+                <form method="post" action="/userInfo/changeInfo" onsubmit="return applyInfoChange()">
                     <table>                    
                         <colgroup>
                             <col width="30%"/>
@@ -99,7 +99,7 @@
                                 <input type="text" id="nickname" name="nickname" value="<%=nickname%>"/>
                             </td>
                             <td>
-                                <button>중복확인</button>
+                                <button type="button">중복확인</button>
                             </td>
                         </tr>
                         <tr>
@@ -114,7 +114,7 @@
                                 <input type="text" id="blogName" name="blogName" value="<%=blogname%>"/>
                             </td>
                             <td>
-                                <button id="checkBlogName">중복확인</button>
+                                <button type="button" id="checkBlogName">중복확인</button>
                             </td>
                         </tr>
                         <tr>
@@ -154,5 +154,7 @@
         </div>
     </article>
     <footer></footer>
+
+    <script src="/static/js/userInfo.js"></script>
 </body>
 </html>

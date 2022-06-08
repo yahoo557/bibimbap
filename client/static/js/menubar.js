@@ -35,10 +35,12 @@ const next = document.getElementsByClassName("bi-caret-right-fill");
 
 const objectThumnail = document.getElementsByClassName("object-thumbnail");
 // 오브젝트 id : {'thumbnail_path': 오브젝트 썸네일 파일 경로, 'placementLocation' : 배치 가능한 위치('floor': 바닥, wall: 벽, ceiling: 천장)}
-const objectTemplate = {'ob1': {'thumbnail_path': '../../object_thumbnail/Old_Bicycle.png', 'placementLocation': 'floor'}, 'ob2': {'thumbnail_path': '../../object_thumbnail/Plants_on_table.png', 'placementLocation': 'floor'},
-                    'ob3': {'thumbnail_path': '../../object_thumbnail/Evita_chandelier.png', 'placementLocation': 'ceiling'}, 'ob4': {'thumbnail_path': '../../object_thumbnail/angle_clock.png', 'placementLocation': 'wall'},
-                    'ob5': {'thumbnail_path': '../../object_thumbnail/Books_Magazines.png', 'placementLocation': 'floor'},'ob6':  {'thumbnail_path': '../../object_thumbnail/mouse_doll.png', 'placementLocation': 'floor'},
-                    'ob7': {'thumbnail_path': '../../object_thumbnail/air_jordan.png', 'placementLocation': 'floor'}};
+// const objectTemplate = {'ob1': {'thumbnail_path': '../../object_thumbnail/Old_Bicycle.png', 'placementLocation': 'floor'}, 'ob2': {'thumbnail_path': '../../object_thumbnail/Plants_on_table.png', 'placementLocation': 'floor'},
+//                     'ob3': {'thumbnail_path': '../../object_thumbnail/Evita_chandelier.png', 'placementLocation': 'ceiling'}, 'ob4': {'thumbnail_path': '../../object_thumbnail/angle_clock.png', 'placementLocation': 'wall'},
+//                     'ob5': {'thumbnail_path': '../../object_thumbnail/Books_Magazines.png', 'placementLocation': 'floor'},'ob6':  {'thumbnail_path': '../../object_thumbnail/mouse_doll.png', 'placementLocation': 'floor'},
+//                     'ob7': {'thumbnail_path': '../../object_thumbnail/air_jordan.png', 'placementLocation': 'floor'}};
+
+let objectTemplate;
 const blank = '../../object_thumbnail/blank.png';
 
 // 게시물 작성 또는 연결
@@ -81,8 +83,8 @@ const showMenu = () => {
     closeIcon[0].style.display = "block"; // 닫기 아이콘 보이기
     menuBar[0].style.left = "0vw"; // 메뉴 바 보이기
 
-    blogNameText[0].innerHTML = blogInfo["blogName"];
-    blogOwnerText[0].innerHTML = blogInfo["blogOwner"];
+    // blogNameText[0].innerHTML = blogInfo["blogName"];
+    // blogOwnerText[0].innerHTML = blogInfo["blogOwner"];
 
     if(blogInfo["ownerId"] != userId) { // 자신의 블로그가 아니라 타인의 블로그인 경우
         addIcon[0].style.left = "-20vh"; // 추가하기 아이콘 숨기기
@@ -125,9 +127,18 @@ const objectAdd = () => {
         menuArea[0].style.display = "none"; // 메뉴 사용 환경(반투명 배경) 비활성화
 
         pre[0].style.opacity = "30%"; // 이전 버튼 비활성화
-        if(Object.keys(objectTemplate).length <= maxObject) next[0].style.opacity = "30%"; // 다음 버튼 비활성화
         page = 0; // 첫 페이지
-        objectList(); // 오브젝트 이미지 로드
+
+        const conn = new XMLHttpRequest();
+        conn.open("POST", "/getObject/template");
+        conn.onload = () => {
+            if(conn.status == 200){
+                objectTemplate = JSON.parse(conn.responseText);
+                if(Object.keys(objectTemplate).length <= maxObject) next[0].style.opacity = "30%"; // 다음 버튼 비활성화
+                objectList(); // 오브젝트 이미지 로드
+            }
+        }
+        conn.send();
     }
     else {
         addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
@@ -251,13 +262,33 @@ const editMode = () => {
         editView[0].style.display = "none"; // 편집 모드 화면 숨기기
     }
 }
+
+function dataURLtoFile(dataurl, filename) {
+    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while(n--){
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, {type:mime});
+}
 // 블로그 썸네일 변경 최종 확인
 const thumbnailChangeComplete = () => {
-    alert("블로그 썸네일 변경이 완료되었습니다.");
-    editIcon[0].style.left = "0vh"; // 편집 모드 버튼 비활성화
-    menuArea[0].style.display = "none"; // 메뉴 사용 환경(반투명 배경) 비활성화
-    changeThumbnailView[0].style.display = "none"; // 썸네일 변경 이미지 확인 창 비활성화
+    const conn = new XMLHttpRequest();
+    conn.open('POST', '/thumbnail/upload');
 
+    conn.onload = () => {
+        if(conn.status == 200)
+            alert("블로그 썸네일 변경이 완료되었습니다.");
+        editIcon[0].style.left = "0vh"; // 편집 모드 버튼 비활성화
+        menuArea[0].style.display = "none"; // 메뉴 사용 환경(반투명 배경) 비활성화
+        changeThumbnailView[0].style.display = "none"; // 썸네일 변경 이미지 확인 창 비활성화
+    }
+    const imageTag = document.querySelector('.change-thumbnail-image');
+    
+    const payload = new FormData();
+    console.log(imageTag.src);
+    payload.append('image', dataURLtoFile(imageTag.src, "image"));
+    conn.send(payload);
 }
 // 블로그 썸네일 변경 취소
 const thumbnailChangeCancle = () => {

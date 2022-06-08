@@ -3,15 +3,23 @@ const listDiv = document.getElementById("blogList");
 
 const myBlogButton = document.getElementById("myBlogBtn");
 
+document.getElementById("searchKeyword").addEventListener("keypress", (e) => {
+    if(e.key == "Enter") {
+        e.preventDefault();
+
+        search();
+    }
+})
+
 myBlogButton.addEventListener('click', (e) => {
-    window.location.href="/blog/myblog";
+    window.location.href="/blog/my";
 })
 
 function setBlogList(obj) {
     for(let v of obj) {
         const tempDom = document.createElement("div");
         tempDom.setAttribute("class", "blogItem");
-        tempDom.innerHTML = `<img width="200" height="200">
+        tempDom.innerHTML = `<img width="200" height="200" src="/thumbnail/raw/${v.thums_path}">
         <div class='blogText'><span>${v.blogname}</span> <span class="smallText">${v.nickname}</span></div>`
         tempDom.querySelector("img").setAttribute('onclick', `goBlog(${v.blog_id})`);
         tempDom.querySelector("img").setAttribute('class', `btns`);
@@ -68,6 +76,8 @@ function search() {
 
     const searchTitle = document.querySelector("#headLine");
     searchTitle.innerHTML = `${searchKeyword} 검색한 결과입니다`;
+
+    document.querySelectorAll('.tabs')[0].dispatchEvent(new Event('click'));
 }
 
 function addAnimationListener() {
@@ -79,7 +89,8 @@ window.onload = () => {
     addAnimationListener();
 
     const tabList = document.querySelectorAll('.tabs');
-    const contentsList = document.querySelectorAll('.searchContents')
+    const contentsList = document.querySelectorAll('.searchContents');
+    const searchIn = document.getElementById("searchKeyword");
 
     tabList.forEach((x) => {
         x.addEventListener('click', (e) => {
@@ -94,7 +105,60 @@ window.onload = () => {
 
             x.classList.add('tabOn');
             const targetSelector = x.getAttribute("href");
-            document.querySelector(targetSelector).style.display = "flex";
+            const targetDom = document.querySelector(targetSelector);
+            targetDom.style.display = "flex";
+
+            targetDom.innerHTML = "";
+
+            const conn = new XMLHttpRequest();
+            conn.open("POST", `/search/${x.getAttribute('name')}`);
+            conn.setRequestHeader("Content-Type", "application/json");
+            conn.onload = () => {
+                const res = JSON.parse(conn.responseText);
+                if(res.msg) {
+                    alert(res.msg);
+                    return;
+                }
+                console.log(res.rows);
+                
+                if(x.getAttribute('name') == 'post') {
+                    for(let v of res.rows) {
+                        const tempDom = document.createElement("div");
+                        const tempHeaderDom = document.createElement("div");
+                        tempHeaderDom.setAttribute('class', 'postHeader');
+                        tempHeaderDom.innerHTML = `<h2>${v.title}</h2>
+                        <span>${v.blogname}</span>`;
+                        tempDom.appendChild(tempHeaderDom);
+                        
+                        const bodyDiv = document.createElement("div");
+                        bodyDiv.innerText = parsePlainText(v.body);
+                        tempDom.appendChild(bodyDiv);
+                        targetDom.appendChild(tempDom);
+                    }
+                } else {
+                    for(let v of res.rows) {
+                        const tempDom = document.createElement("div");
+                        tempDom.setAttribute("class", "blogItem");
+                        tempDom.innerHTML = `<img width="200" height="200">
+                        <div class='blogText'><span>${v.blogname}</span> <span class="smallText">${v.nickname}</span></div>`
+                        tempDom.querySelector("img").setAttribute('onclick', `goBlog(${v.blog_id})`);
+                        tempDom.querySelector("img").setAttribute('class', `btns`);
+                        targetDom.appendChild(tempDom);
+                    }
+                }
+            }
+
+            conn.send(JSON.stringify({searchText: searchIn.value}));
         })
     });
+}
+
+function parsePlainText(obj) {
+    let resultStr = "";
+    for(let v of JSON.parse(obj).ops) {
+        if(v.insert instanceof Object) continue;
+        resultStr += v.insert;
+    }
+
+    return resultStr;
 }

@@ -8,7 +8,6 @@ const path = require('path');
 //const three = require('three');
 const dt = require('../controller/decode.jwt.js');
 
-
 const redirectWithMsg = require('../controller/redirectWithMsg.js');
 
 // 내 블로그 
@@ -27,7 +26,6 @@ router.get('/myblog', (req, res) => {
 
 
 router.get('/test', (req, res) => {
-    
     return res.sendFile(path.join(__dirname,'../../client/public/mainblog', 'mainblog.html'));
 });
 
@@ -68,11 +66,20 @@ router.get('/:id', (req, res) => {
             expires.setHours(expires.getHours()+24);
             return res.status(200).cookie('object_list',object_list,{expires : expires}).redirect('http://localhost:8000/client/public/mainblog/mainblog.html');
     })
-})
+});
 
-// router.get('/', (req, res ) => {
-  
-// });
+router.post('/place', (req, res) => {
+    const placeQuery = "SELECT * FROM users WHERE username = $1";
+    const updateQuery = "UPDATE users SET body = $1 WHERE username = $2";
+
+    dt.decodeTokenPromise(req).then((decode) => {   
+        client.query(placeQuery, [decode.userData.username], (err, userRows) => {
+            client.query(updateQuery, )
+        })
+    }).catch((e) => {
+        return res.status(404).send()
+    });
+});
 
 
 module.exports = router;

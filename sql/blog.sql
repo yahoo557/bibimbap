@@ -20,7 +20,7 @@ CREATE TABLE "public"."blog" (
     "object_list" _varchar,
     "user_id" int4 NOT NULL,
     "thums_path" varchar(255),
-    CONSTRAINT "fk_user" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON UPDATE CASCADE,
+    CONSTRAINT "fk_user" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE CASCADE,
     PRIMARY KEY ("blog_id")
 );
 

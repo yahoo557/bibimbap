@@ -22,12 +22,11 @@ verifyToken = (req, res, next) => {
     }
 
     jwt.verify(token, config.secret, (err, decoded) => {
-    if (err) {
-        return res.status(419).send({
-        message: "Unauthenticate"
-        });
-    }
-    next();
+        if (err) {
+            return redirectWithMsg(res, 419, {msg: "잘못된 토큰입니다.", redirect: "/"});
+        }
+        res.locals.decode = decoded;
+        next();
     });
 };
 
