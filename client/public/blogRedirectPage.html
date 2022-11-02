@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>블로그 - 놀다가</title>
+</head>
+<body>
+
+    <script>
+        const urlParam = new URL(location.href).searchParams;
+        if(!urlParam.has('user_id')) {
+            location.href = '/404'
+        }
+        const user_id = urlParam.get('user_id');
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', `/api/account/getUsername/${user_id}`);
+        xhr.onload = () => {
+            if(xhr.status == 200) {
+                const result = JSON.parse(xhr.response);
+                location.href = `/blog/${result.username}`;
+            }
+        }
+        xhr.send()
+    </script>
+</body>
+</html>
