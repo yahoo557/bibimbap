@@ -130,7 +130,7 @@ const objectAdd = () => {
         page = 0; // 첫 페이지
 
         const conn = new XMLHttpRequest();
-        conn.open("POST", "/getObject/template");
+        conn.open("POST", "/api/object/getTemplate");
         conn.onload = () => {
             if(conn.status == 200){
                 objectTemplate = JSON.parse(conn.responseText);
