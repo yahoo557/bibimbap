@@ -274,7 +274,7 @@ function dataURLtoFile(dataurl, filename) {
 // 블로그 썸네일 변경 최종 확인
 const thumbnailChangeComplete = () => {
     const conn = new XMLHttpRequest();
-    conn.open('POST', '/thumbnail/upload');
+    conn.open('POST', '/api/image/thumbnail/uploadThumbnail');
 
     conn.onload = () => {
         if(conn.status == 200)

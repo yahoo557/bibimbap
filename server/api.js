@@ -6,7 +6,8 @@ const routers = [
     ['/account', './router/account/account.js'],
     ['/blog', './router/blog/blog.js'],
     ['/object', './router/object/object.js'],
-    ['/post', './router/post/post.js']
+    ['/post', './router/post/post.js'],
+    ['/image', './router/image/image.js']
 ]
 
 routers.forEach(k => {

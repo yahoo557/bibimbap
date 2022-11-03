@@ -19,7 +19,7 @@ function setBlogList(obj) {
     for(let v of obj) {
         const tempDom = document.createElement("div");
         tempDom.setAttribute("class", "blogItem");
-        tempDom.innerHTML = `<img width="200" height="200" src="/thumbnail/raw/${v.thums_path}">
+        tempDom.innerHTML = `<img width="200" height="200" src="/api/image/thumbnail/getThumbnail/${v.thums_path}">
         <div class='blogText'><span>${v.blogname}</span> <span class="smallText">${v.nickname}</span></div>`
         tempDom.querySelector("img").setAttribute('onclick', `goBlog(${v.user_id})`);
         tempDom.querySelector("img").setAttribute('class', `btns`);
