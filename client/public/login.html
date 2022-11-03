@@ -8,29 +8,32 @@
 
     <link rel="stylesheet" href="/static/css/noldaga.css">
     <link rel="stylesheet" href="/static/css/login.css">
+
+    <script src="/static/js/noldaga.js"></script>
 </head>
 <body>
     <article>
-        <form id="loginForm" action="/api/account/login" method ="POST" enctype="application/x-www-form-urlencoded">
-        <div>
-            <img width="400" src="/static/images/noldaga_logo_large.png">
-        </div>
-        <div id="loginDiv">
-            <div id="insideLogin">
-                <div>
-                    <input type="text" class="roundCorner noBorder" name="userID" id="userID" placeholder="아이디" required>
-                    <div class="flex-newLine"></div>
-                    <input type="password" class="roundCorner noBorder" name="userPassword" id="userPassword" placeholder="비밀번호" required>
+        <div id="loginForm">
+            <div>
+                <img width="400" src="/static/images/noldaga_logo_large.png">
+            </div>
+            <div id="loginDiv">
+                <div id="insideLogin">
+                    <div>
+                        <input type="text" class="roundCorner noBorder" name="userID" id="userID" placeholder="아이디" required>
+                        <div class="flex-newLine"></div>
+                        <input type="password" class="roundCorner noBorder" name="userPassword" id="userPassword" placeholder="비밀번호" required>
+                    </div>
+                    <div>
+                        <button id="loginBtn" class="roundCorner noBorder">로그인</button>
+                    </div>
                 </div>
-                <div>
-                    <button id="loginBtn" type="submit" class="roundCorner noBorder">로그인</button>
+                <div id="errorMessage"></div>
+                <div id="accBtns">
+                    <a href="/resetPassword">PW 찾기</a> | <a href="/signup">회원가입</a>
                 </div>
             </div>
-            <div id="accBtns">
-                <a href="/resetPassword">PW 찾기</a> | <a href="/signup">회원가입</a>
-            </div>
         </div>
-    </form>
     </article>
     <script src="/static/js/login.js"></script>
     <footer></footer>

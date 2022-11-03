@@ -10,5 +10,6 @@ router.use('/getUserInfo', require('./getUserInfo.js'));
 router.use('/changeUserInfo', require('./changeUserInfo.js'));
 router.use('/register', require('./register.js'));
 router.use('/getRandomUsername', require('./getRandomUsername.js'));
+router.use('/withdraw', require('./withrdraw.js'));
 
 module.exports = router;

@@ -10,7 +10,7 @@ document.getElementById("applyBtn").addEventListener('click', (e) => {
     if(!confirm("탈퇴하시겠습니까?")) return;
 
     const conn = new XMLHttpRequest();
-    conn.open("POST", "/withdraw");
+    conn.open("POST", "/api/account/withdraw");
     conn.setRequestHeader("Content-Type", "application/json");
 
     conn.onload = () => {

@@ -6,8 +6,6 @@ const jwt = require("jsonwebtoken");
 const secret_key = require("../../config/auth.config.js");
 const client = require("../../config/db.config.js"); // DB 연결
 
-const redirectWithMsg = require("../../controller/redirectWithMsg.js");
-
 // router.get('/', (req, res ) => {
 //     dt.decodeTokenPromise(req).then((decode) => {
 //         return redirectWithMsg(res, 418, {msg: "이미 로그인되어 있습니다.", redirect: "/"});
@@ -45,18 +43,18 @@ router.post('/', (req, res) => {
             const expires = new Date();
             expires.setHours(expires.getHours()+24);
 
-            return res.status(200).cookie('accessToken' ,token ,{expires : expires}).cookie('user', rows.rows[0].nickname, {expires : expires}).redirect(redirectURL);
+            return res.status(200).cookie('accessToken' ,token ,{expires : expires}).cookie('user', rows.rows[0].nickname, {expires : expires}).send();
 
           });
       }
       else {
         //에러 발생시 404 에러코드와 메세지 호출
-        return redirectWithMsg(res, 401, {msg : "등록되지 않은 아이디이거나, 비밀번호가 잘못되었습니다.", redirect: "/login"});
+        return res.status(404).send({msg : "등록되지 않은 아이디이거나, 비밀번호가 잘못되었습니다.", redirect: "/login"});
       }
     }
     else {
       //에러 발생시 404 에러코드와 메세지 호출
-      return redirectWithMsg(res, 401, {msg : "등록되지 않은 아이디이거나, 비밀번호가 잘못되었습니다.", redirect: "/login"});
+      return res.status(404).send({msg : "등록되지 않은 아이디이거나, 비밀번호가 잘못되었습니다.", redirect: "/login"});
     }
     });
 });
