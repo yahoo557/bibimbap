@@ -36,7 +36,7 @@ formButtons[0].addEventListener('click', (e) => {
         inputTags[i].setAttribute('readonly', true);
 
         const conn = new XMLHttpRequest();
-        conn.open("POST", "/duplicateCheck/username");
+        conn.open("POST", "/api/account/duplicateCheck/username");
         conn.setRequestHeader("Content-Type", "application/json");
 
         conn.onload = () => {
@@ -143,7 +143,7 @@ formButtons[1].addEventListener('click', (e) => {
         inputTags[i].setAttribute('readonly', true);
 
         const conn = new XMLHttpRequest();
-        conn.open("POST", "/duplicateCheck/nickname");
+        conn.open("POST", "/api/account/duplicateCheck/nickname");
         conn.setRequestHeader("Content-Type", "application/json");
 
         conn.onload = () => {
@@ -205,7 +205,7 @@ formButtons[2].addEventListener('click', (e) => {
         inputTags[i].setAttribute('readonly', true);
 
         const conn = new XMLHttpRequest();
-        conn.open("POST", "/duplicateCheck/blogname");
+        conn.open("POST", "/api/account/duplicateCheck/blogname");
         conn.setRequestHeader("Content-Type", "application/json");
 
         conn.onload = () => {

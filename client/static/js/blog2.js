@@ -76,6 +76,9 @@ window.onload = () => {
         getBlogData(blog_id).then((innerResult) => {
             innerResult = JSON.parse(innerResult);
             console.log(innerResult);
+
+            document.querySelector('title').innerText = `${innerResult.blogname} - 놀다가`;
+
             const divBlogName = document.getElementsByClassName('blog-name');
             const divBlogOwner = document.getElementsByClassName('blog-owner');
             divBlogName[0].innerText = innerResult.blogname;

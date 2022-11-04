@@ -8,7 +8,10 @@ const xhrPromise = (method, url, data) => {
        }
        xhr.onload = () => {
            if(xhr.status >= 200 && xhr.status < 300) {
-               resolve(JSON.parse(xhr.response));
+               if(xhr.response)
+                   resolve(JSON.parse(xhr.response));
+               else
+                   resolve();
            } else {
                reject(JSON.parse(xhr.response));
            }

@@ -61,6 +61,11 @@ article {
     text-align: right;
 }
 
+#errorMessage {
+    text-align: center;
+    color: red;
+}
+
 .roundCorner {
     border-radius: 7px;
 }

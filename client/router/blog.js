@@ -10,9 +10,15 @@ const parseCookie = str =>
         return acc;
     }, {});
 
-router.get('/', (req,res) => {
-    return res.status(200).sendFile(path.join(__dirname, '../public', 'blogRedirectPage.html'));
-})
+router.get('/random', (req, res) => {
+    axios.post(`http://${req.hostname}/api/account/getRandomUsername`).then(axiosRes => {
+        return res.status(200).redirect(`/blog/${axiosRes.data.username}`)
+    }).catch(ar => {
+        console.log(ar);
+        return res.status(404).send();
+    });
+});
+
 
 router.get('/my', (req, res) => {
     const cookie = parseCookie(req.headers.cookie);
@@ -26,7 +32,7 @@ router.get('/my', (req, res) => {
 })
 
 router.get('/:username', (req, res) => {
-    axios.post('http://localhost/api/blog/getBlogIDFromUsername', {
+    axios.post(`http://${req.hostname}/api/blog/getBlogIDFromUsername`, {
         username: req.params.username
     }).then((axiosRes) => {
         if(!axiosRes.data.hasOwnProperty("blog_id")) {
@@ -43,6 +49,11 @@ router.get('/:username', (req, res) => {
     }).catch((axiosReason) =>{
         return res.status(404).send();
     });
+});
+
+
+router.get('/', (req,res) => {
+    return res.status(200).sendFile(path.join(__dirname, '../public', 'blogRedirectPage.html'));
 });
 
 //
