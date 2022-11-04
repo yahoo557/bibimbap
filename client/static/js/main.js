@@ -109,7 +109,7 @@ function setSearchFunctions() {
             targetDom.innerHTML = "";
 
             const conn = new XMLHttpRequest();
-            conn.open("POST", `/search/${x.getAttribute('name')}`);
+            conn.open("POST", `/api/search/${x.getAttribute('name')}`);
             conn.setRequestHeader("Content-Type", "application/json");
             conn.onload = () => {
                 const res = JSON.parse(conn.responseText);
@@ -139,8 +139,11 @@ function setSearchFunctions() {
                         tempDom.setAttribute("class", "blogItem");
                         tempDom.innerHTML = `<img width="200" height="200">
                         <div class='blogText'><span>${v.blogname}</span> <span class="smallText">${v.nickname}</span></div>`
-                        tempDom.querySelector("img").setAttribute('onclick', `goBlog(${v.blog_id})`);
-                        tempDom.querySelector("img").setAttribute('class', `btns`);
+
+                        const imageTag = tempDom.querySelector("img");
+                        imageTag.setAttribute('onclick', `goBlog(${v.blog_id})`);
+                        imageTag.setAttribute('class', `btns`);
+                        imageTag.setAttribute('src', `/api/image/thumbnail/getThumbnail/${v.thums_path}`);
                         targetDom.appendChild(tempDom);
                     }
                 }

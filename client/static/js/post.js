@@ -81,21 +81,21 @@ function imageHandler() {
     qEditor.disable();
 
     const conn = new XMLHttpRequest();
-    conn.open('POST', '/image/upload');
+    conn.open('POST', '/api/image/uploadImage');
 
     conn.onreadystatechange = () => {
         if(conn.readyState == XMLHttpRequest.DONE) {
             const res = JSON.parse(conn.responseText);
             switch(conn.status) {
                 case 200:
-                    qEditor.insertEmbed(qEditor.getSelection().index, 'image', `/image/raw/${res.id}`);
+                    qEditor.insertEmbed(qEditor.getSelection().index, 'image', `/api/image/${res.id}`);
                     break;
                 default:
                     alert(res.msg);
                     break;
             }
             qEditor.enable();
-            titleInput.setAttribute('readonly', false);
+            titleInput.removeAttribute('readonly');
         }
     }
 
