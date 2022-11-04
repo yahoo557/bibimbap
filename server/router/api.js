@@ -3,11 +3,12 @@ const router = express.Router();
 
 // router 정리 [url, requireRouter]
 const routers = [
-    ['/account', './router/account/account.js'],
-    ['/blog', './router/blog/blog.js'],
-    ['/object', './router/object/object.js'],
-    ['/post', './router/post/post.js'],
-    ['/image', './router/image/image.js']
+    ['/account', './account/account.js'],
+    ['/blog', './blog/blog.js'],
+    ['/object', './object/object.js'],
+    ['/post', './post/post.js'],
+    ['/image', './image/image.js'],
+    ['/search', './search/search.js']
 ]
 
 routers.forEach(k => {

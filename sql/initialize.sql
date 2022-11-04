@@ -58,6 +58,7 @@ CREATE TABLE "public"."image" (
     "img_path" varchar(255) NOT NULL,
     "img_size" int4,
     "user_id" int4,
+    "post_id" int4,
     CONSTRAINT "fk_users" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE CASCADE,
     PRIMARY KEY ("image_id")
 );

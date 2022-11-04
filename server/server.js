@@ -9,7 +9,7 @@ app.use(express.urlencoded({extended: true}));
 
 //app.use("/static", express.static("static"));
 
-app.use("/api", require("./api.js"));
+app.use("/api", require("./router/api.js"));
 
 app.listen(port, () => {
   console.log(`[Server] - Listening on ${port}`);
