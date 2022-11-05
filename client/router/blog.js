@@ -27,7 +27,8 @@ router.get('/my', (req, res) => {
         .send(`<script>alert("로그인이 필요합니다.");location.href="/login?redirect="+encodeURIComponent(location.pathname)</script>`);
 
     const rawPayload = cookie.accessToken.split('.')[1];
-    const payload = JSON.parse(decodeURI(atob(rawPayload)));
+    const decoded = Buffer.from(rawPayload, 'base64').toString();
+    const payload = JSON.parse(decodeURI(decoded));
     return res.status(200).redirect(`/blog/${payload.username}`);
 })
 

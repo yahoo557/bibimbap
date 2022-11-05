@@ -11,5 +11,6 @@ router.use('/changeUserInfo', require('./changeUserInfo.js'));
 router.use('/register', require('./register.js'));
 router.use('/getRandomUsername', require('./getRandomUsername.js'));
 router.use('/withdraw', require('./withrdraw.js'));
+router.use('/resetPassword', require('./resetPassword.js'));
 
 module.exports = router;

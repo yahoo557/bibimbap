@@ -19,7 +19,8 @@ const staticPageArray = [
     ["/logout", "logout.html"],
     ["/register", "register.html"],
     ["/userInfo", "userInfo.html"],
-    ["/withdraw", "withdraw.html"]
+    ["/withdraw", "withdraw.html"],
+    ["/resetPassword", "resetPassword.html"]
 ];
 
 staticPageArray.forEach((e) => {
