@@ -1,5 +1,5 @@
 {
-  "name": "Noldaga",
+  "name": "noldaga",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
@@ -12,6 +12,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "atob": "^2.1.2",
     "axios": "^1.1.3",
     "bcrypt": "^5.0.1",
     "ejs": "^3.1.7",
