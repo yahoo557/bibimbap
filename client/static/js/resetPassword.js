@@ -4,7 +4,7 @@ formElement.addEventListener('submit', (e) => {
     
     const formData = new FormData(formElement);
     const conn = new XMLHttpRequest();
-    conn.open("POST", "/resetPassword");
+    conn.open("POST", "/api/account/resetPassword");
 
     conn.onreadystatechange = () => {
         if(conn.readyState == XMLHttpRequest.DONE) {
