@@ -5,6 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "cd server&& npx nodemon -w .. server",
+    "client": "cd client&& npx nodemon -w .. client",
     "start": "npm run server"
   },
   "author": "",
