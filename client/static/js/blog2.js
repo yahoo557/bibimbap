@@ -29,6 +29,7 @@ const setLoginButtons = () => {
         return;
     }
     loginButton.parentNode.removeChild(loginButton);
+
 }
 
 const xhrPromise = (method, url, body) => {
