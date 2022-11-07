@@ -10,3 +10,5 @@ CREATE TABLE "public"."image" (
     PRIMARY KEY ("image_id")
 );
 
+
+
