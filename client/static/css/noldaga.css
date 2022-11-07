@@ -1,0 +1,27 @@
+@font-face {
+    font-family: 'Cafe24SsurroundAir';
+    src: url('/static/fonts/Cafe24SsurroundAir.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'nanum-gothic';
+    src: url('/static/fonts/NanumGothic.ttf') format('truetype');
+    src: url('/static/fonts/NanumGothic.otf') format('opentype');
+}
+
+body * {
+    font-family: Cafe24SsurroundAir;
+}
+
+.btns {
+    text-align: center;
+    cursor: pointer;
+}
+
+.headerLogo {
+    margin: 10px;
+}
+
+button {
+    cursor: pointer;
+}

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/mainblog.css">
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "/static/lib/three.js-master/build/three.module.js"
+            }
+        }
+    </script>
+    <!--js파일이 모듈타입으로 추가됨 -> three.js파일을 모듈로 받기 위해-->
+    <!--defer : 이 페이지가 모두 로딩된 이후에 js파일을 실행-->
+    <script type="module" src="/static/js/mainblog.js" defer></script>
+    <script src="/static/js/blog2.js" defer></script>
+    <title></title>
+    <!-- bootstrap icon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+</head>
+<body>
+    <span id="blog-id" hidden></span>
+    <!-- three.js 공간 -->
+    <div id="webgl-container"></div>
+    <!-- Pointer Lock 되었을 때 중심 -->
+    <i class="bi bi-plus target-pointer"></i>
+    <!-- 메뉴 사용 환경 -->
+    <div class="menu-area"></div>
+    <!-- 오브젝트 클릭 시 게시물 열람 -->
+    
+    <div class="object-post-view">
+        <div class="close-post" onclick="closePost()">닫기</div>
+        <iframe class = "iframe-post"  src=''></iframe>
+    </div>
+    <!-- 메뉴 열고 닫기 버튼 -->
+    <div class="menu-button">
+        <i class="bi bi-list" onclick="showMenu()"></i>
+        <i class="bi bi-x bi-x-menu" onclick="closeMenu()"></i>
+    </div>
+    <!-- 메뉴바 -->
+    <nav class="menu-bar">
+        <img class="logo-icon" src="/static/images/logo.png" onclick="window.location.href = '/'">
+        <div class="login-button">로그인</div> <!-- 로그아웃 상태일 때 -->
+        <div class="logout-button">로그아웃</div> <!-- 로그인 상태일 때 -->
+        <div class="blog-info">
+            <div class="blog-name">Name</div>
+            <div class="blog-owner">Owner</div>
+        </div>
+        <i class="bi bi-box" onclick="objectAdd()"></i> <!-- 오브젝트 추가 -->
+        <i class="bi bi-tools" onclick="editMode()"></i> <!-- 편집 모드-->
+        <i class="bi bi-file-text" onclick="postList()"></i> <!-- 게시물 리스트 -->
+        <div class="bottom-menu">
+            <i class="bi bi-search"></i> <!-- 검색-->
+            <i class="bi bi-shuffle"></i> <!-- 랜덤 방문 -->
+        </div>
+    </nav>
+
+    <!-- 오브젝트 추가 -->
+    <section class="object-add">
+        <div class="object-list"> <!-- 오브젝트 선택 리스트 -->
+            <i class="bi bi-caret-left-fill object-list-left" onclick="prePage()"></i> <!-- 이전 목록으로 -->
+            <img class="object-thumbnail" src="">
+            <img class="object-thumbnail" src="">
+            <img class="object-thumbnail" src="">
+            <img class="object-thumbnail" src="">
+            <i class="bi bi-caret-right-fill object-list-right"  onclick="nextPage()"></i> <!-- 다음 목록으로 -->
+        </div>
+        <div class="select-complete">완료</div>
+        <div class="select-cancle">취소</div>
+        <div class="list-show">
+            <i class="bi bi-caret-down-fill" onclick="closeObjectList()"></i> <!-- 오브젝트 리스트 닫기 -->
+            <i class="bi bi-caret-up-fill" onclick="openObjectList()"></i> <!-- 오브젝트 리스트 열기-->
+        </div>
+        <i class="bi bi-arrow-clockwise"></i> <!-- 오브젝트 우방향 회전 -->
+        <i class="bi bi-arrow-counterclockwise"></i> <!-- 오브젝트 좌방향 회전 -->
+    </section>
+    <!-- 게시물 작성 또는 연결 선택 페이지 -->
+    <section class="post-write-or-link">
+        <div class="post-write-or-link-title">물건 배치하기</div>
+        <div class="post-pass-button">건너뛰기</div> <!-- 건너뛰기: 오브젝트 배치 정보만 DB에 저장 -->
+        <div class="post-write-or-link-choice">
+            <div class="post-write-choice"> <!-- 게시물 작성 선택 -->
+                <img class="post-write-icon" src="/static/images/post-write-icon.png">
+                <div class="post-write-comment">새롭게 게시물을 작성하려면?</div>
+                <div class="post-write-button" onclick="postWrite()">게시물 작성하기</div>
+            </div>
+            <div class="half-line"></div> <!-- 구분선 -->
+            <div class="post-link-choice"> <!-- 게시물 연결 선택 -->
+                <img class="post-link-icon" src="/static/images/post-link-icon.png">
+                <div class="post-link-comment">기존의 게시물을 연결하려면?</div>
+                <div class="post-link-button" onclick="postLink()">게시물 연결하기</div>
+            </div>
+        </div>
+    </section>
+    <!-- 게시물 작성 페이지 -->
+    <section class="post-write-view">
+        <div class="post-write-title">글쓰기</div>
+        
+    </section>
+    <!-- 게시물 연결 페이지 -->
+    <section class="post-link-view">
+        <div class="post-link-title">게시물 연결하기</div>
+        <div class="post-link-complete-button"> 연결 완료</div> <!-- 완료: 오브젝트 배치 정보 + 게시물 연결 정보 DB에 저장 -->
+        <div class="post-link-frame">
+            <div class="post-link-image-frame">
+                <div class="post-link-image-comment">연결할 물건 :</div>
+                <img class="post-link-image" src="">
+            </div>
+            <div class="link-post-list-view"> <!-- 연결할 게시물 목록 -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 편집 모드 -->
+    <section class="edit-mode">
+        <div class="object-edit-buttons">
+            <i class="bi bi-x-lg object-delete"></i> <!-- 오브젝트 삭제 버튼 -->
+            <i class="bi bi-arrows-move"></i> <!-- 오브젝트 이동 버튼 -->
+            <i class="bi bi-arrow-left-right"></i> <!-- 오브젝트 변경 버튼 -->
+        </div>
+        <div class="object-move-complete">이동 완료</div>
+
+        <div class="capture-button"> <!-- 썸네일 촬영 버튼 -->
+            <i class="bi bi-camera-fill"></i>
+            <div class="capture-text">썸네일 촬영하기</div>
+        </div>
+    </section>
+    <!-- 오브젝트 삭제 확인 -->
+    <section class="remove-object">
+        <div class="remove-object-title">물건 삭제하기</div>
+        <img class="remove-object-image" src="">
+        <div class="remove-object-comment">이 물건을 삭제할까요?</div>
+        <i class="bi bi-x bi-x-object"></i>
+        <i class="bi bi-check-lg object-thumbnail-check"></i>
+    </section>
+    <!-- 오브젝트 변경을 위한 오브젝트 리스트 -->
+    <div class="object-change-view">
+        <div class="change-object-list"> <!-- 오브젝트 선택 리스트 -->
+            <i class="bi bi-caret-left-fill change-list-left" onclick="prePage()"></i> <!-- 이전 목록으로 -->
+            <img class="object-change-thumbnail" src="">
+            <img class="object-change-thumbnail" src="">
+            <img class="object-change-thumbnail" src="">
+            <img class="object-change-thumbnail" src="">
+            <i class="bi bi-caret-right-fill change-list-right"  onclick="nextPage()"></i> <!-- 다음 목록으로 -->
+        </div>
+        <div class="change-complete">완료</div>
+    </div>
+    <!-- 썸네일 변경 확인창 -->
+    <section class="change-thumbnail">
+        <div class="change-thumbnail-title">썸네일 변경</div>
+        <img class="change-thumbnail-image" src="">
+        <div class="change-thumbnail-comment">썸네일을 위 사진으로 변경할까요?</div>
+        <i class="bi bi-x bi-x-thumbnail" onclick="thumbnailChangeCancle()"></i>
+        <i class="bi bi-check-lg thumbnail-change-check" onclick="thumbnailChangeComplete()"></i>
+    </section>
+
+    <!-- 게시물 리스트 -->
+    <div class="post-list">
+        <div class="post-list-page-title">게시물 리스트</div>
+        <div class="post-list-frame"></div>
+    </div>
+</body>
+<script src="/static/js/menubar.js"></script>
+</html>

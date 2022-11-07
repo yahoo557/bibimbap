@@ -17,12 +17,15 @@ const parseCookie = str =>
 var cookie = document.cookie;
 
 // 해당 블로그의 오브젝트 리스트, 이것을 반복문 돌려서 각 오브젝트들을 렌더
-var object_list = parseCookie(cookie).object_list.split(":")[1].slice(1,-1).replace(/\"/g, "").split(",");
+let object_list = parseCookie(cookie).object_list.split(":")[1].slice(1,-1).replace(/\"/g, "").split(",");
+console.log(object_list);
+let object_info = [];
+let object_scene = [];
 const gltfloader = new GLTFLoader();
 const getObject = (function(id){
     const xhr = new XMLHttpRequest();
     const method = "get";
-    const targetURL = "http://localhost:8000/getObjectByid/"+id;
+    const targetURL = "http://localhost/api/object/getObjectByID/"+id;
     xhr.open(method, targetURL);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () =>{
@@ -30,7 +33,8 @@ const getObject = (function(id){
         gltfloader.load(
             JSON.parse(xhr.response).path,
             ( gltf ) => {
-                const root = gltf.scene; 
+                const root = gltf.scene;
+                object_scene.push(root);
                 group.add(root);
                 objParentTransform.push( root );
                 var objectPosi = JSON.parse(xhr.response).data.model_position;
@@ -41,24 +45,27 @@ const getObject = (function(id){
                 setObjectName( root, id );
             }
         );
-        
+
+        const infoBody = JSON.parse(xhr.response);
+        object_info[infoBody.data.object_id] = infoBody;
     }
     xhr.send();
 });
 
-object_list.forEach(element => {
-    if(!element) return;
-    getObject(element);
-});
-    
-        
+function initBlogObjects() {
+    object_list.forEach(element => {
+        if(!element) return;
+        getObject(element);
+    });
+}
+
    
 // const objectAssign = {'as1': { 'template_id': 'ob1',  'model_position': [0, -2, 3],  'model_rotation': 0,  'post_id': 'po2' },
 //                     'as2': { 'template_id': 'ob4',  'model_position': [2, 1, 4.9],  'model_rotation': 2,  'post_id': null },
 //                     'as3': { 'template_id': 'ob3',  'model_position': [-2, -1.1, 3],  'model_rotation': 2,  'post_id': 'po1' }};
 
 // 오브젝트 템플릿 파일 => 오브젝트 id : { 'model_path': 오브젝트 파일 경로, 'thumbnail_path': 오브젝트 썸네일 파일 경로, 'placementLocation' : 배치 가능한 위치('floor': 바닥, wall: 벽, ceiling: 천장)}
-let objectTemplate //= {'ob1': {'model_path': '../../object_files/Old_Bicycle.glb', 'thumbnail_path': '../../object_thumbnail/Old_Bicycle.png', 'placementLocation': 'floor'},
+let objectTemplate; //= {'ob1': {'model_path': '../../object_files/Old_Bicycle.glb', 'thumbnail_path': '../../object_thumbnail/Old_Bicycle.png', 'placementLocation': 'floor'},
 //                     'ob2': {'model_path': '../../object_files/Plants_on_table.gltf', 'thumbnail_path': '../../object_thumbnail/Plants_on_table.png', 'placementLocation': 'floor'},
 //                     'ob3': {'model_path': '../../object_files/Evita_chandelier.gltf', 'thumbnail_path': '../../object_thumbnail/Evita_chandelier.png', 'placementLocation': 'ceiling'},
 //                     'ob4': {'model_path': '../../object_files/angle_clock.glb', 'thumbnail_path': '../../object_thumbnail/angle_clock.png', 'placementLocation': 'wall'}};
@@ -72,7 +79,7 @@ const Constants = {
         "FOV": 50,
         "Speed" : 50
     }
-}
+};
 let objParentTransform = [];
 let controls, raycaster;
 let moveForward = false;
@@ -122,6 +129,11 @@ setupLight(); //Ligth 설정
 setupModel(); //3차원 Model 설정
 resize();
 animate();
+
+// window.onload = () => {
+    initBlogObjects();
+    initTemplates();
+// }
 
 
 // renderer랑 camera는 창 크기가 바뀔 때마다 그 크기에 맞게 재정의 되어야 함
@@ -723,7 +735,8 @@ function setupCamera() {
                 // console.log(INTERSECTED.name);
                 const id = INTERSECTED.name; // 클릭한 오브젝트의 db 아이디
                 // // const id = 1 // 클릭한 오브젝트의 아이디
-                getPost(id);
+                getPost(object_info[id].data.post_id);
+
                 unSelectObjectGroup( group, INTERSECTED.name); // 오브젝트 선택 해제
             }
             // 편집 모드가 활성화 되어있는 동안 = 오브젝트 편집 기능
@@ -957,17 +970,6 @@ let prePosition = []; // 배치 위치
 let preRotation = 0; // 배치 방향 - 0: 정면, 1: 좌측: 2: 뒤, 3: 우측
 
 // 오브젝트 썸네일 클릭
-window.onload = () => {
-    const conn = new XMLHttpRequest();
-    conn.open('POST', '/getObject/template');
-    conn.onload = () => {
-        if(conn.status == 200) {
-            objectTemplate = JSON.parse(conn.responseText);
-        }
-        onloadCallback();
-    }
-    conn.send();
-}
 
 function onloadCallback() {
     for(let i = 0; i < 4; i++) { // 한 페이지에 오브젝트 썸네일 4개
@@ -1114,19 +1116,21 @@ const objectAndPostLink = () => {
 
 const sendObjectData = (post_id) => {
     const conn = new XMLHttpRequest();
-    conn.open('POST', '/blog/place');
+    conn.open('POST', '/api/object/placeObject');
     conn.setRequestHeader('Content-Type', 'application/json');
     const payload = {
         model_path: objectTemplate[key].model_path,
         model_rotation: preRotation,
         model_position: prePosition,
         post_id: post_id,
-        blog_id: window.location.pathname.split('/')[2],
+        username: window.location.pathname.split('/')[2],
         template_id: objectTemplate[key].template_id
     }
     console.log(payload);
     conn.onload = () => {
-        
+        const objId = parseInt(conn.response);
+        object_list.push(objId);
+        getObject(objId);
     }
 
     conn.send(JSON.stringify(payload));
@@ -1156,9 +1160,20 @@ removeObjectButton[0].addEventListener('click', () => {
         const removeObjectImage = document.getElementsByClassName("remove-object-image");
         
         removeObjectKey = objectEditButtons[0].classList.item(1);
-        const removeObjectTempleteId = objectAssign[removeObjectKey]['template_id'];
-        const removeObjectTumbnailUrl = objectTemplate[removeObjectTempleteId]['thumbnail_path'];
-        removeObjectImage[0].src = removeObjectTumbnailUrl;
+        const removeObjectTemplateId = object_info[removeObjectKey]['data']['template_id'];
+
+        let templateIndex = -1;
+        for(let i = 0;i < objectTemplate.length;i++) {
+            if(removeObjectTemplateId == objectTemplate[i].template_id) {
+                templateIndex = i;
+                break;
+            }
+        }
+        console.log(object_list, object_info, objectTemplate);
+        console.log(templateIndex);
+
+        const removeObjectThumbnailUrl = objectTemplate[templateIndex]['thumbnail_path'];
+        removeObjectImage[0].src = removeObjectThumbnailUrl;
 
         const removeObject = document.getElementsByClassName("remove-object");
 
@@ -1190,6 +1205,7 @@ objectDeleteComplete[0].addEventListener('click', () => {
     unSelectObjectGroup( group, INTERSECTED.name); //선택 해제
     INTERSECTED = null;
     console.log("삭제할 object_id: "+ objectEditButtons[0].classList.item(1));
+    objectDeletePost(objectEditButtons[0].classList.item(1));
     objectEditButtons[0].classList.remove(objectEditButtons[0].classList.item(1)); // 이전에 추가한 object_id를 class 명에서 삭제
 
     alert("오브젝트 삭제가 완료되었습니다.");
@@ -1368,6 +1384,7 @@ thumbnailButton[0].addEventListener('click', async () => {
         menuArea[0].style.display = "block";
     });
 });
+
 const saveBlob = (function() {
     const a = document.createElement('a');
     document.body.appendChild(a);
@@ -1393,21 +1410,58 @@ const XMLrequest = (function() {
 
 // 클릭시 게시글 가져오기
 const getPost = (function(id) {
-    const xhr = new XMLHttpRequest();
-    const method = "get";
-    const targetURL = "http://localhost:8000/getPostByObject/"+id;
-    xhr.open(method, targetURL)
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onload = () =>{
-        objectPostView[0].children[1].src = `http://localhost:8000/viewpost/${JSON.parse(xhr.response).post_id}`;
-    };
-    xhr.send();
-    
+    objectPostView[0].children[1].src = `http://localhost/post/read?id=${id}`;
+    // const xhr = new XMLHttpRequest();
+    // const method = "get";
+    // const targetURL = `http://localhost/post/read?id=${id}`;
+    // xhr.open(method, targetURL)
+    // xhr.setRequestHeader("Content-Type", "application/json");
+    // xhr.onload = () =>{
+    //     objectPostView[0].children[1].src = `http://localhost:8000/viewpost/${JSON.parse(xhr.response).post_id}`;
+    // };
+    // xhr.send();
 });
 
 
+// ---- Add by NamHyeok Kim
+
+function getObjectInfo(objID){
+    const xhr = new XMLHttpRequest();
+    const method = "get"
+    const targetURL = "/getObjectById/"
+}
+
+function initTemplates() {
+    const conn = new XMLHttpRequest();
+    conn.open('POST', '/api/object/getTemplate');
+    conn.onload = () => {
+        if(conn.status == 200) {
+            objectTemplate = JSON.parse(conn.responseText);
+        }
+        onloadCallback();
+    }
+    conn.send();
+}
 
 
+function objectDeletePost(targetID) {
+    console.log(targetID);
+    const conn = new XMLHttpRequest();
+    conn.open('POST', '/api/object/deleteObject');
+    conn.setRequestHeader("Content-Type", "application/json");
+    conn.onload = () => {
+        if(conn.status == 200) {
+            const idx = object_list.indexOf(targetID);
+            object_scene[idx].parent.remove(object_scene[idx]);
+            object_scene.splice(idx, 1);
+            object_list.splice(idx, 1);
+        }
+    };
+    conn.send(JSON.stringify({objectID: targetID}));
+}
             
-
+async function getObjectList() {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/blog/')
+}
 
