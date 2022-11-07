@@ -828,7 +828,7 @@ function drawRay() {
 function cameraMovement(deltaTime) {
     let camVec = new THREE.Vector3();
     camera.getWorldDirection(camVec);
-    camVec.y = 0;
+    camVec.y = 0; // 높이는 고정
     camVec.normalize();
 
     const dirZ = boolToInt(moveForward) - boolToInt(moveBackward);
@@ -836,15 +836,23 @@ function cameraMovement(deltaTime) {
     
     let camVecLeft = new THREE.Vector3();
     camVecLeft.copy(camVec);
-    camVec.multiplyScalar(dirZ);
+    camVec.multiplyScalar(dirZ); // 앞뒤
     
     let temp = camVecLeft.x;
     camVecLeft.x = camVecLeft.z;
     camVecLeft.z = -1 * temp;
-    camVecLeft.multiplyScalar(dirX);
+    camVecLeft.multiplyScalar(dirX); // 좌우
 
     camVec.add(camVecLeft);
     camVec.normalize();
+
+    // 벽 통과 막기
+    // 이동하기 전에 카메라 위치가 벽 범위를 넘어가는 좌표에 해당되면 이동하지 않도록
+    const checkX = camera.position.x + camVec.x * deltaTime * Constants.Camera.Speed;
+    const checkZ = camera.position.z + camVec.z * deltaTime * Constants.Camera.Speed;
+    if(checkX >= 3.5 || checkX <= -3.5) camVec.x = 0;
+    if(checkZ >= 5.0 || checkZ <= -5.0) camVec.z = 0;
+
     camera.position.add(camVec.multiplyScalar(deltaTime * Constants.Camera.Speed));
 }
 

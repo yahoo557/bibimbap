@@ -17,7 +17,7 @@
 /* 폰트 */
 @font-face {
     font-family: 'Cafe24SsurroundAir';
-    src: url('../../fonts/Cafe24SsurroundAir.ttf') format('truetype');
+    src: url('/static/fonts/Cafe24SsurroundAir.ttf') format('truetype');
 }
 
 * {
