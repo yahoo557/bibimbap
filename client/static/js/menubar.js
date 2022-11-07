@@ -83,6 +83,10 @@ const showMenu = () => {
     closeIcon[0].style.display = "block"; // 닫기 아이콘 보이기
     menuBar[0].style.left = "0vw"; // 메뉴 바 보이기
 
+    addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
+    editIcon[0].style.left = "0vh"; // 편집 모드 버튼 비활성화
+    listIcon[0].style.left = "0vh"; // 게시물 리스트 버튼 비활성화
+
     // blogNameText[0].innerHTML = blogInfo["blogName"];
     // blogOwnerText[0].innerHTML = blogInfo["blogOwner"];
 
@@ -116,33 +120,51 @@ const maxObject = 4; // 한 페이지에 최대로 배치될 수 있는 썸네�
 // 오브젝트 추가
 const objectAdd = () => {
     if(addIcon[0].style.left == "0vh") {
-        addIcon[0].style.left = "15vh"; // 오브젝트 추가 버튼 활성화
-        addView[0].style.display = "block"; // 오브젝트 추가 화면 보이기
-        openObjectList(); // 오브젝트 리스트 열기
-
-        editIcon[0].style.left = "0vh"; // 편집 모드 버튼 비활성화
-        editView[0].style.display = "none"; // 편집 모드 화면 숨기기
-        listIcon[0].style.left = "0vh"; // 게시물 리스트 버튼 비활성화
-        postListView[0].style.display = "none"; // 게시물 리스트 화면 비활성화
-        menuArea[0].style.display = "none"; // 메뉴 사용 환경(반투명 배경) 비활성화
-
-        pre[0].style.opacity = "30%"; // 이전 버튼 비활성화
-        page = 0; // 첫 페이지
-
-        const conn = new XMLHttpRequest();
-        conn.open("POST", "/api/object/getTemplate");
-        conn.onload = () => {
-            if(conn.status == 200){
-                objectTemplate = JSON.parse(conn.responseText);
-                if(Object.keys(objectTemplate).length <= maxObject) next[0].style.opacity = "30%"; // 다음 버튼 비활성화
-                objectList(); // 오브젝트 이미지 로드
+        // '오브젝트 편집' 또는 '게시물 리스트' 기능을 사용 중인 경우 해당 기능 종료 후 사용하라는 안내 문구
+        if(editIcon[0].style.left != "0vh") {
+            // 편집할 오브젝트를 선택하지 않은 경우 => 버튼 재클릭으로 기능 종료 가능
+            if(objectEditButtons[0].style.opacity == 0.5) {
+                alert("오브젝트 편집 기능 종료 후 다른 기능을 사용할 수 있습니다.\n(오브젝트 편집 버튼 재클릭 시 종료)")
+            }
+            // 편집할 오브젝트를 선택한 경우 = 편집 기능을 이용 중인 경우
+            else {
+                alert("오브젝트 편집 완료 후 다른 기능을 사용할 수 있습니다.");
             }
         }
-        conn.send();
+        else if(listIcon[0].style.left != "0vh") {
+            alert("게시물 리스트 기능 종료 후 다른 기능을 사용할 수 있습니다.\n(게시물 리스트 버튼 재클릭 시 종료)");
+        }
+        else {
+            addIcon[0].style.left = "15vh"; // 오브젝트 추가 버튼 활성화
+            addView[0].style.display = "block"; // 오브젝트 추가 화면 보이기
+            openObjectList(); // 오브젝트 리스트 열기
+
+            editIcon[0].style.left = "0vh"; // 편집 모드 버튼 비활성화
+            editView[0].style.display = "none"; // 편집 모드 화면 숨기기
+            listIcon[0].style.left = "0vh"; // 게시물 리스트 버튼 비활성화
+            postListView[0].style.display = "none"; // 게시물 리스트 화면 비활성화
+            menuArea[0].style.display = "none"; // 메뉴 사용 환경(반투명 배경) 비활성화
+
+            pre[0].style.opacity = "30%"; // 이전 버튼 비활성화
+            page = 0; // 첫 페이지
+
+            const conn = new XMLHttpRequest();
+            conn.open("POST", "/api/object/getTemplate");
+            conn.onload = () => {
+                if(conn.status == 200){
+                    objectTemplate = JSON.parse(conn.responseText);
+                    if(Object.keys(objectTemplate).length <= maxObject) next[0].style.opacity = "30%"; // 다음 버튼 비활성화
+                    objectList(); // 오브젝트 이미지 로드
+                }
+            }
+            conn.send();
+        }
     }
+    // '오브젝트 추가' 버튼 활성화된 상태에서 클릭
     else {
-        addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
-        addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
+        alert("기능 사용 완료 혹은 취소 버튼을 통해 종료할 수 있습니다.");
+        //addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
+        //addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
     }
 }
 // 이전 버튼
@@ -246,20 +268,34 @@ const linkPostList = () => {
 // 편집 모드
 const editMode = () => {
     if(editIcon[0].style.left == "0vh") {
-        editIcon[0].style.left = "15vh"; // 편집 모드 버튼 활성화
-        editView[0].style.display = "block"; // 편집 모드 화면 보이기
-        objectEditButtons[0].style.opacity = "50%"; // 편집 모드 삭제, 이동, 변경 버튼 비활성화
-        objectMoveComplete[0].style.display = "none"; // 편집 모드 이동 완료 버튼 숨기기
+        // '오브젝트 추가' 또는 '게시물 리스트' 기능을 사용 중인 경우 해당 기능 종료 후 사용하라는 안내 문구
+        if(addIcon[0].style.left != "0vh") {
+            alert("오브젝트 추가 기능 완료 또는 취소 후 다른 기능을 사용할 수 있습니다.");
+        }
+        else if(listIcon[0].style.left != "0vh") {
+            alert("게시물 리스트 기능 종료 후 다른 기능을 사용할 수 있습니다.\n(게시물 리스트 버튼 재클릭 시 종료)");
+        }
+        else {
+            editIcon[0].style.left = "15vh"; // 편집 모드 버튼 활성화
+            editView[0].style.display = "block"; // 편집 모드 화면 보이기
+            objectEditButtons[0].style.opacity = "50%"; // 편집 모드 삭제, 이동, 변경 버튼 비활성화
+            objectMoveComplete[0].style.display = "none"; // 편집 모드 이동 완료 버튼 숨기기
 
-        addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
-        addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
-        listIcon[0].style.left = "0vh"; // 게시물 리스트 버튼 비활성화
-        postListView[0].style.display = "none"; // 게시물 리스트 화면 비활성화
-        menuArea[0].style.display = "none"; // 메뉴 사용 환경(반투명 배경) 비활성화
+            addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
+            addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
+            listIcon[0].style.left = "0vh"; // 게시물 리스트 버튼 비활성화
+            postListView[0].style.display = "none"; // 게시물 리스트 화면 비활성화
+            menuArea[0].style.display = "none"; // 메뉴 사용 환경(반투명 배경) 비활성화
+        }
     }
-    else {
+    // 편집 모드가 활성화되어 있으나 편집할 오브젝트를 선택하지 않은 경우, 버튼 재클릭으로 기능 종료 가능
+    else if(objectEditButtons[0].style.opacity == 0.5) {
         editIcon[0].style.left = "0vh"; // 편집 모드 버튼 비활성화
         editView[0].style.display = "none"; // 편집 모드 화면 숨기기
+    }
+    // 편집할 오브젝트를 선택한 상태에서 종료하려고 할 경우
+    else{
+        alert("오브젝트 편집을 완료하지 않고 기능을 종료할 수 없습니다.");
     }
 }
 
@@ -301,16 +337,34 @@ const thumbnailChangeCancle = () => {
 // 게시물 리스트
 const postList = () => {
     if(listIcon[0].style.left == "0vh") {
-        listIcon[0].style.left = "15vh"; // 게시물 리스트 버튼 활성화
-        postListView[0].style.display = "block"; // 게시물 리스트 화면 활성화
-        menuArea[0].style.display = "block"; // 메뉴 사용 환경(반투명 배경) 활성화
-        postListLoad();
+        // '오브젝트 추가' 또는 '오브젝트 편집' 기능을 사용 중인 경우 해당 기능 종료 후 사용하라는 안내 문구
+        if(addIcon[0].style.left != "0vh") {
+            alert("오브젝트 추가 기능 완료 또는 취소 후 다른 기능을 사용할 수 있습니다.");
+        }
+        else if(editIcon[0].style.left != "0vh") {
+            // 편집할 오브젝트를 선택하지 않은 경우 => 버튼 재클릭으로 기능 종료 가능
+            if(objectEditButtons[0].style.opacity == 0.5) {
+                alert("오브젝트 편집 기능 종료 후 다른 기능을 사용할 수 있습니다.\n(오브젝트 편집 버튼 재클릭 시 종료)")
+            }
+            // 편집할 오브젝트를 선택한 경우 = 편집 기능을 이용 중인 경우
+            else {
+                alert("오브젝트 편집 완료 후 다른 기능을 사용할 수 있습니다.");
+            }
+        }
+        else {
+            listIcon[0].style.left = "15vh"; // 게시물 리스트 버튼 활성화
+            postListView[0].style.display = "block"; // 게시물 리스트 화면 활성화
+            menuArea[0].style.display = "block"; // 메뉴 사용 환경(반투명 배경) 활성화
+            postListLoad();
 
-        addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
-        addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
-        editIcon[0].style.left = "0vh"; // 편집 모드 버튼 비활성화
-        editView[0].style.display = "none"; // 편집 모드 화면 숨기기
+            addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
+            addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
+            editIcon[0].style.left = "0vh"; // 편집 모드 버튼 비활성화
+            editView[0].style.display = "none"; // 편집 모드 화면 숨기기
+    
+        }
     }
+    // 버튼 재클릭 시 기능 종료
     else {
         listIcon[0].style.left = "0vh"; // 게시물 리스트 버튼 비활성화
         postListView[0].style.display = "none"; // 게시물 리스트 화면 비활성화
