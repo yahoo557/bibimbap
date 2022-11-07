@@ -13,24 +13,6 @@ router.post('/:id', (req, res) => {
     })
 });
 
-router.get("/list/:id", (req, res) => {
-    const blog_id = req.params.id;
-    const text = 'SELECT * FROM post Where user_id = (SELECT user_id From blog WHERE blog_id = $1);'
-    
-    client.query(text, [blog_id], (err, rows) => {
-        if(err) return res.status(404).send({msg: "데이터베이스 오류 - Block 1"})
-        
-        else {
-            //쿼리 결과가 있다면
-            if(rows.rows.length){
-                return res.status(200).json(rows.rows);
-            }
-            else{
-                return res.status(200).json({msg:"null"})
-            }
-            
-        }
-    })
-});
+
 
 module.exports = router;

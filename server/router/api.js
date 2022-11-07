@@ -19,4 +19,7 @@ router.post("/", (req, res) => {
     return res.status(200).send("hello");
 });
 
+router.get("/get", (req, res)=>{
+    return res.status(200).json("api test");
+})
 module.exports = router;

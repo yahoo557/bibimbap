@@ -5,7 +5,7 @@ const client = require('../../config/db.config.js');
 const dt = require('../../controller/decode.jwt.js');
 
 
-router.get('/delete/:id', (req, res)=>{
+router.get('/:id', (req, res)=>{
     const checkId = "SELECT a.* FROM post AS a INNER JOIN users AS b ON a.user_id = b.user_id AND a.post_id = $1 AND b.username= $2";
     const deleteQuery = "DELETE from post where post_id = $1"
     dt.decodeTokenPromise(req).then((decode) => {
