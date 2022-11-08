@@ -1,0 +1,11 @@
+Model Information:
+* title:	Wall Frame Paspatur
+* source:	https://sketchfab.com/3d-models/wall-frame-paspatur-18c4283aedea4c318dfb02765dd27ea3
+* author:	Pedro França (https://sketchfab.com/pedrofbfranca)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Wall Frame Paspatur" (https://sketchfab.com/3d-models/wall-frame-paspatur-18c4283aedea4c318dfb02765dd27ea3) by Pedro França (https://sketchfab.com/pedrofbfranca) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

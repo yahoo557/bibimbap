@@ -1,0 +1,11 @@
+Model Information:
+* title:	Painting In A Frame
+* source:	https://sketchfab.com/3d-models/painting-in-a-frame-54a72a5212d142f0b73b1d6d356b756c
+* author:	Cyborrooster (https://sketchfab.com/Cyborrooster)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Painting In A Frame" (https://sketchfab.com/3d-models/painting-in-a-frame-54a72a5212d142f0b73b1d6d356b756c) by Cyborrooster (https://sketchfab.com/Cyborrooster) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)

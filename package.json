@@ -1,19 +1,22 @@
 {
-  "name": "Noldaga",
+  "name": "noldaga",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "cd server&& npx nodemon -w . server",
     "client": "cd client&& npx nodemon -w . client",
-    "start": "npm run server"
+    "start": "npm run server",
+    "dev": "concurrently \"npm run server \" \"npm run client\" "
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "atob": "^2.1.2",
     "axios": "^1.1.3",
     "bcrypt": "^5.0.1",
+    "concurrently": "^7.5.0",
     "ejs": "^3.1.7",
     "express": "^4.18.1",
     "fs": "^0.0.1-security",
