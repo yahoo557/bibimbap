@@ -1,0 +1,12 @@
+version: '3.9'
+services:
+  noldaga-db:
+    build: ./DB-Docker
+    ports:
+      - "5432:5432"
+    volumes:
+      - ~/postgres-data:/var/lib/postgresql/data
+  noldaga:
+    build: .
+    ports:
+      - "80:80"

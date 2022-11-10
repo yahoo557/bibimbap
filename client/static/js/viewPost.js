@@ -46,6 +46,14 @@ function setPostData(e) {
     const ctDiv = document.getElementById("createdTime");
 
     titleDiv.innerText = data.title;
-    ctDiv.innerText = data.timestamp;
+    ctDiv.innerText = dateFormating(new Date(data.timestamp));
     qViewer.setContents(JSON.parse(decodeURI(data.body)));
+}
+
+const dateFormating = (date) => {
+    const dateString = date.toISOString().split('T');
+    const ymd = dateString[0].replaceAll('-', '.');
+    const hms = dateString[1].split('.')[0];
+
+    return `${ymd} ${hms}`;
 }

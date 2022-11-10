@@ -1,9 +1,9 @@
 -- 놀다가 DB 초기 설정 SQL
 
-CREATE USER bibimbap PASSWORD 'bi1234';
+CREATE USER bibimbap PASSWORD 'bi1234' SUPERUSER;
 CREATE DATABASE noldaga OWNER bibimbap;
 
-USE noldaga;
+\c noldaga bibimbap
 
 CREATE SEQUENCE IF NOT EXISTS users_id_seq;
 
@@ -72,8 +72,8 @@ CREATE SEQUENCE IF NOT EXISTS object_template_template_id_seq;
 
 CREATE TABLE "public"."object_template" (
     "template_id" int4 NOT NULL DEFAULT nextval('object_template_template_id_seq'::regclass),
-    "model_path" varchar(50) NOT NULL,
-    "thumbnail_path" varchar(50) NOT NULL,
+    "model_path" varchar NOT NULL,
+    "thumbnail_path" varchar NOT NULL,
     "placement_location" varchar(20) NOT NULL,
     PRIMARY KEY ("template_id")
 );
@@ -85,7 +85,7 @@ CREATE SEQUENCE IF NOT EXISTS object_post_id_seq;
 
 CREATE TABLE "public"."object" (
     "object_id" int4 NOT NULL DEFAULT nextval('object_object_id_seq'::regclass),
-    "model_path" varchar(50) NOT NULL,
+    "model_path" varchar NOT NULL,
     "model_rotation" int4 NOT NULL,
     "model_position" _float8 NOT NULL,
     "create_date" timestamptz,

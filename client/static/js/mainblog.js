@@ -732,6 +732,7 @@ function setupCamera() {
                 menuArea[0].style.display = "block"; // 메뉴 사용 환경 활성화
                 objectPostView[0].style.display = "block"; // 게시물 열람 화면 활성화
                 objectPostView[0].children[1].style.display = "block"; // iframe 활성화
+                objectPostViewFrame[0].style.display = "block";
                 // console.log(INTERSECTED.name);
                 const id = INTERSECTED.name; // 클릭한 오브젝트의 db 아이디
                 // // const id = 1 // 클릭한 오브젝트의 아이디
@@ -959,6 +960,7 @@ function unSelectObjectGroup( selectObjects, key ) {
 
 // 오브젝트 선택 + 게시물 열람
 const targetPointer = document.getElementsByClassName("target-pointer"); // pointer lock 가운데 표시
+const objectPostViewFrame = document.getElementsByClassName("object-post-view-frame");
 const objectPostView = document.getElementsByClassName("object-post-view"); // 오브젝트 선택 시 보이는 게시물 열람 화면
 
 // 배치하고 싶은 오브젝트 선택 시

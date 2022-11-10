@@ -7,6 +7,7 @@ const menuBar = document.getElementsByClassName("menu-bar");
 const menuArea = document.getElementsByClassName("menu-area");
 
 // 오브젝트 선택 시 보이는 게시물 뷰
+const objectPostViewFrame = document.getElementsByClassName("object-post-view-frame");
 const objectPostView = document.getElementsByClassName("object-post-view");
 const closePostButton = document.getElementsByClassName("close-post");
 
@@ -74,7 +75,8 @@ const postListField = document.getElementsByClassName("post-list-frame");
 // 오브젝트 선택 시 보이는 게시물 뷰 닫기
 const closePost = () => {
     menuArea[0].style.display = "none"; // 메뉴 사용 환경(반투명 배경) 비활성화
-    objectPostView[0].style.display = "none"; // 게시물 뷰 숨기기
+    //objectPostView[0].style.display = "none"; // 게시물 뷰 숨기기
+    objectPostViewFrame[0].style.display = "none";
 }
 
 // 메뉴바 보이기
@@ -236,7 +238,7 @@ const postWrite = () => {
 const postLink = () => {
     postWriteOrLink[0].style.display = "none"; // 게시물 작성 또는 연결 선택 페이지 비활성화
     postLinkView[0].style.display = "block"; // 게시물 연결 페이지 활성화
-    linkPostList(); // 연결할 게시물 리스트 가져오기
+    //linkPostList(); // 연결할 게시물 리스트 가져오기
 }
 
 // 연결할 게시물 리스트 가져오기
@@ -355,7 +357,7 @@ const postList = () => {
             listIcon[0].style.left = "15vh"; // 게시물 리스트 버튼 활성화
             postListView[0].style.display = "block"; // 게시물 리스트 화면 활성화
             menuArea[0].style.display = "block"; // 메뉴 사용 환경(반투명 배경) 활성화
-            postListLoad();
+            //postListLoad();
 
             addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
             addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기
