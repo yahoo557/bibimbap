@@ -8,6 +8,78 @@ import { DragControls } from "../lib/three.js-master/examples/jsm/controls/DragC
 // 배치 정보 => 배치 id : { 'template_id': 오브젝트id,  'model_position': 오브젝트 위치,  'objectRotaion': 오브젝트 방향,  'post_id': 게시물id}
 // object.name에 배치id 적을 것
 
+//div요소를 가져옴
+const divContainer = document.querySelector("#webgl-container");
+//divContainer를 클래스 필드로 지정하는 이유는 divContainer를 this._divContainer로 다른 메소드에서 참조하기 위함
+
+const loadingManager = new THREE.LoadingManager();
+
+loadingManager.onStart = function ( url, itemsLoaded, itemsTotal ) {
+
+    console.log("onStart");
+	LoadingWithMask();
+
+};
+
+loadingManager.onLoad = function ( ) {
+
+	closeLoadingWithMask();
+
+};
+
+
+loadingManager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
+
+	// console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
+
+};
+
+loadingManager.onError = function ( url ) {
+
+	// console.log( 'There was an error loading ' + url );
+
+};
+
+function LoadingWithMask() {
+    var maskHeight = $(document).height();
+    var maskWidth  = window.document.body.clientWidth;
+
+    var loadingImg = '';
+
+    loadingImg += "<div id='mask' style='position:absolute; z-index:125000; background-color:#000000; display:none; left:0; top:0;'>";
+    loadingImg += " <img id='loadingImg' src='http://localhost/static/images/LoadingImg.gif' style='position: relative; display: block; margin: 0px auto;'/>";
+    loadingImg += "</div>";  
+  
+    //화면에 레이어 추가
+    $('body')
+        // .append(mask)
+        .append(loadingImg)
+        
+    //마스크의 높이와 너비를 화면 것으로 만들어 전체 화면을 채웁니다.
+    $('#loadingImg').css({
+        'width' : maskWidth
+        , 'height': maskHeight
+        // , 'opacity' : '0.3'
+}); 
+    $('#mask').css({
+            'width' : maskWidth
+            , 'height': maskHeight
+            // , 'opacity' : '0.3'
+    }); 
+  
+    //마스크 표시
+    $('#mask').show();   
+  
+    //로딩중 이미지 표시
+    $('#loadingImg').show();
+
+}
+function closeLoadingWithMask() {
+    $('#mask, #loadingImg').hide();
+    $('#mask, #loadingImg').remove();  
+}
+
+
 // 블로그로 이동하면 cookie에 블로그 오브젝트 리스트를 저장하고 main.html을 로드함
 const parseCookie = str => 
             str.split(';').map(v => v.split('=')).reduce((acc, v) => {
@@ -106,9 +178,6 @@ const direction = new THREE.Vector3();
 
 let prevTime = performance.now();
 
-//div요소를 가져옴
-const divContainer = document.querySelector("#webgl-container");
-//divContainer를 클래스 필드로 지정하는 이유는 divContainer를 this._divContainer로 다른 메소드에서 참조하기 위함
 
 //Renderer 생성
 //생성 시 옵션을 줄 수 있음 antialias : 3차원 장면이 렌더링될 때 오브젝트에 계단 현상 없이 표현됨
