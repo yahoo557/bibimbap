@@ -69,7 +69,10 @@ body {
     display: none;
     z-index: 12000;
 
-    margin-left: 16vh; /* 메뉴 바 공간만큼 */
+    /*margin-left: 16vh; !* 메뉴 바 공간만큼 *!*/
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 .close-post {
     display: block;
@@ -885,7 +888,7 @@ body {
     font-size: 5vh;
 }
 /* 게시물 리스트 공간 */
-.post-list-frame {
+.post-list-frame, .post-read-frame, .object-post-view-frame, .post-write-frame {
     display: block;
     position: relative;
     z-index: 12000;
@@ -973,4 +976,30 @@ body {
     position:absolute;
     background-color: white;
     z-index: 9999;
+}
+
+
+/* NH-K Edited */
+
+.iframe-read-post, .iframe-write-post {
+    height: 95%;
+    width: 95%;
+    border: none;
+}
+
+.prev-button {
+    margin-left: 1vh;
+    background-color: var(--bright-red);
+    padding: 0.7vh 1.8vh 0.7vh 1.8vh;
+    border-radius: 3vh;
+
+    font-family: 'Cafe24SsurroundAir';
+    font-size: 2.2vh;
+
+    cursor: pointer; /* 마우스 커서 모양 */
+}
+
+.object-post-view-frame {
+    display: none;
+    margin-left: 20vh;
 }

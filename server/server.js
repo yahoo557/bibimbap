@@ -4,6 +4,16 @@ const port = 8001;
 const express = require("express");
 const app = express();
 
+//Logger
+global.nlogger = require('./winston.js');
+const morgan = require('morgan');
+morgan.token('addr', req => {
+    return req.headers['x-forwarded-for'];
+});
+
+const morganFormat = ':method :url :status :res[content-length] - :response-time ms | From - :addr'
+app.use(morgan(morganFormat, {stream: nlogger.stream}));
+
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
@@ -12,5 +22,5 @@ app.use(express.urlencoded({extended: true}));
 app.use("/api", require("./router/api.js"));
 
 app.listen(port, () => {
-  console.log(`[Server] - Listening on ${port}`);
+    nlogger.info("Server Opened / PORT : " + port);
 });

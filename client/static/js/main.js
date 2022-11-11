@@ -123,13 +123,18 @@ function setSearchFunctions() {
                     for(let v of res.rows) {
                         const tempDom = document.createElement("div");
                         const tempHeaderDom = document.createElement("div");
+
+                        tempDom.setAttribute('class', 'postDiv');
                         tempHeaderDom.setAttribute('class', 'postHeader');
                         tempHeaderDom.innerHTML = `<h2>${v.title}</h2>
                         <span>${v.blogname}</span>`;
                         tempDom.appendChild(tempHeaderDom);
 
                         const bodyDiv = document.createElement("div");
-                        bodyDiv.innerText = parsePlainText(v.body);
+                        bodyDiv.setAttribute('class', 'postText');
+                        const postText = parsePlainText(v.body).trim();
+
+                        bodyDiv.innerText = postText.slice(0, postText.length > 30 ? 30 : postText.length);
                         tempDom.appendChild(bodyDiv);
                         targetDom.appendChild(tempDom);
                     }
