@@ -1083,6 +1083,11 @@ objectLeftRotaionButton[0].addEventListener( 'click', () => {
         preRotation = (preRotation + 1) % 4;
         leftRotaion(selectObject, 'y');
         leftRotaion(objectRange, 'z');
+
+        // 회전하면 x, z 길이 바뀜 - 벽 범위 벗어나는 거 막을 때 체크하려면 값 변경 필요
+        const saveX = objectSize.x;
+        objectSize.x = objectSize.z;
+        objectSize.z = saveX;
     }
 });
 // 좌방향 회전
@@ -1101,6 +1106,11 @@ objectRightRotaionButton[0].addEventListener( 'click', () => {
         preRotation = (preRotation + 3) % 4;
         rightRotaion(selectObject, 'y');
         rightRotaion(objectRange, 'z');
+
+        // 회전하면 x, z 길이 바뀜 - 벽 범위 벗어나는 거 막을 때 체크하려면 값 변경 필요
+        const saveX = objectSize.x;
+        objectSize.x = objectSize.z;
+        objectSize.z = saveX;
     }
 });
 // 오브젝트 좌방향 회전
