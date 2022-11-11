@@ -6,6 +6,7 @@ const app = express(); // 라우터 미들웨어
 const path = require('path');
 
 const { createProxyMiddleware } = require('http-proxy-middleware');
+const proxyTarget = (process.env.NODE_ENV == "docker") ? "host.docker.internal" : "localhost"
 
 //app.use(express.json());
 //app.use(express.urlencoded({extended: true}));
@@ -33,7 +34,7 @@ app.use('/blog', require('./router/blog.js'));
 app.use('/post', require('./router/post.js'));
 
 app.use("/api", createProxyMiddleware({
-    target: 'http://localhost:8001',
+    target: `http://${proxyTarget}:8001`,
     changeOrigin: true
 }));
 

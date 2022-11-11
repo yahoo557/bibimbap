@@ -135,6 +135,15 @@ animate();
     initTemplates();
 // }
 
+// iframe post_id listener
+window.addEventListener('message', e => {
+    if(e.data.code == 1) { // 글 작성 완료
+        objectAndWrittenPostLink(e.data.post_id);
+    } else if(e.data.code == 2) { // 글 수정 완료
+        postEditComplete();
+    }
+});
+
 
 // renderer랑 camera는 창 크기가 바뀔 때마다 그 크기에 맞게 재정의 되어야 함
 // resize이벤트에 resize메소드를 bind를 사용해서 지정 -> resize 안에서 this가 가리키는 객체가 이벤트객체가 아닌 이 앱 클래스의 객체가 되게 하기 위해
@@ -144,7 +153,16 @@ animate();
 // 3차원 그래픽 장면을 만들어주는 메소드
 // requestAnimationFrame(this.render.bind(this));
 
-
+function objectAndWrittenPostLink(post_id) {
+    sendObjectData(post_id);
+    const iframeTag = document.getElementsByClassName("iframe-write-post");
+    iframeTag[0].parentNode.removeChild(iframeTag[0]);
+    const postWriteView = document.getElementsByClassName("post-write-view");
+    postWriteView[0].style.display = "none";
+    menuArea[0].style.display = "none"; // 메뉴 사용 환경 비활성화
+    document.getElementsByClassName('post-link-view')[0].style.display = "none"; // 게시물 연결 페이지 비활성화
+    addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
+}
 
 function setupModel() {
     //정육면체 형상을 정의

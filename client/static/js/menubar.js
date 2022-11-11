@@ -52,9 +52,9 @@ const linkPostListField = document.getElementsByClassName("link-post-list-view")
 
 // 게시물 id : { 'postTitle' : 게시물 제목, 'postDate' : 게시물 작성일 }
 // 날짜 데이터는 받아와서 string으로 바꿔서 저장하는 작업 필요
-const postInfo = { 'po1' : {'postTitle' : '테스트를 해봅시다 1', 'postDate' : '2022.04.06 01:52'}, 'po2' : {'postTitle' : '테스트를 해봅시다 2', 'postDate' : '2022.04.06 14:52'},
+/* const postInfo = { 'po1' : {'postTitle' : '테스트를 해봅시다 1', 'postDate' : '2022.04.06 01:52'}, 'po2' : {'postTitle' : '테스트를 해봅시다 2', 'postDate' : '2022.04.06 14:52'},
                 'po3' : {'postTitle' : '테스트를 해봅시다 3', 'postDate' : '2022.04.07 10:23'}, 'po4' : {'postTitle' : '테스트를 해봅시다 4', 'postDate' : '2022.04.08 03:23'},
-                'po5' : {'postTitle' : '테스트를 해봅시다 5', 'postDate' : '2022.04.09 21:32'}};
+                'po5' : {'postTitle' : '테스트를 해봅시다 5', 'postDate' : '2022.04.09 21:32'}}; */
 
 
 /* 편집 모드 */
@@ -233,38 +233,51 @@ const openObjectList = () => {
 const postWrite = () => {
     postWriteOrLink[0].style.display = "none"; // 게시물 작성 또는 연결 선택 페이지 비활성화
     postWriteView[0].style.display = "block"; // 게시물 작성 페이지 활성화
+
+    const postWriteFrame = document.getElementsByClassName("post-write-frame");
+    const iframeTag = document.createElement('iframe');
+    iframeTag.setAttribute('src', '/post/write?attach=true');
+    iframeTag.setAttribute('class', 'iframe-write-post');
+    postWriteFrame[0].appendChild(iframeTag);
 }
+
+
+
 // 게시물 연결
 const postLink = () => {
     postWriteOrLink[0].style.display = "none"; // 게시물 작성 또는 연결 선택 페이지 비활성화
     postLinkView[0].style.display = "block"; // 게시물 연결 페이지 활성화
-    //linkPostList(); // 연결할 게시물 리스트 가져오기
+    linkPostList(); // 연결할 게시물 리스트 가져오기
 }
 
 // 연결할 게시물 리스트 가져오기
 const linkPostList = () => {
-    const postListLen = Object.keys(postInfo).length; // 게시물 개수
-    let checkRadio = "checked";
-    for(let i = 0; i < postListLen; i++) {
-        const postId = Object.keys(postInfo)[i]; // 게시물
-        const postTextTitle = "<div class='post-text-title'>" + postInfo[postId]['postTitle'] + "</div>"; // 게시물 제목
-        const postTextDate = "<div class='post-text-date'>" + "작성일 : " + postInfo[postId]['postDate'] + "</div>"; // 게시물 작성일자
-        const postText = "<div class='post-text'>" + postTextTitle + postTextDate + "</div>"; // 게시물 제목 + 게시물 작성일자
-        if(i != 0) checkRadio = ""; // 첫 번째 게시물에 radio checked를 하기 위해
-        const postDiv = document.createElement('div'); // div 태그 생성
-        postDiv.setAttribute('class', 'post-text-div'); // div 태그 class명 지정
-        // radio 태그, label 태그 내용 작성
-        const radioTag = "<input class='post-text-radio' type='radio' id='" + postId + "' name='postListRadio' value='" + postId + "' " + checkRadio + ">";
-        let labelTag = "<label class='post-text-label'>" + radioTag + postText + "</label>";
+    const idSpan = document.getElementById("blog-id");
+    const blogID = idSpan.innerText;
+    xhrPromise('GET', `/api/post/getPostList/${blogID}`, null).then(postInfo => {
+        const postListLen = Object.keys(postInfo).length; // 게시물 개수
+        let checkRadio = "checked";
+        for(let i = 0; i < postListLen; i++) {
+            const postId = postInfo[i].post_id; // 게시물
+            const postTextTitle = "<div class='post-text-title'>" + postInfo[i]['title'] + "</div>"; // 게시물 제목
+            const postTextDate = "<div class='post-text-date'>" + "작성일 : " + dateFormating(postInfo[i]['timestamp']) + "</div>"; // 게시물 작성일자
+            const postText = "<div class='post-text'>" + postTextTitle + postTextDate + "</div>"; // 게시물 제목 + 게시물 작성일자
+            if(i != 0) checkRadio = ""; // 첫 번째 게시물에 radio checked를 하기 위해
+            const postDiv = document.createElement('div'); // div 태그 생성
+            postDiv.setAttribute('class', 'post-text-div'); // div 태그 class명 지정
+            // radio 태그, label 태그 내용 작성
+            const radioTag = "<input class='post-text-radio' type='radio' id='" + postId + "' name='postListRadio' value='" + postId + "' " + checkRadio + ">";
+            let labelTag = "<label class='post-text-label'>" + radioTag + postText + "</label>";
 
-        if(i != postListLen-1) { // 마지막 게시물이 아닌 경우
-            const hrTag = "<hr class='post-text-hr'>"; // hr 태그
-            labelTag += hrTag; // label 태그 뒤에 hr 태그 추가
+            if(i != postListLen-1) { // 마지막 게시물이 아닌 경우
+                const hrTag = "<hr class='post-text-hr'>"; // hr 태그
+                labelTag += hrTag; // label 태그 뒤에 hr 태그 추가
+            }
+
+            postDiv.innerHTML = labelTag; // div 태그에 <label><radio></label> 추가
+            linkPostListField[0].appendChild(postDiv); // 리스트에 div 태그 삽입
         }
-
-        postDiv.innerHTML = labelTag; // div 태그에 <label><radio></label> 추가
-        linkPostListField[0].appendChild(postDiv); // 리스트에 div 태그 삽입
-    }
+    })
 }
 
 // 편집 모드

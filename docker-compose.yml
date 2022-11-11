@@ -1,7 +1,7 @@
-version: '3.9'
+version: '3.3'
 services:
   noldaga-db:
-    build: ./DB-Docker
+    build: DB
     ports:
       - "5432:5432"
     volumes:
@@ -10,3 +10,5 @@ services:
     build: .
     ports:
       - "80:80"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

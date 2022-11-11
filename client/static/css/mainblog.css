@@ -888,7 +888,7 @@ body {
     font-size: 5vh;
 }
 /* 게시물 리스트 공간 */
-.post-list-frame, .post-read-frame, .object-post-view-frame {
+.post-list-frame, .post-read-frame, .object-post-view-frame, .post-write-frame {
     display: block;
     position: relative;
     z-index: 12000;
@@ -981,7 +981,7 @@ body {
 
 /* NH-K Edited */
 
-.iframe-read-post {
+.iframe-read-post, .iframe-write-post {
     height: 95%;
     width: 95%;
     border: none;
