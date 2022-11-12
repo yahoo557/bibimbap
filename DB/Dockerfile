@@ -8,5 +8,4 @@ ENV LANG=ko_KR.utf8 \
     POSTGRES_PASSWORD=!bibimbap1234
 
 COPY ./initialize.sql /docker-entrypoint-initdb.d/
-
 EXPOSE 5432

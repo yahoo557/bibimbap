@@ -3703,3 +3703,28 @@
 [35m2022-11-11 19:39:29|[HTTP]: POST /api/post/getPostData/4 200 200 - 5.520 ms | From - -[39m
 [35m2022-11-11 19:39:31|[HTTP]: POST /api/post/getPostData/0 200 - - 5.281 ms | From - -[39m
 [35m2022-11-11 19:39:33|[HTTP]: POST /api/post/getPostData/5 200 194 - 4.175 ms | From - -[39m
+[32m2022-11-12 00:10:37|[INFO]: Server Opened / PORT : 8001[39m
+[32m2022-11-12 00:21:35|[INFO]: Server Opened / PORT : 8001[39m
+[35m2022-11-12 00:21:40|[HTTP]: POST /api/blog/getBlogList 200 161 - 185.707 ms | From - -[39m
+[35m2022-11-12 00:21:40|[HTTP]: GET /api/image/thumbnail/getThumbnail/image_1668157164667.png 304 - - 3.253 ms | From - -[39m
+[35m2022-11-12 00:21:41|[HTTP]: POST /api/blog/getBlogList 200 161 - 3.958 ms | From - -[39m
+[35m2022-11-12 00:21:41|[HTTP]: GET /api/image/thumbnail/getThumbnail/image_1668157164667.png 304 - - 1.240 ms | From - -[39m
+[35m2022-11-12 00:21:41|[HTTP]: POST /api/account/getUsername/1 200 23 - 5.833 ms | From - -[39m
+[35m2022-11-12 00:21:41|[HTTP]: POST /api/blog/getBlogIDFromUsername 200 13 - 49.282 ms | From - -[39m
+[35m2022-11-12 00:21:41|[HTTP]: POST /api/blog/getBlogData 200 181 - 4.800 ms | From - -[39m
+[35m2022-11-12 00:21:41|[HTTP]: GET /api/object/getObjectByID/1 304 - - 68.350 ms | From - -[39m
+[35m2022-11-12 00:21:41|[HTTP]: GET /api/object/getObjectByID/3 304 - - 70.751 ms | From - -[39m
+[35m2022-11-12 00:21:41|[HTTP]: GET /api/object/getObjectByID/2 304 - - 76.522 ms | From - -[39m
+[35m2022-11-12 00:21:41|[HTTP]: GET /api/object/getObjectByID/4 304 - - 89.619 ms | From - -[39m
+[35m2022-11-12 00:21:41|[HTTP]: GET /api/object/getObjectByID/6 304 - - 92.451 ms | From - -[39m
+[35m2022-11-12 00:21:41|[HTTP]: GET /api/object/getObjectByID/5 304 - - 96.428 ms | From - -[39m
+[35m2022-11-12 00:21:41|[HTTP]: POST /api/object/getTemplate 200 3583 - 17.613 ms | From - -[39m
+[35m2022-11-12 00:21:41|[HTTP]: POST /api/blog/getBlogIDFromUsername 200 13 - 21.056 ms | From - -[39m
+[35m2022-11-12 00:21:41|[HTTP]: GET /api/object/getObjectByID/1 304 - - 46.012 ms | From - -[39m
+[35m2022-11-12 00:21:41|[HTTP]: GET /api/object/getObjectByID/3 304 - - 51.044 ms | From - -[39m
+[35m2022-11-12 00:21:41|[HTTP]: GET /api/object/getObjectByID/2 304 - - 37.827 ms | From - -[39m
+[35m2022-11-12 00:21:42|[HTTP]: GET /api/object/getObjectByID/4 304 - - 37.702 ms | From - -[39m
+[35m2022-11-12 00:21:42|[HTTP]: POST /api/blog/getBlogData 200 181 - 22.057 ms | From - -[39m
+[35m2022-11-12 00:21:42|[HTTP]: GET /api/object/getObjectByID/6 304 - - 65.479 ms | From - -[39m
+[35m2022-11-12 00:21:42|[HTTP]: GET /api/object/getObjectByID/5 304 - - 44.776 ms | From - -[39m
+[35m2022-11-12 00:21:42|[HTTP]: GET /api/post/getPostList/1 200 652 - 27.439 ms | From - -[39m

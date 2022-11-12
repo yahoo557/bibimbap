@@ -25,7 +25,7 @@ const gltfloader = new GLTFLoader();
 const getObject = (function(id){
     const xhr = new XMLHttpRequest();
     const method = "get";
-    const targetURL = "http://localhost/api/object/getObjectByID/"+id;
+    const targetURL = "/api/object/getObjectByID/"+id;
     xhr.open(method, targetURL);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () =>{
@@ -1438,7 +1438,7 @@ const XMLrequest = (function() {
 
 // 클릭시 게시글 가져오기
 const getPost = (function(id) {
-    objectPostView[0].children[1].src = `http://localhost/post/read?id=${id}`;
+    objectPostView[0].children[1].src = `/post/read?id=${id}`;
     // const xhr = new XMLHttpRequest();
     // const method = "get";
     // const targetURL = `http://localhost/post/read?id=${id}`;
