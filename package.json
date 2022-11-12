@@ -22,6 +22,7 @@
     "express": "^4.18.1",
     "fs": "^0.0.1-security",
     "http": "^0.0.1-security",
+    "gltfpack": "^0.18.0",
     "http-proxy-middleware": "^2.0.6",
     "https": "^1.0.0",
     "jsonwebtoken": "^8.5.1",
