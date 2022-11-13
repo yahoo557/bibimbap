@@ -93,7 +93,7 @@ let object_list = parseCookie(cookie).object_list.split(":")[1].slice(1,-1).repl
 console.log(object_list);
 let object_info = [];
 let object_scene = [];
-const gltfloader = new GLTFLoader();
+const gltfloader = new GLTFLoader(loadingManager);
 const getObject = (function(id){
     const xhr = new XMLHttpRequest();
     const method = "get";
@@ -291,7 +291,7 @@ function assignObjectFloor( url ) {
     prePosition[1] = -2;
     prePosition[2] = camera.position.z + lookCamera.z * 4;
 
-    const gltfloader = new GLTFLoader();
+    const gltfloader = new GLTFLoader(loadingManager);
     const dragObject = [];
     gltfloader.load(
         url,
@@ -423,7 +423,7 @@ function assignObjectWall( url ) {
     // 사용자가 보고 있는 방향을 기준으로 오브젝트가 생성되도록
     prePosition[1] = camera.position.y + lookCamera.y * 2 + 2;
 
-    const gltfloader = new GLTFLoader();
+    const gltfloader = new GLTFLoader(loadingManager);
     const dragObject = [];
     
     gltfloader.load(
@@ -610,7 +610,7 @@ function assignObjectCeiling( url ) {
     prePosition[2] = camera.position.z + lookCamera.z * 4;
 
 
-    const gltfloader = new GLTFLoader();
+    const gltfloader = new GLTFLoader(loadingManager);
     const dragObject = [];
     
     gltfloader.load(
@@ -738,7 +738,7 @@ function assignDragCeiling( dragObject ) {
 const changeSelectGroup = new THREE.Group();;
 function loadChangeObject (key, url) {
     changeSelectGroup.clear();
-    const gltfloader = new GLTFLoader();
+    const gltfloader = new GLTFLoader(loadingManager);
 
     gltfloader.load(
         url,
