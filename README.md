@@ -33,15 +33,15 @@ client.connect();
 module.exports = client;
 ```
 
+<hr>
+
+## Docker
+
 ### Docker 이미지 빌드
 ```shell
 // Require superuser
 sh docker-build.sh
 ```
-
-<hr>
-
-## Docker
 
 ### Docker 이미지 Import & Run
 ```shell
