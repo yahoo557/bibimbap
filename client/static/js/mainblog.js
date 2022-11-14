@@ -1160,13 +1160,13 @@ menuBar[0].addEventListener( 'click', () => {
 });
 // 이전에 선택한 오브젝트 제거
 const selectRemove = () => {
-    renderer.renderLists.dispose();
-    selectGroup.children.forEach(obj => {
-        if(obj) {
-            obj.geometry.dispose();
-            obj.material.dispose();
-        }
-    })
+    // renderer.renderLists.dispose();
+    // selectGroup.children.forEach(obj => {
+    //     if(obj) {
+    //         obj.geometry.dispose();
+    //         obj.material.dispose();
+    //     }
+    // })
     selectGroup.clear();
 }
 // 완료 버튼 선택 => 오브젝트 배치 완료
