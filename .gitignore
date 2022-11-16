@@ -30,3 +30,6 @@ yarn-error.log*
 
 # Legacy Codes
 /server/legacy
+
+#docker images
+/docker_build/*.tar

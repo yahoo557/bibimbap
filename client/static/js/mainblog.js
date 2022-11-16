@@ -47,7 +47,7 @@ function LoadingWithMask() {
     var loadingImg = '';
 
     loadingImg += "<div id='mask' style='position:absolute; z-index:125000; background-color:#000000; display:none; left:0; top:0;'>";
-    loadingImg += " <img id='loadingImg' src='http://localhost/static/images/LoadingImg.gif' style='position: relative; display: block; margin: 0px auto;'/>";
+    loadingImg += " <img id='loadingImg' src='/static/images/LoadingImg.gif' style='position: relative; display: block; margin: 0px auto;'/>";
     loadingImg += "</div>";  
   
     //화면에 레이어 추가
@@ -93,11 +93,11 @@ let object_list = parseCookie(cookie).object_list.split(":")[1].slice(1,-1).repl
 console.log(object_list);
 let object_info = [];
 let object_scene = [];
-const gltfloader = new GLTFLoader();
+const gltfloader = new GLTFLoader(loadingManager);
 const getObject = (function(id){
     const xhr = new XMLHttpRequest();
     const method = "get";
-    const targetURL = "http://localhost/api/object/getObjectByID/"+id;
+    const targetURL = "/api/object/getObjectByID/"+id;
     xhr.open(method, targetURL);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () =>{
@@ -177,6 +177,8 @@ const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
 
 let prevTime = performance.now();
+
+const gltfloaderForPlace = new GLTFLoader(loadingManager);
 
 
 //Renderer 생성
@@ -309,9 +311,10 @@ function assignObjectFloor( url ) {
     prePosition[1] = -2;
     prePosition[2] = camera.position.z + lookCamera.z * 4;
 
-    const gltfloader = new GLTFLoader();
+    //const gltfloader = new GLTFLoader(loadingManager);
+    gltfloaderForPlace
     const dragObject = [];
-    gltfloader.load(
+    gltfloaderForPlace.load(
         url,
         ( gltf ) => {
             const root = gltf.scene;
@@ -441,7 +444,7 @@ function assignObjectWall( url ) {
     // 사용자가 보고 있는 방향을 기준으로 오브젝트가 생성되도록
     prePosition[1] = camera.position.y + lookCamera.y * 2 + 2;
 
-    const gltfloader = new GLTFLoader();
+    const gltfloader = new GLTFLoader(loadingManager);
     const dragObject = [];
     
     gltfloader.load(
@@ -628,7 +631,7 @@ function assignObjectCeiling( url ) {
     prePosition[2] = camera.position.z + lookCamera.z * 4;
 
 
-    const gltfloader = new GLTFLoader();
+    const gltfloader = new GLTFLoader(loadingManager);
     const dragObject = [];
     
     gltfloader.load(
@@ -756,7 +759,7 @@ function assignDragCeiling( dragObject ) {
 const changeSelectGroup = new THREE.Group();;
 function loadChangeObject (key, url) {
     changeSelectGroup.clear();
-    const gltfloader = new GLTFLoader();
+    const gltfloader = new GLTFLoader(loadingManager);
 
     gltfloader.load(
         url,
@@ -1157,6 +1160,13 @@ menuBar[0].addEventListener( 'click', () => {
 });
 // 이전에 선택한 오브젝트 제거
 const selectRemove = () => {
+    // renderer.renderLists.dispose();
+    // selectGroup.children.forEach(obj => {
+    //     if(obj) {
+    //         obj.geometry.dispose();
+    //         obj.material.dispose();
+    //     }
+    // })
     selectGroup.clear();
 }
 // 완료 버튼 선택 => 오브젝트 배치 완료
@@ -1329,22 +1339,22 @@ objectMoveButton[0].addEventListener('click', () => {
     if(objectEditButtons[0].classList.item(1)) { // 오브젝트가 선택된 경우
         objectMoveComplete[0].style.display = "block";
         moveObjectKey = objectEditButtons[0].classList.item(1); // 선택된 오브젝트의 object_id
-        const moveObjectTemplateKey = objectAssign[moveObjectKey]['template_id']; // 배치된 오브젝트의 template_id
-        prePosition = objectAssign[moveObjectKey]['model_position'];
+        const moveObjectTemplateKey = object_info[moveObjectKey]['data']['template_id']; // 배치된 오브젝트의 template_id
+        prePosition = object_info[moveObjectKey]['data']['model_position'];
 
         const allChildren = group.children;
         for(let i = 0; i < allChildren.length; i++) {
             if(allChildren[i].name == moveObjectKey) {
                 moveSelectObjects = allChildren[i];
-                if(objectTemplate[moveObjectTemplateKey]['placementLocation'] == 'floor') {
+                if(objectTemplate[moveObjectTemplateKey]['placement_location'] == 'floor') {
                     moveObjectFloor( moveSelectObjects );
                     break;
                 }
-                if(objectTemplate[moveObjectTemplateKey]['placementLocation'] == 'wall') {
+                if(objectTemplate[moveObjectTemplateKey]['placement_location'] == 'wall') {
                     moveObjectWall( moveSelectObjects );
                     break;
                 }
-                if(objectTemplate[moveObjectTemplateKey]['placementLocation'] == 'ceiling') {
+                if(objectTemplate[moveObjectTemplateKey]['placement_location'] == 'ceiling') {
                     moveObjectCeiling( moveSelectObjects );
                     break;
                 }
@@ -1382,9 +1392,9 @@ let changeObjectTemplateKey;
 objectChangeButton[0].addEventListener('click', () => {
     if(objectEditButtons[0].classList.item(1)) { // 오브젝트가 선택된 경우
         changeObjectKey = objectEditButtons[0].classList.item(1); // 선택된 오브젝트의 object_id
-        changeObjectTemplateKey = objectAssign[changeObjectKey]['template_id']; // 배치된 오브젝트의 template_id
-        prePosition = objectAssign[changeObjectKey]['model_position'];
-        preRotation = objectAssign[changeObjectKey]['model_rotation'];
+        changeObjectTemplateKey = object_info[changeObjectKey]['data']['template_id']; // 배치된 오브젝트의 template_id
+        prePosition = object_info[changeObjectKey]['data']['model_position'];
+        preRotation = object_info[changeObjectKey]['data']['model_rotation'];
 
         objectEditButtons[0].style.display = "none"; // 오브젝트 삭제, 이동, 변경 버튼 숨기기
         thumbnailButton[0].style.display = "none"; // 썸네일 촬영 버튼 숨기기
@@ -1517,7 +1527,7 @@ const XMLrequest = (function() {
 
 // 클릭시 게시글 가져오기
 const getPost = (function(id) {
-    objectPostView[0].children[1].src = `http://localhost/post/read?id=${id}`;
+    objectPostView[0].children[1].src = `/post/read?id=${id}`;
     // const xhr = new XMLHttpRequest();
     // const method = "get";
     // const targetURL = `http://localhost/post/read?id=${id}`;
