@@ -109,6 +109,8 @@ function imageHandler() {
 }
 
 function applyPost(e) {
+    const params = new URL(location.href).searchParams;
+
     let contentsArray = {};
     const confirmMsg = (e.edit) ? "수정하시겠습니까?" : "작성한 글을 등록하시겠습니까?";
     const targetURL = (e.edit) ? `/api/post/editPost/${e.id}` : "/api/post/writePost";
@@ -139,6 +141,13 @@ function applyPost(e) {
 
         //quill에서 받아온 데이터를 HTTP POST로 서버에 넘기는 코드
         xhrPromise('POST', targetURL, JSON.stringify(contentsArray)).then(res => {
+            if(params.has('attach') && params.get('attach')) {
+                if(e.edit) {
+                    window.parent.postMessage({code: 2, post_id: res.post_id});
+                } else {
+                    window.parent.postMessage({code: 1, post_id: res.post_id});
+                }
+            }
             showMessageRedirect(res)
         }).catch(res => {
             showMessageRedirect(res);

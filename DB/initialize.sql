@@ -1,9 +1,9 @@
 -- 놀다가 DB 초기 설정 SQL
 
-CREATE USER bibimbap PASSWORD 'bi1234';
+CREATE USER bibimbap PASSWORD 'bi1234' SUPERUSER;
 CREATE DATABASE noldaga OWNER bibimbap;
 
-USE noldaga;
+\c noldaga bibimbap
 
 CREATE SEQUENCE IF NOT EXISTS users_id_seq;
 
@@ -72,8 +72,8 @@ CREATE SEQUENCE IF NOT EXISTS object_template_template_id_seq;
 
 CREATE TABLE "public"."object_template" (
     "template_id" int4 NOT NULL DEFAULT nextval('object_template_template_id_seq'::regclass),
-    "model_path" varchar(50) NOT NULL,
-    "thumbnail_path" varchar(50) NOT NULL,
+    "model_path" varchar NOT NULL,
+    "thumbnail_path" varchar NOT NULL,
     "placement_location" varchar(20) NOT NULL,
     PRIMARY KEY ("template_id")
 );
@@ -85,7 +85,7 @@ CREATE SEQUENCE IF NOT EXISTS object_post_id_seq;
 
 CREATE TABLE "public"."object" (
     "object_id" int4 NOT NULL DEFAULT nextval('object_object_id_seq'::regclass),
-    "model_path" varchar(50) NOT NULL,
+    "model_path" varchar NOT NULL,
     "model_rotation" int4 NOT NULL,
     "model_position" _float8 NOT NULL,
     "create_date" timestamptz,
@@ -95,7 +95,6 @@ CREATE TABLE "public"."object" (
     CONSTRAINT "object_template_id_fkey" FOREIGN KEY ("template_id") REFERENCES "public"."object_template"("template_id"),
     PRIMARY KEY ("object_id")
 );
-
 
 INSERT INTO "public"."object_template" ("template_id", "model_path", "thumbnail_path", "placement_location") VALUES
 (1, '/static/object_files/Old_Bicycle.glb', '/static/object_thumbnail/Old_Bicycle.png', 'floor'),
@@ -120,4 +119,3 @@ INSERT INTO "public"."object_template" ("template_id", "model_path", "thumbnail_
 (20, '/static/object_files/shoes_rack.glb', '/static/object_thumbnail/shoes_rack.png', 'floor'),
 (21, '/static/object_files/table_and_chairs.glb', '/static/object_thumbnail/table_and_chairs.png', 'floor'),
 (22, '/static/object_files/wooden_table.glb', '/static/object_thumbnail/wooden_table.png', 'floor');
-

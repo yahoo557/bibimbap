@@ -172,14 +172,26 @@ button {
 .postHeader {
     display: flex;
     justify-content: space-between;
+    align-items: end;
 }
 
 .postHeader > h2 {
     display: inline;
+    margin: 3px;
 }
 
 .postHeader span {
     height:fit-content
+}
+
+.postDiv {
+    margin: 1vh;
+    border: 1px black solid;
+    border-radius: 10px;
+}
+
+.postText {
+    margin-left: 3vh;
 }
 
 .login, .logout {

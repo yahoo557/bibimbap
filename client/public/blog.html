@@ -12,6 +12,8 @@
     </script>
     <!--js파일이 모듈타입으로 추가됨 -> three.js파일을 모듈로 받기 위해-->
     <!--defer : 이 페이지가 모두 로딩된 이후에 js파일을 실행-->
+    <script src="/static/js/noldaga.js"></script>
+    <script src="/static/js/jquery-3.6.1.min.js"></script>
     <script type="module" src="/static/js/mainblog.js" defer></script>
     <script src="/static/js/blog2.js" defer></script>
     <title></title>
@@ -26,17 +28,21 @@
     <i class="bi bi-plus target-pointer"></i>
     <!-- 메뉴 사용 환경 -->
     <div class="menu-area"></div>
-    <!-- 오브젝트 클릭 시 게시물 열람 -->
-    
-    <div class="object-post-view">
-        <div class="close-post" onclick="closePost()">닫기</div>
-        <iframe class = "iframe-post"  src=''></iframe>
-    </div>
+
     <!-- 메뉴 열고 닫기 버튼 -->
     <div class="menu-button">
         <i class="bi bi-list" onclick="showMenu()"></i>
         <i class="bi bi-x bi-x-menu" onclick="closeMenu()"></i>
     </div>
+
+    <!-- 오브젝트 클릭 시 게시물 열람 -->
+    <div class="object-post-view-frame">
+        <div class="object-post-view">
+            <div class="close-post" onclick="closePost()">닫기</div>
+            <iframe class = "iframe-read-post"  src=''></iframe>
+        </div>
+    </div>
+
     <!-- 메뉴바 -->
     <nav class="menu-bar">
         <img class="logo-icon" src="/static/images/logo.png" onclick="window.location.href = '/'">
@@ -95,7 +101,7 @@
     <!-- 게시물 작성 페이지 -->
     <section class="post-write-view">
         <div class="post-write-title">글쓰기</div>
-        
+        <div class="post-write-frame">
     </section>
     <!-- 게시물 연결 페이지 -->
     <section class="post-link-view">
@@ -157,8 +163,9 @@
     <!-- 게시물 리스트 -->
     <div class="post-list">
         <div class="post-list-page-title">게시물 리스트</div>
-        <div class="post-list-frame"></div>
+<!--        <div class="post-list-frame"></div>-->
     </div>
+
 </body>
 <script src="/static/js/menubar.js"></script>
 </html>

@@ -23,7 +23,7 @@ router.post('/', (req, res) => {
             ];
             client.query(insertPostQuery, argumentArray, (err, rows) => {
                 if(err) return res.status(500).send({msg: 'DB Error - 2'});
-                return res.status(200).send({msg: "작성이 완료되었습니다.", redirect: `/post/read?id=${rows.rows[0].post_id}`});
+                return res.status(200).send({msg: "작성이 완료되었습니다.", redirect: `/post/read?id=${rows.rows[0].post_id}`, post_id: rows.rows[0].post_id});
             })
         })
     }).catch(e => {

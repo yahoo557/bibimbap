@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const logger = require('../winston.js');
+
 // router 정리 [url, requireRouter]
 const routers = [
     ['/account', './account/account.js'],
@@ -16,7 +18,13 @@ routers.forEach(k => {
 })
 
 router.post("/", (req, res) => {
+    nlogger.info('Noldaga API Tested');
     return res.status(200).send("hello");
+});
+
+router.post('/error', (req, res) => {
+   nlogger.error('Error test');
+   return res.status(500).send();
 });
 
 router.get("/get", (req, res)=>{

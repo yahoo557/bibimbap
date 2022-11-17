@@ -8,6 +8,78 @@ import { DragControls } from "../lib/three.js-master/examples/jsm/controls/DragC
 // 배치 정보 => 배치 id : { 'template_id': 오브젝트id,  'model_position': 오브젝트 위치,  'objectRotaion': 오브젝트 방향,  'post_id': 게시물id}
 // object.name에 배치id 적을 것
 
+//div요소를 가져옴
+const divContainer = document.querySelector("#webgl-container");
+//divContainer를 클래스 필드로 지정하는 이유는 divContainer를 this._divContainer로 다른 메소드에서 참조하기 위함
+
+const loadingManager = new THREE.LoadingManager();
+
+loadingManager.onStart = function ( url, itemsLoaded, itemsTotal ) {
+
+    console.log("onStart");
+	LoadingWithMask();
+
+};
+
+loadingManager.onLoad = function ( ) {
+
+	closeLoadingWithMask();
+
+};
+
+
+loadingManager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
+
+	// console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
+
+};
+
+loadingManager.onError = function ( url ) {
+
+	// console.log( 'There was an error loading ' + url );
+
+};
+
+function LoadingWithMask() {
+    var maskHeight = $(document).height();
+    var maskWidth  = window.document.body.clientWidth;
+
+    var loadingImg = '';
+
+    loadingImg += "<div id='mask' style='position:absolute; z-index:125000; background-color:#000000; display:none; left:0; top:0;'>";
+    loadingImg += " <img id='loadingImg' src='/static/images/LoadingImg.gif' style='position: relative; display: block; margin: 0px auto;'/>";
+    loadingImg += "</div>";  
+  
+    //화면에 레이어 추가
+    $('body')
+        // .append(mask)
+        .append(loadingImg)
+        
+    //마스크의 높이와 너비를 화면 것으로 만들어 전체 화면을 채웁니다.
+    $('#loadingImg').css({
+        'width' : maskWidth
+        , 'height': maskHeight
+        // , 'opacity' : '0.3'
+}); 
+    $('#mask').css({
+            'width' : maskWidth
+            , 'height': maskHeight
+            // , 'opacity' : '0.3'
+    }); 
+  
+    //마스크 표시
+    $('#mask').show();   
+  
+    //로딩중 이미지 표시
+    $('#loadingImg').show();
+
+}
+function closeLoadingWithMask() {
+    $('#mask, #loadingImg').hide();
+    $('#mask, #loadingImg').remove();  
+}
+
+
 // 블로그로 이동하면 cookie에 블로그 오브젝트 리스트를 저장하고 main.html을 로드함
 const parseCookie = str => 
             str.split(';').map(v => v.split('=')).reduce((acc, v) => {
@@ -21,11 +93,11 @@ let object_list = parseCookie(cookie).object_list.split(":")[1].slice(1,-1).repl
 console.log(object_list);
 let object_info = [];
 let object_scene = [];
-const gltfloader = new GLTFLoader();
+const gltfloader = new GLTFLoader(loadingManager);
 const getObject = (function(id){
     const xhr = new XMLHttpRequest();
     const method = "get";
-    const targetURL = "http://localhost/api/object/getObjectByID/"+id;
+    const targetURL = "/api/object/getObjectByID/"+id;
     xhr.open(method, targetURL);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () =>{
@@ -106,9 +178,8 @@ const direction = new THREE.Vector3();
 
 let prevTime = performance.now();
 
-//div요소를 가져옴
-const divContainer = document.querySelector("#webgl-container");
-//divContainer를 클래스 필드로 지정하는 이유는 divContainer를 this._divContainer로 다른 메소드에서 참조하기 위함
+const gltfloaderForPlace = new GLTFLoader(loadingManager);
+
 
 //Renderer 생성
 //생성 시 옵션을 줄 수 있음 antialias : 3차원 장면이 렌더링될 때 오브젝트에 계단 현상 없이 표현됨
@@ -135,6 +206,15 @@ animate();
     initTemplates();
 // }
 
+// iframe post_id listener
+window.addEventListener('message', e => {
+    if(e.data.code == 1) { // 글 작성 완료
+        objectAndWrittenPostLink(e.data.post_id);
+    } else if(e.data.code == 2) { // 글 수정 완료
+        postEditComplete();
+    }
+});
+
 
 // renderer랑 camera는 창 크기가 바뀔 때마다 그 크기에 맞게 재정의 되어야 함
 // resize이벤트에 resize메소드를 bind를 사용해서 지정 -> resize 안에서 this가 가리키는 객체가 이벤트객체가 아닌 이 앱 클래스의 객체가 되게 하기 위해
@@ -144,7 +224,16 @@ animate();
 // 3차원 그래픽 장면을 만들어주는 메소드
 // requestAnimationFrame(this.render.bind(this));
 
-
+function objectAndWrittenPostLink(post_id) {
+    sendObjectData(post_id);
+    const iframeTag = document.getElementsByClassName("iframe-write-post");
+    iframeTag[0].parentNode.removeChild(iframeTag[0]);
+    const postWriteView = document.getElementsByClassName("post-write-view");
+    postWriteView[0].style.display = "none";
+    menuArea[0].style.display = "none"; // 메뉴 사용 환경 비활성화
+    document.getElementsByClassName('post-link-view')[0].style.display = "none"; // 게시물 연결 페이지 비활성화
+    addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
+}
 
 function setupModel() {
     //정육면체 형상을 정의
@@ -222,9 +311,10 @@ function assignObjectFloor( url ) {
     prePosition[1] = -2;
     prePosition[2] = camera.position.z + lookCamera.z * 4;
 
-    const gltfloader = new GLTFLoader();
+    //const gltfloader = new GLTFLoader(loadingManager);
+    gltfloaderForPlace
     const dragObject = [];
-    gltfloader.load(
+    gltfloaderForPlace.load(
         url,
         ( gltf ) => {
             const root = gltf.scene;
@@ -354,7 +444,7 @@ function assignObjectWall( url ) {
     // 사용자가 보고 있는 방향을 기준으로 오브젝트가 생성되도록
     prePosition[1] = camera.position.y + lookCamera.y * 2 + 2;
 
-    const gltfloader = new GLTFLoader();
+    const gltfloader = new GLTFLoader(loadingManager);
     const dragObject = [];
     
     gltfloader.load(
@@ -541,7 +631,7 @@ function assignObjectCeiling( url ) {
     prePosition[2] = camera.position.z + lookCamera.z * 4;
 
 
-    const gltfloader = new GLTFLoader();
+    const gltfloader = new GLTFLoader(loadingManager);
     const dragObject = [];
     
     gltfloader.load(
@@ -669,7 +759,7 @@ function assignDragCeiling( dragObject ) {
 const changeSelectGroup = new THREE.Group();;
 function loadChangeObject (key, url) {
     changeSelectGroup.clear();
-    const gltfloader = new GLTFLoader();
+    const gltfloader = new GLTFLoader(loadingManager);
 
     gltfloader.load(
         url,
@@ -732,6 +822,7 @@ function setupCamera() {
                 menuArea[0].style.display = "block"; // 메뉴 사용 환경 활성화
                 objectPostView[0].style.display = "block"; // 게시물 열람 화면 활성화
                 objectPostView[0].children[1].style.display = "block"; // iframe 활성화
+                objectPostViewFrame[0].style.display = "block";
                 // console.log(INTERSECTED.name);
                 const id = INTERSECTED.name; // 클릭한 오브젝트의 db 아이디
                 // // const id = 1 // 클릭한 오브젝트의 아이디
@@ -828,7 +919,7 @@ function drawRay() {
 function cameraMovement(deltaTime) {
     let camVec = new THREE.Vector3();
     camera.getWorldDirection(camVec);
-    camVec.y = 0;
+    camVec.y = 0; // 높이는 고정
     camVec.normalize();
 
     const dirZ = boolToInt(moveForward) - boolToInt(moveBackward);
@@ -836,15 +927,23 @@ function cameraMovement(deltaTime) {
     
     let camVecLeft = new THREE.Vector3();
     camVecLeft.copy(camVec);
-    camVec.multiplyScalar(dirZ);
+    camVec.multiplyScalar(dirZ); // 앞뒤
     
     let temp = camVecLeft.x;
     camVecLeft.x = camVecLeft.z;
     camVecLeft.z = -1 * temp;
-    camVecLeft.multiplyScalar(dirX);
+    camVecLeft.multiplyScalar(dirX); // 좌우
 
     camVec.add(camVecLeft);
     camVec.normalize();
+
+    // 벽 통과 막기
+    // 이동하기 전에 카메라 위치가 벽 범위를 넘어가는 좌표에 해당되면 이동하지 않도록
+    const checkX = camera.position.x + camVec.x * deltaTime * Constants.Camera.Speed;
+    const checkZ = camera.position.z + camVec.z * deltaTime * Constants.Camera.Speed;
+    if(checkX >= 3.5 || checkX <= -3.5) camVec.x = 0;
+    if(checkZ >= 5.0 || checkZ <= -5.0) camVec.z = 0;
+
     camera.position.add(camVec.multiplyScalar(deltaTime * Constants.Camera.Speed));
 }
 
@@ -951,6 +1050,7 @@ function unSelectObjectGroup( selectObjects, key ) {
 
 // 오브젝트 선택 + 게시물 열람
 const targetPointer = document.getElementsByClassName("target-pointer"); // pointer lock 가운데 표시
+const objectPostViewFrame = document.getElementsByClassName("object-post-view-frame");
 const objectPostView = document.getElementsByClassName("object-post-view"); // 오브젝트 선택 시 보이는 게시물 열람 화면
 
 // 배치하고 싶은 오브젝트 선택 시
@@ -1006,6 +1106,11 @@ objectLeftRotaionButton[0].addEventListener( 'click', () => {
         preRotation = (preRotation + 1) % 4;
         leftRotaion(selectObject, 'y');
         leftRotaion(objectRange, 'z');
+
+        // 회전하면 x, z 길이 바뀜 - 벽 범위 벗어나는 거 막을 때 체크하려면 값 변경 필요
+        const saveX = objectSize.x;
+        objectSize.x = objectSize.z;
+        objectSize.z = saveX;
     }
 });
 // 좌방향 회전
@@ -1024,6 +1129,11 @@ objectRightRotaionButton[0].addEventListener( 'click', () => {
         preRotation = (preRotation + 3) % 4;
         rightRotaion(selectObject, 'y');
         rightRotaion(objectRange, 'z');
+
+        // 회전하면 x, z 길이 바뀜 - 벽 범위 벗어나는 거 막을 때 체크하려면 값 변경 필요
+        const saveX = objectSize.x;
+        objectSize.x = objectSize.z;
+        objectSize.z = saveX;
     }
 });
 // 오브젝트 좌방향 회전
@@ -1050,6 +1160,13 @@ menuBar[0].addEventListener( 'click', () => {
 });
 // 이전에 선택한 오브젝트 제거
 const selectRemove = () => {
+    // renderer.renderLists.dispose();
+    // selectGroup.children.forEach(obj => {
+    //     if(obj) {
+    //         obj.geometry.dispose();
+    //         obj.material.dispose();
+    //     }
+    // })
     selectGroup.clear();
 }
 // 완료 버튼 선택 => 오브젝트 배치 완료
@@ -1222,22 +1339,22 @@ objectMoveButton[0].addEventListener('click', () => {
     if(objectEditButtons[0].classList.item(1)) { // 오브젝트가 선택된 경우
         objectMoveComplete[0].style.display = "block";
         moveObjectKey = objectEditButtons[0].classList.item(1); // 선택된 오브젝트의 object_id
-        const moveObjectTemplateKey = objectAssign[moveObjectKey]['template_id']; // 배치된 오브젝트의 template_id
-        prePosition = objectAssign[moveObjectKey]['model_position'];
+        const moveObjectTemplateKey = object_info[moveObjectKey]['data']['template_id']; // 배치된 오브젝트의 template_id
+        prePosition = object_info[moveObjectKey]['data']['model_position'];
 
         const allChildren = group.children;
         for(let i = 0; i < allChildren.length; i++) {
             if(allChildren[i].name == moveObjectKey) {
                 moveSelectObjects = allChildren[i];
-                if(objectTemplate[moveObjectTemplateKey]['placementLocation'] == 'floor') {
+                if(objectTemplate[moveObjectTemplateKey]['placement_location'] == 'floor') {
                     moveObjectFloor( moveSelectObjects );
                     break;
                 }
-                if(objectTemplate[moveObjectTemplateKey]['placementLocation'] == 'wall') {
+                if(objectTemplate[moveObjectTemplateKey]['placement_location'] == 'wall') {
                     moveObjectWall( moveSelectObjects );
                     break;
                 }
-                if(objectTemplate[moveObjectTemplateKey]['placementLocation'] == 'ceiling') {
+                if(objectTemplate[moveObjectTemplateKey]['placement_location'] == 'ceiling') {
                     moveObjectCeiling( moveSelectObjects );
                     break;
                 }
@@ -1275,9 +1392,9 @@ let changeObjectTemplateKey;
 objectChangeButton[0].addEventListener('click', () => {
     if(objectEditButtons[0].classList.item(1)) { // 오브젝트가 선택된 경우
         changeObjectKey = objectEditButtons[0].classList.item(1); // 선택된 오브젝트의 object_id
-        changeObjectTemplateKey = objectAssign[changeObjectKey]['template_id']; // 배치된 오브젝트의 template_id
-        prePosition = objectAssign[changeObjectKey]['model_position'];
-        preRotation = objectAssign[changeObjectKey]['model_rotation'];
+        changeObjectTemplateKey = object_info[changeObjectKey]['data']['template_id']; // 배치된 오브젝트의 template_id
+        prePosition = object_info[changeObjectKey]['data']['model_position'];
+        preRotation = object_info[changeObjectKey]['data']['model_rotation'];
 
         objectEditButtons[0].style.display = "none"; // 오브젝트 삭제, 이동, 변경 버튼 숨기기
         thumbnailButton[0].style.display = "none"; // 썸네일 촬영 버튼 숨기기
@@ -1410,7 +1527,7 @@ const XMLrequest = (function() {
 
 // 클릭시 게시글 가져오기
 const getPost = (function(id) {
-    objectPostView[0].children[1].src = `http://localhost/post/read?id=${id}`;
+    objectPostView[0].children[1].src = `/post/read?id=${id}`;
     // const xhr = new XMLHttpRequest();
     // const method = "get";
     // const targetURL = `http://localhost/post/read?id=${id}`;

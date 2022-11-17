@@ -46,3 +46,12 @@ let decodeToken = (token) => {
     const payload = decodeURIComponent(atob(rawPayload));
     return JSON.parse(payload.toString());
 }
+
+const dateFormating = (date) => {
+    if(typeof(date) == "string") date = new Date(date);
+    const dateString = date.toISOString().split('T');
+    const ymd = dateString[0].replaceAll('-', '.');
+    const hms = dateString[1].split('.')[0];
+
+    return `${ymd} ${hms}`;
+}
