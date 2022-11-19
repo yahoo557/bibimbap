@@ -311,8 +311,12 @@ function assignObjectFloor( url ) {
     prePosition[1] = -2;
     prePosition[2] = camera.position.z + lookCamera.z * 4;
 
+<<<<<<< HEAD
+    const gltfloader = new GLTFLoader(loadingManager);
+=======
     //const gltfloader = new GLTFLoader(loadingManager);
     gltfloaderForPlace
+>>>>>>> 0f5fe8afb11d7ad419ad968ffe25b1b2d3bbca16
     const dragObject = [];
     gltfloaderForPlace.load(
         url,
@@ -1098,7 +1102,7 @@ function onloadCallback() {
 }
 // 오브젝트 배치 중에 오브젝트 좌방향 회전
 objectLeftRotaionButton[0].addEventListener( 'click', () => {
-    if(key) { // 선택된 오브젝트가 있을 때만 작동
+    if(key && objectTemplate[key]['placement_location'] != "wall") { // 선택된 오브젝트가 있을 때만 작동
         const allChildren = selectGroup.children;
         const selectObject = allChildren[allChildren.length - 2];
         const objectRange = allChildren[allChildren.length - 1];
@@ -1121,7 +1125,7 @@ const leftRotaion = ( turnObject, line ) => {
 }
 // 오브젝트 배치 중에 우방향 회전
 objectRightRotaionButton[0].addEventListener( 'click', () => {
-    if(key) { // 선택된 오브젝트가 있을 때만 작동
+    if(key && objectTemplate[key]['placement_location'] != "wall") { // 선택된 오브젝트가 있을 때만 작동
         const allChildren = selectGroup.children;
         const selectObject = allChildren[allChildren.length - 2];
         const objectRange = allChildren[allChildren.length - 1];
