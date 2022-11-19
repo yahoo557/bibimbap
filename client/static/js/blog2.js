@@ -45,8 +45,8 @@ function removeOwnerButton() {
     const placeButton = document.querySelector('.bi-box');
     const editButton = document.querySelector('.bi-tools');
 
-    placeButton.parentNode.removeChild(placeButton);
-    editButton.parentNode.removeChild(editButton);
+    placeButton.style.display = 'none';
+    editButton.style.display = 'none'
 }
 
 // const xhrPromise = (method, url, body) => {

@@ -11,7 +11,13 @@ const parseCookie = str =>
     }, {});
 
 router.get('/random', (req, res) => {
-    axios.post(`http://${req.hostname}/api/account/getRandomUsername`).then(axiosRes => {
+    let targetURL;
+    if(req.secure) {
+        targetURL = `https://${req.hostname}`;
+    } else {
+        targetURL = `http://${req.hostname}`;
+    }
+    axios.post(`${targetURL}/api/account/getRandomUsername`).then(axiosRes => {
         return res.status(200).redirect(`/blog/${axiosRes.data.username}`)
     }).catch(ar => {
         console.log(ar);
@@ -33,13 +39,19 @@ router.get('/my', (req, res) => {
 })
 
 router.get('/:username', (req, res) => {
-    axios.post(`http://${req.hostname}/api/blog/getBlogIDFromUsername`, {
+    let targetURL;
+    if(req.secure) {
+        targetURL = `https://${req.hostname}`;
+    } else {
+        targetURL = `http://${req.hostname}`;
+    }
+    axios.post(`${targetURL}/api/blog/getBlogIDFromUsername`, {
         username: req.params.username
     }).then((axiosRes) => {
         if(!axiosRes.data.hasOwnProperty("blog_id")) {
             return res.status(404).send();
         }
-        axios.post('http://localhost/api/blog/getBlogData', {
+        axios.post(`${targetURL}/api/blog/getBlogData`, {
             blog_id: axiosRes.data.blog_id
         }).then((post2Res) => {
             const expires = new Date;
@@ -48,6 +60,7 @@ router.get('/:username', (req, res) => {
             return res.status(200).sendFile(path.join(__dirname, '../public', 'blog.html'));
         })
     }).catch((axiosReason) =>{
+        console.log(axiosReason);
         return res.status(404).send();
     });
 });
