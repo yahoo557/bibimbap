@@ -1,26 +1,38 @@
 {
-  "name": "Noldaga",
+  "name": "noldaga",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "cd server&& npx nodemon -w . server",
     "client": "cd client&& npx nodemon -w . client",
-    "start": "npm run server"
+    "start": "npm run server",
+    "dev": "NODE_ENV=dev concurrently \"npm run server \" \"npm run client\" ",
+    "docker": "NODE_ENV=docker concurrently \"npm run server \" \"npm run client\""
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "atob": "^2.1.2",
     "axios": "^1.1.3",
-    "bcrypt": "^5.0.1",
+    "bcrypt": "^5.1.0",
+    "concurrently": "^7.5.0",
     "ejs": "^3.1.7",
     "express": "^4.18.1",
+<<<<<<< HEAD
+=======
+    "fs": "^0.0.1-security",
+    "gltfpack": "^0.18.0",
+    "http-proxy-middleware": "^2.0.6",
+>>>>>>> ba9871bc87ea039b61d9d2b88bc8e4b3a63ef00e
     "jsonwebtoken": "^8.5.1",
+    "morgan": "^1.10.0",
     "multer": "^1.4.4-lts.1",
     "pg": "^8.7.3",
     "store": "^2.0.12",
-    "three": "^0.140.2"
+    "three": "^0.140.2",
+    "winston": "^3.8.2"
   },
   "devDependencies": {
     "@types/node": "^17.0.35",

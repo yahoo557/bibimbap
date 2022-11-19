@@ -1,0 +1,11 @@
+Model Information:
+* title:	Engel
+* source:	https://sketchfab.com/3d-models/engel-62957ad1736a43369c60a8f402e9ae27
+* author:	noe-3d.at (https://sketchfab.com/www.noe-3d.at)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Engel" (https://sketchfab.com/3d-models/engel-62957ad1736a43369c60a8f402e9ae27) by noe-3d.at (https://sketchfab.com/www.noe-3d.at) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)

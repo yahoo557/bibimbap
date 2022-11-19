@@ -204,6 +204,15 @@ animate();
     initTemplates();
 // }
 
+// iframe post_id listener
+window.addEventListener('message', e => {
+    if(e.data.code == 1) { // 글 작성 완료
+        objectAndWrittenPostLink(e.data.post_id);
+    } else if(e.data.code == 2) { // 글 수정 완료
+        postEditComplete();
+    }
+});
+
 
 // renderer랑 camera는 창 크기가 바뀔 때마다 그 크기에 맞게 재정의 되어야 함
 // resize이벤트에 resize메소드를 bind를 사용해서 지정 -> resize 안에서 this가 가리키는 객체가 이벤트객체가 아닌 이 앱 클래스의 객체가 되게 하기 위해
@@ -213,7 +222,16 @@ animate();
 // 3차원 그래픽 장면을 만들어주는 메소드
 // requestAnimationFrame(this.render.bind(this));
 
-
+function objectAndWrittenPostLink(post_id) {
+    sendObjectData(post_id);
+    const iframeTag = document.getElementsByClassName("iframe-write-post");
+    iframeTag[0].parentNode.removeChild(iframeTag[0]);
+    const postWriteView = document.getElementsByClassName("post-write-view");
+    postWriteView[0].style.display = "none";
+    menuArea[0].style.display = "none"; // 메뉴 사용 환경 비활성화
+    document.getElementsByClassName('post-link-view')[0].style.display = "none"; // 게시물 연결 페이지 비활성화
+    addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
+}
 
 function setupModel() {
     //정육면체 형상을 정의
@@ -801,6 +819,7 @@ function setupCamera() {
                 menuArea[0].style.display = "block"; // 메뉴 사용 환경 활성화
                 objectPostView[0].style.display = "block"; // 게시물 열람 화면 활성화
                 objectPostView[0].children[1].style.display = "block"; // iframe 활성화
+                objectPostViewFrame[0].style.display = "block";
                 // console.log(INTERSECTED.name);
                 const id = INTERSECTED.name; // 클릭한 오브젝트의 db 아이디
                 // // const id = 1 // 클릭한 오브젝트의 아이디
@@ -897,7 +916,7 @@ function drawRay() {
 function cameraMovement(deltaTime) {
     let camVec = new THREE.Vector3();
     camera.getWorldDirection(camVec);
-    camVec.y = 0;
+    camVec.y = 0; // 높이는 고정
     camVec.normalize();
 
     const dirZ = boolToInt(moveForward) - boolToInt(moveBackward);
@@ -905,15 +924,23 @@ function cameraMovement(deltaTime) {
     
     let camVecLeft = new THREE.Vector3();
     camVecLeft.copy(camVec);
-    camVec.multiplyScalar(dirZ);
+    camVec.multiplyScalar(dirZ); // 앞뒤
     
     let temp = camVecLeft.x;
     camVecLeft.x = camVecLeft.z;
     camVecLeft.z = -1 * temp;
-    camVecLeft.multiplyScalar(dirX);
+    camVecLeft.multiplyScalar(dirX); // 좌우
 
     camVec.add(camVecLeft);
     camVec.normalize();
+
+    // 벽 통과 막기
+    // 이동하기 전에 카메라 위치가 벽 범위를 넘어가는 좌표에 해당되면 이동하지 않도록
+    const checkX = camera.position.x + camVec.x * deltaTime * Constants.Camera.Speed;
+    const checkZ = camera.position.z + camVec.z * deltaTime * Constants.Camera.Speed;
+    if(checkX >= 3.5 || checkX <= -3.5) camVec.x = 0;
+    if(checkZ >= 5.0 || checkZ <= -5.0) camVec.z = 0;
+
     camera.position.add(camVec.multiplyScalar(deltaTime * Constants.Camera.Speed));
 }
 
@@ -1020,6 +1047,7 @@ function unSelectObjectGroup( selectObjects, key ) {
 
 // 오브젝트 선택 + 게시물 열람
 const targetPointer = document.getElementsByClassName("target-pointer"); // pointer lock 가운데 표시
+const objectPostViewFrame = document.getElementsByClassName("object-post-view-frame");
 const objectPostView = document.getElementsByClassName("object-post-view"); // 오브젝트 선택 시 보이는 게시물 열람 화면
 
 // 배치하고 싶은 오브젝트 선택 시
@@ -1067,7 +1095,7 @@ function onloadCallback() {
 }
 // 오브젝트 배치 중에 오브젝트 좌방향 회전
 objectLeftRotaionButton[0].addEventListener( 'click', () => {
-    if(key) { // 선택된 오브젝트가 있을 때만 작동
+    if(key && objectTemplate[key]['placement_location'] != "wall") { // 선택된 오브젝트가 있을 때만 작동
         const allChildren = selectGroup.children;
         const selectObject = allChildren[allChildren.length - 2];
         const objectRange = allChildren[allChildren.length - 1];
@@ -1075,6 +1103,11 @@ objectLeftRotaionButton[0].addEventListener( 'click', () => {
         preRotation = (preRotation + 1) % 4;
         leftRotaion(selectObject, 'y');
         leftRotaion(objectRange, 'z');
+
+        // 회전하면 x, z 길이 바뀜 - 벽 범위 벗어나는 거 막을 때 체크하려면 값 변경 필요
+        const saveX = objectSize.x;
+        objectSize.x = objectSize.z;
+        objectSize.z = saveX;
     }
 });
 // 좌방향 회전
@@ -1085,7 +1118,7 @@ const leftRotaion = ( turnObject, line ) => {
 }
 // 오브젝트 배치 중에 우방향 회전
 objectRightRotaionButton[0].addEventListener( 'click', () => {
-    if(key) { // 선택된 오브젝트가 있을 때만 작동
+    if(key && objectTemplate[key]['placement_location'] != "wall") { // 선택된 오브젝트가 있을 때만 작동
         const allChildren = selectGroup.children;
         const selectObject = allChildren[allChildren.length - 2];
         const objectRange = allChildren[allChildren.length - 1];
@@ -1093,6 +1126,11 @@ objectRightRotaionButton[0].addEventListener( 'click', () => {
         preRotation = (preRotation + 3) % 4;
         rightRotaion(selectObject, 'y');
         rightRotaion(objectRange, 'z');
+
+        // 회전하면 x, z 길이 바뀜 - 벽 범위 벗어나는 거 막을 때 체크하려면 값 변경 필요
+        const saveX = objectSize.x;
+        objectSize.x = objectSize.z;
+        objectSize.z = saveX;
     }
 });
 // 오브젝트 좌방향 회전

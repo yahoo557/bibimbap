@@ -1,0 +1,11 @@
+Model Information:
+* title:	Art Painting
+* source:	https://sketchfab.com/3d-models/art-painting-c01c46fe1211405aa9314ad373af5eae
+* author:	xError1337 (https://sketchfab.com/Error1337)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Art Painting" (https://sketchfab.com/3d-models/art-painting-c01c46fe1211405aa9314ad373af5eae) by xError1337 (https://sketchfab.com/Error1337) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
