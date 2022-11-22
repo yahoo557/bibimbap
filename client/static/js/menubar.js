@@ -370,7 +370,7 @@ const postList = () => {
             listIcon[0].style.left = "15vh"; // 게시물 리스트 버튼 활성화
             postListView[0].style.display = "block"; // 게시물 리스트 화면 활성화
             menuArea[0].style.display = "block"; // 메뉴 사용 환경(반투명 배경) 활성화
-            //postListLoad();
+            setPostList()
 
             addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
             addView[0].style.display = "none"; // 오브젝트 추가 화면 숨기기

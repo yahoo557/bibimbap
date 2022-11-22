@@ -13,6 +13,7 @@ const divContainer = document.querySelector("#webgl-container");
 //divContainer를 클래스 필드로 지정하는 이유는 divContainer를 this._divContainer로 다른 메소드에서 참조하기 위함
 
 const loadingManager = new THREE.LoadingManager();
+const beforeResources = [];
 
 loadingManager.onStart = function ( url, itemsLoaded, itemsTotal ) {
 
@@ -206,6 +207,9 @@ animate();
     initTemplates();
 // }
 
+scene.add(selectGroup);
+scene.add(group);
+
 // iframe post_id listener
 window.addEventListener('message', e => {
     if(e.data.code == 1) { // 글 작성 완료
@@ -251,8 +255,6 @@ function setupModel() {
     object_list.forEach(element => {
         getObject(element);
     });
-    
-    scene.add(group);
 
     clickRaycaster = new THREE.Raycaster();
 }
@@ -311,16 +313,11 @@ function assignObjectFloor( url ) {
     prePosition[1] = -2;
     prePosition[2] = camera.position.z + lookCamera.z * 4;
 
-<<<<<<< HEAD
-    const gltfloader = new GLTFLoader(loadingManager);
-=======
-    //const gltfloader = new GLTFLoader(loadingManager);
-    gltfloaderForPlace
->>>>>>> 0f5fe8afb11d7ad419ad968ffe25b1b2d3bbca16
     const dragObject = [];
     gltfloaderForPlace.load(
         url,
         ( gltf ) => {
+            console.log(scene, gltf.scene);
             const root = gltf.scene;
             selectGroup.add(root);
             dragObject.push(root);
@@ -328,7 +325,7 @@ function assignObjectFloor( url ) {
             // 오브젝트 배치할 때 아래에 위치 표시
             const boundingBox = new THREE.Box3().setFromObject( root ); // 모델의 바운딩 박스 생성
             objectSize = boundingBox.getSize(new THREE.Vector3()); // 바운딩 박스 사이즈 정보
-            
+
             const rangeGeometry = new THREE.PlaneGeometry(objectSize.x, objectSize.z);
             const rangeMaterial = new THREE.MeshBasicMaterial({ color: "#858585" });
             const objectRange = new THREE.Mesh( rangeGeometry, rangeMaterial );
@@ -353,10 +350,6 @@ function assignObjectFloor( url ) {
             objectRange.rotation.x = - Math.PI / 2;
         }
     );
-    
-    scene.add(selectGroup);
-    renderer.render(scene, camera);
-    requestAnimationFrame(setupModel);
 
     assignDragFloor( dragObject );
 }
@@ -519,10 +512,6 @@ function assignObjectWall( url ) {
         }
     );
     
-    scene.add(selectGroup);
-    renderer.render(scene, camera);
-    requestAnimationFrame(setupModel);
-    
     assignDragWall( dragObject );
 }
 // 편집 모드에서 이동 선택된 오브젝트 = 벽
@@ -562,9 +551,6 @@ function moveObjectWall( moveObject ) {
         moveObject.position.set( prePosition[0], prePosition[1], prePosition[2] - rotationZ * 0.1 ); //모델 위치 지정
         objectRange.position.set( prePosition[0], prePosition[1], prePosition[2] + rotationZ * (objectSize.z/2 - 0.001) ); // 그림자 위치 지정
     }
-
-    scene.add(selectGroup);
-    renderer.render(scene, camera);
 
     assignDragWall( dragObject );
 
@@ -673,10 +659,6 @@ function assignObjectCeiling( url ) {
             objectRange.rotation.x = + Math.PI / 2;
         }
     );
-    
-    scene.add(selectGroup);
-    renderer.render(scene, camera);
-    requestAnimationFrame(setupModel);
 
     assignDragCeiling( dragObject );
 }
@@ -705,9 +687,6 @@ function moveObjectCeiling( moveObject ) {
     selectGroup.add(objectRange);
     objectRange.position.set( prePosition[0], 1.999, prePosition[2] );
     objectRange.rotation.x = + Math.PI / 2;
-
-    scene.add(selectGroup);
-    renderer.render(scene, camera);
 
     assignDragCeiling( dragObject );
 
@@ -898,7 +877,7 @@ function animate() {
     drawRay();
 
     render();
-    requestAnimationFrame(animate);      
+    requestAnimationFrame(animate);
 }
 
 function drawRay() {
@@ -1076,6 +1055,8 @@ let preRotation = 0; // 배치 방향 - 0: 정면, 1: 좌측: 2: 뒤, 3: 우측
 // 오브젝트 썸네일 클릭
 
 function onloadCallback() {
+    console.log(scene);
+
     for(let i = 0; i < 4; i++) { // 한 페이지에 오브젝트 썸네일 4개
         // 오브젝트 추가하기 기능에서 썸네일 클릭
         selectObject[i].addEventListener( 'click', () => {
@@ -1148,6 +1129,7 @@ const rightRotaion = ( turnObject, line ) => {
 }
 // 취소 버튼 => 오브젝트 추가하기 비활성화
 cancleButton[0].addEventListener( 'click', () => {
+    console.log(scene);
     selectRemove();
     key = "";
     addIcon[0].style.left = "0vh"; // 오브젝트 추가 버튼 비활성화
@@ -1164,14 +1146,8 @@ menuBar[0].addEventListener( 'click', () => {
 });
 // 이전에 선택한 오브젝트 제거
 const selectRemove = () => {
-    // renderer.renderLists.dispose();
-    // selectGroup.children.forEach(obj => {
-    //     if(obj) {
-    //         obj.geometry.dispose();
-    //         obj.material.dispose();
-    //     }
-    // })
     selectGroup.clear();
+    console.log(scene);
 }
 // 완료 버튼 선택 => 오브젝트 배치 완료
 completeButton[0].addEventListener( 'click', () => {
@@ -1586,3 +1562,19 @@ async function getObjectList() {
     xhr.open('POST', '/api/blog/')
 }
 
+function clearCache() {
+    beforeResources.forEach(data => {
+        data.remove();
+    })
+}
+
+function disposeThree(data) {
+    if(data instanceof THREE.Group) {
+        data.forEach(c => {
+            disposeThree(c);
+        })
+    } else if(data instanceof THREE.Mesh) {
+        data.geometry.dispose();
+        data.material.dispose();
+    }
+}

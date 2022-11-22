@@ -90,8 +90,6 @@ window.onload = () => {
         const idSpan = document.getElementById("blog-id");
         idSpan.innerText = blog_id;
         getBlogData(blog_id).then((innerResult) => {
-            //console.log(innerResult);
-
             document.querySelector('title').innerText = `${innerResult.blogname} - 놀다가`;
 
             const divBlogName = document.getElementsByClassName('blog-name');
@@ -99,18 +97,25 @@ window.onload = () => {
             divBlogName[0].innerText = innerResult.blogname;
             divBlogOwner[0].innerText = innerResult.nickname;
 
-            setPostList(innerResult.blog_id, isOwner);
+            setPostList();
         });
+    });
+
+    document.querySelector(".bi-shuffle").addEventListener('click', e => {
+        location.href = '/blog/random'
     });
 }
 
-const setPostList = (blog_id, flag) => {
+const setPostList = () => {
+    const blog_id = document.getElementById('blog-id').innerText;
+    const prevFrame = document.querySelector('.post-list-frame');
+    prevFrame?.parentNode.removeChild(prevFrame);
     xhrPromise('GET', `/api/post/getPostList/${blog_id}`, null).then(res => {
         const frame = document.createElement('div');
         frame.setAttribute('class', 'post-list-frame');
         document.querySelector('.post-list').append(frame);
         res.forEach(data => {
-            addList(data, flag);
+            addList(data, isOwner);
         });
     });
 }
