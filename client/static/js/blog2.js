@@ -100,6 +100,10 @@ window.onload = () => {
             setPostList();
         });
     });
+
+    document.querySelector(".bi-shuffle").addEventListener('click', e => {
+        location.href = '/blog/random'
+    });
 }
 
 const setPostList = () => {
