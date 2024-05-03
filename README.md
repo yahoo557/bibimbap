@@ -1,5 +1,20 @@
+![추가하기 - 오브젝트 선택](https://github.com/yahoo557/bibimbap/assets/76805879/5aedfc9d-3c70-4988-8f43-0ce1b63e0ac0)
 # 놀다가
-### 경상국립대학교 컴퓨터과학과 2022년 소프트웨어 전시회 비빔밥 팀
+```
+📆 2022.03 ~ 2022.06
+🏫 2022 경상국립대학교 컴퓨터과학과 전공 소프트웨어설계PBL
+👏🏻 2022 경상국립대학교 컴퓨터과학과 소프트웨어전시회 출품
+```
+
+---
+
+## 🍚 비빔밥 팀
+###### (이름 가나다순입니다) 
+| 고수민 | 김남혁 | 이승백 | 조정미 |                                                                                                          
+| :---: | :---: | :---: | :---: |
+| <img width="160px" src="https://avatars.githubusercontent.com/u/72858039?v=4" /> | <img width="160px" src="https://avatars.githubusercontent.com/u/11703271?v=4" /> | <img width="160px" src="https://avatars.githubusercontent.com/u/77774331?v=4" /> | <img width="160px" src="https://avatars.githubusercontent.com/u/76805879?v=4" /> |
+| [@wpslxm20](https://github.com/wpslxm20) | [@los56](https://github.com/los56) | [@yahoo557](https://github.com/yahoo557) | [@jung0115](https://github.com/jung0115) |
+| 경상대학교 컴퓨터과학과 20학번 | 경상대학교 컴퓨터과학과 17학번 | 경상대학교 컴퓨터과학과 17학번 | 경상대학교 컴퓨터과학과 20학번 |
 
 <hr>
 
