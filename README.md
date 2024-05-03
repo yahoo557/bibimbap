@@ -14,7 +14,7 @@
 | :---: | :---: | :---: | :---: |
 | <img width="160px" src="https://avatars.githubusercontent.com/u/72858039?v=4" /> | <img width="160px" src="https://avatars.githubusercontent.com/u/11703271?v=4" /> | <img width="160px" src="https://avatars.githubusercontent.com/u/77774331?v=4" /> | <img width="160px" src="https://avatars.githubusercontent.com/u/76805879?v=4" /> |
 | [@wpslxm20](https://github.com/wpslxm20) | [@los56](https://github.com/los56) | [@yahoo557](https://github.com/yahoo557) | [@jung0115](https://github.com/jung0115) |
-| 경상대학교 컴퓨터과학과 20학번 | 경상대학교 컴퓨터과학과 17학번 | 경상대학교 컴퓨터과학과 17학번 | 경상대학교 컴퓨터과학과 20학번 |
+| 경상대학교<br/>컴퓨터과학과 20학번 | 경상대학교<br/>컴퓨터과학과 17학번 | 경상대학교<br/>컴퓨터과학과 17학번 | 경상대학교<br/>컴퓨터과학과 20학번 |
 
 <hr>
 
